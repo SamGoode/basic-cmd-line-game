@@ -14,6 +14,8 @@ public:
         this->description = description;
     }
 
+    virtual ~Item() = default;
+
     void Description() {
         description.WriteToConsole();
     }
@@ -26,29 +28,39 @@ public:
 class Room {
 private:
     String description;
-    Item item;
+    Item* items;
+    int itemTotal;
 
 public:
     Room() {
         description = "empty room";
-        item = Item();
+        items = nullptr;
+        itemTotal = 0;
     }
 
     Room(String description) {
         this->description = description;
-        item = Item();
+        items = nullptr;
+        itemTotal = 0;
     }
 
-    Room(String description, Item item) {
+    Room(String description, Item items[]) {
         this->description = description;
-        this->item = item;
+        
+        itemTotal = sizeof(items) / sizeof(items[0]);
+        this->items = new Item[itemTotal];
+        for (int i = 0; i < itemTotal; i++) {
+            this->items[i] = items[i];
+        }
     }
 
     void Description() {
         std::cout << "You entered the room\n";
         description.WriteToConsole();
         std::cout << "Items:\n";
-        item.Description();
+        for (int i = 0; i < itemTotal; i++) {
+            items[i].Description();
+        }
     }
 };
 
@@ -64,29 +76,29 @@ public:
     }
 };
 
-int main()
-{
+int main() {
     Room rooms[3][3];
 
     Item iceCube = Item("cube of ice");
-    Room iceRoom = Room("It's cold in here", iceCube);
+    Item ices[] = { iceCube };
+    Room iceRoom = Room("It's cold in here", ices);
+
+    //Room iceRoom = Room("It's cold in here", new Item[1]{iceCube});
 
     rooms[0][1] = Room(iceRoom);
-    rooms[1][1] = Room("You start in this room", Item("a bomb"));
+    //rooms[1][1] = Room("You start in this room", Item("a bomb"));
 
-    //rooms[0][1].Description();
-    
-    int currentRoom = 11;
+    int currentRoom = 01;
     String userInput;
 
     while (true) {
         rooms[currentRoom / 10][currentRoom % 10].Description();
 
-        std::cout << "Move 'North', 'East', 'South', 'West'\n";
+        std::cout << "move 'north', 'east', 'south', 'west'\n";
         
         while (true) {
             userInput.ReadFromConsole();
-            if (userInput.ToLower() == "north") {
+            if (userInput.ToLower().EqualTo("north")) {
                 currentRoom -= 10;
                 break;
             }
