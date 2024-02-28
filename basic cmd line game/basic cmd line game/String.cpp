@@ -226,7 +226,7 @@ String& String::ReadFromConsole() {
     length = bufferSize - 1;
     delete[] dataPtr;
     dataPtr = new char[length + 1];
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < bufferSize; i++) {
         std::cin.get(*(dataPtr + i));
     }
     *(dataPtr + length) = 0;

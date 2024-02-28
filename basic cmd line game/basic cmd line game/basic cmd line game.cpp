@@ -1,20 +1,97 @@
-// basic cmd line game.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include "String.h"
+
+class Item {
+private:
+    String description;
+
+public:
+    Item() {
+        description = "???";
+    }
+
+    Item(String description) {
+        this->description = description;
+    }
+
+    void Description() {
+        description.WriteToConsole();
+    }
+
+    void Use() {
+
+    }
+};
+
+class Room {
+private:
+    String description;
+    Item item;
+
+public:
+    Room() {
+        description = "empty room";
+        item = Item();
+    }
+
+    Room(String description) {
+        this->description = description;
+        item = Item();
+    }
+
+    Room(String description, Item item) {
+        this->description = description;
+        this->item = item;
+    }
+
+    void Description() {
+        std::cout << "You entered the room\n";
+        description.WriteToConsole();
+        std::cout << "Items:\n";
+        item.Description();
+    }
+};
+
+class Player {
+private:
+    String spells[3];
+
+public:
+    Player() {
+        spells[0] = "fireball";
+        spells[1] = "waterspout";
+        spells[2] = "eatshit";
+    }
+};
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    Room rooms[3][3];
+
+    Item iceCube = Item("cube of ice");
+    Room iceRoom = Room("It's cold in here", iceCube);
+
+    rooms[0][1] = Room(iceRoom);
+    rooms[1][1] = Room("You start in this room", Item("a bomb"));
+
+    //rooms[0][1].Description();
+    
+    int currentRoom = 11;
+    String userInput;
+
+    while (true) {
+        rooms[currentRoom / 10][currentRoom % 10].Description();
+
+        std::cout << "Move 'North', 'East', 'South', 'West'\n";
+        
+        while (true) {
+            userInput.ReadFromConsole();
+            if (userInput.ToLower() == "north") {
+                currentRoom -= 10;
+                break;
+            }
+
+            std::cout << "invalid input\n";
+        }
+    }
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
