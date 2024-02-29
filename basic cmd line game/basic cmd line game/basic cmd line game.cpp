@@ -10,14 +10,22 @@ public:
         description = "???";
     }
 
+    Item(const Item& item) {
+        this->description = item.getDescription();
+    }
+
     Item(String description) {
         this->description = description;
     }
 
-    virtual ~Item() = default;
+    //virtual ~Item() = default;
 
-    void Description() {
-        description.WriteToConsole();
+    String& getDescription() {
+        return description;
+    }
+
+    const String& getDescription() const {
+        return description;
     }
 
     void Use() {
@@ -25,32 +33,73 @@ public:
     }
 };
 
+//class ItemList {
+//private:
+//    size_t itemCount;
+//    Item* items;
+//
+//public:
+//    ItemList() {
+//        itemCount = 0;
+//        items = nullptr;
+//    }
+//
+//    ItemList(const ItemList& itemList) {
+//        this->itemCount = itemList.length();
+//        for (int i = 0; i < itemList.length(); i++) {
+//            this->items[i] = itemList.getItem(i);
+//            //itemList.getItem(i) = Item();
+//        }
+//    }
+//
+//    ItemList(size_t itemCount, Item* items) {
+//        this->itemCount = itemCount;
+//        std::cout << itemCount;
+//        for (int i = 0; i < itemCount; i++) {
+//            //this->items[i] = Item(items[i]);
+//        }
+//        std::cout << "test";
+//    }
+//
+//    ~ItemList() {
+//        delete[] items;
+//    }
+//
+//    Item& getItem(size_t index) const {
+//        return items[index];
+//    }
+//
+//    size_t length() const {
+//        return itemCount;
+//    }
+//};
+
 class Room {
 private:
     String description;
+    size_t itemCount;
     Item* items;
-    int itemTotal;
-
+    //ItemList items;
+    
 public:
     Room() {
         description = "empty room";
+        itemCount = 0;
         items = nullptr;
-        itemTotal = 0;
     }
 
     Room(String description) {
         this->description = description;
+        itemCount = 0;
         items = nullptr;
-        itemTotal = 0;
     }
 
-    Room(String description, Item items[]) {
+    Room(String description, size_t itemCount, Item* items) {
         this->description = description;
-        
-        itemTotal = sizeof(items) / sizeof(items[0]);
-        this->items = new Item[itemTotal];
-        for (int i = 0; i < itemTotal; i++) {
-            this->items[i] = items[i];
+        this->itemCount = itemCount;
+        for (int i = 0; i < itemCount; i++) {
+            std::cout << "assigning item " << i << std::endl;
+            *(this->items + i) = *(items + i);
         }
     }
 
@@ -58,8 +107,9 @@ public:
         std::cout << "You entered the room\n";
         description.WriteToConsole();
         std::cout << "Items:\n";
-        for (int i = 0; i < itemTotal; i++) {
-            items[i].Description();
+        for (int i = 0; i < itemCount; i++) {
+            std::cout << "item: " << i << std::endl;
+            //items[i].getDescription().WriteToConsole();
         }
     }
 };
@@ -78,21 +128,16 @@ public:
 
 int main() {
     Room rooms[3][3];
-
     Item iceCube = Item("cube of ice");
-    Item ices[] = { iceCube };
-    Room iceRoom = Room("It's cold in here", ices);
-
-    //Room iceRoom = Room("It's cold in here", new Item[1]{iceCube});
-
-    rooms[0][1] = Room(iceRoom);
-    //rooms[1][1] = Room("You start in this room", Item("a bomb"));
+    
+    Room iceRoom = Room("It's cold in here", 2, new Item[2]{ iceCube, Item("test item") });
 
     int currentRoom = 01;
     String userInput;
 
     while (true) {
-        rooms[currentRoom / 10][currentRoom % 10].Description();
+        //rooms[currentRoom / 10][currentRoom % 10].Description();
+        iceRoom.Description();
 
         std::cout << "move 'north', 'east', 'south', 'west'\n";
         
