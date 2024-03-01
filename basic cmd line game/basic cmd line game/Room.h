@@ -1,12 +1,11 @@
 #pragma once
-#include "item.h"
+#include "ItemList.h"
 
 class Room {
     private:
         bool exists;
         String description;
-        size_t itemCount;
-        Item* items;
+        ItemList items;
 
     public:
         Room();
@@ -15,13 +14,13 @@ class Room {
 
         Room(String description);
 
-        Room(String description, size_t itemCount, Item* items);
-
-        ~Room();
+        Room(String description, ItemList items);
 
         Room& operator=(const Room& room);
 
         bool doesExist();
+
+        Room& addItem(Item item);
 
         String getDescription();
 };

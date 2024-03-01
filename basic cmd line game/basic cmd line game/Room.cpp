@@ -1,59 +1,34 @@
 #include "Room.h"
 #include <iostream>
-#include "String.h"
 
 Room::Room() {
     exists = false;
     description = "room doesn't exist";
-    itemCount = 0;
-    items = nullptr;
+    items = ItemList();
 }
 
 Room::Room(const Room& room) {
     exists = true;
-    this->description = room.description;
-
-    this->itemCount = room.itemCount;
-    this->items = new Item[room.itemCount];
-    for (int i = 0; i < room.itemCount; i++) {
-        this->items[i] = room.items[i];
-    }
+    description = room.description;
+    items = room.items;
 }
 
 Room::Room(String description) {
     exists = true;
     this->description = description;
-    itemCount = 0;
-    items = nullptr;
+    items = ItemList();
 }
 
-Room::Room(String description, size_t itemCount, Item* items) {
+Room::Room(String description, ItemList items) {
     exists = true;
     this->description = description;
-
-    this->itemCount = itemCount;
-    this->items = new Item[itemCount];
-    for (int i = 0; i < itemCount; i++) {
-        this->items[i] = items[i];
-    }
-
-    delete[] items;
-}
-
-Room::~Room() {
-    delete[] items;
+    this->items = items;
 }
 
 Room& Room::operator=(const Room& room) {
-    this->exists = room.exists;
-    this->description = room.description;
-
-    this->itemCount = room.itemCount;
-    delete[] items;
-    this->items = new Item[room.itemCount];
-    for (int i = 0; i < room.itemCount; i++) {
-        this->items[i] = room.items[i];
-    }
+    exists = room.exists;
+    description = room.description;
+    items = room.items;
 
     return *this;
 }
@@ -62,16 +37,22 @@ bool Room::doesExist() {
     return exists;
 }
 
+Room& Room::addItem(Item item) {
+    items.addItem(item);
+
+    return *this;
+}
+
 String Room::getDescription() {
     String printOut = description;
 
-    if (itemCount == 0) {
+    if (items.getCount() == 0) {
         printOut += "\n\n";
         return printOut;
     }
 
     printOut += "\n\nItems:\n";
-    for (int i = 0; i < itemCount; i++) {
+    for (int i = 0; i < items.getCount(); i++) {
         printOut += items[i].getName();
         printOut += " | ";
         printOut += items[i].getDescription();
