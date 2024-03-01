@@ -236,7 +236,7 @@ String& String::ReadFromConsole() {
 
 //outputs data stored within string object to console and returns itself
 String& String::WriteToConsole() {
-    std::cout << dataPtr << std::endl;
+    std::cout << dataPtr;
 
     return *this;
 }
