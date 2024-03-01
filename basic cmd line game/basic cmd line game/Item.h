@@ -14,12 +14,14 @@ class Item {
         Item(String name, String description);
 
         //virtual ~Item() = default;
+        
+        Item& operator=(const Item& item);
 
         String& getName();
+
+        const String& getName() const;
 
         String& getDescription();
 
         const String& getDescription() const;
-
-        Item& operator=(const Item& item);
 };

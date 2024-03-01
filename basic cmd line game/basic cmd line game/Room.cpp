@@ -3,12 +3,14 @@
 #include "String.h"
 
 Room::Room() {
-    description = "empty room";
+    exists = false;
+    description = "room doesn't exist";
     itemCount = 0;
     items = nullptr;
 }
 
 Room::Room(const Room& room) {
+    exists = true;
     this->description = room.description;
 
     this->itemCount = room.itemCount;
@@ -19,12 +21,14 @@ Room::Room(const Room& room) {
 }
 
 Room::Room(String description) {
+    exists = true;
     this->description = description;
     itemCount = 0;
     items = nullptr;
 }
 
 Room::Room(String description, size_t itemCount, Item* items) {
+    exists = true;
     this->description = description;
 
     this->itemCount = itemCount;
@@ -39,6 +43,7 @@ Room::~Room() {
 }
 
 Room& Room::operator=(const Room& room) {
+    this->exists = room.exists;
     this->description = room.description;
 
     this->itemCount = room.itemCount;
@@ -51,13 +56,25 @@ Room& Room::operator=(const Room& room) {
     return *this;
 }
 
-void Room::Description() {
-    std::cout << "You entered the room\n";
-    description.WriteToConsole();
-    std::cout << "\nItems:\n";
-    for (int i = 0; i < itemCount; i++) {
-        items[i].getName().WriteToConsole();
-        items[i].getDescription().WriteToConsole();
-        std::cout << std::endl;
+bool Room::doesExist() {
+    return exists;
+}
+
+String Room::getDescription() {
+    String printOut = description;
+
+    if (itemCount == 0) {
+        printOut += "\n\n";
+        return printOut;
     }
+
+    printOut += "\n\nItems:\n";
+    for (int i = 0; i < itemCount; i++) {
+        printOut += items[i].getName();
+        printOut += " | ";
+        printOut += items[i].getDescription();
+        printOut += "\n";
+    }
+    printOut += "\n";
+    return printOut;
 }

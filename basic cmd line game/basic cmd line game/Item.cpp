@@ -6,8 +6,8 @@ Item::Item() {
 }
 
 Item::Item(const Item& item) {
-    this->name = item.name;
-    this->description = item.description;
+    this->name = item.getName();
+    this->description = item.getDescription();
 }
 
 Item::Item(String name, String description) {
@@ -17,7 +17,18 @@ Item::Item(String name, String description) {
 
 //virtual ~Item() = default;
 
+Item& Item::operator=(const Item& item) {
+    this->name = item.getName();
+    this->description = item.getDescription();
+
+    return *this;
+}
+
 String& Item::getName() {
+    return name;
+}
+
+const String& Item::getName() const {
     return name;
 }
 
@@ -28,10 +39,3 @@ String& Item::getDescription() {
 const String& Item::getDescription() const {
     return description;
 }
-
-Item& Item::operator=(const Item& item) {
-    this->name = item.name;
-    this->description = item.description;
-
-    return *this;
-}    

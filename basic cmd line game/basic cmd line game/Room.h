@@ -2,23 +2,26 @@
 #include "item.h"
 
 class Room {
-private:
-    String description;
-    size_t itemCount;
-    Item* items;
+    private:
+        bool exists;
+        String description;
+        size_t itemCount;
+        Item* items;
 
-public:
-    Room();
+    public:
+        Room();
 
-    Room(const Room& room);
+        Room(const Room& room);
 
-    Room(String description);
+        Room(String description);
 
-    Room(String description, size_t itemCount, Item* items);
+        Room(String description, size_t itemCount, Item* items);
 
-    ~Room();
+        ~Room();
 
-    Room& operator=(const Room& room);
+        Room& operator=(const Room& room);
 
-    void Description();
+        bool doesExist();
+
+        String getDescription();
 };
