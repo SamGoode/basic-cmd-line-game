@@ -21,12 +21,12 @@ int main() {
     rooms[0][2] = Room("There's a wombat in here.");
     rooms[1][1] = Room("This is the room you started in.", 0, nullptr);
 
-    /*
+    /*test
     Current layout of rooms
 
-        {empty}  {cold room}  {empty}
-        {empty}  {start room} {empty}
-        {empty}  {empty}      {empty}
+        {sword room}  {cold room}   {wombat room}
+        {empty}       {start room}  {empty}
+        {empty}       {empty}       {empty}
     
     */
 
