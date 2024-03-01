@@ -3,13 +3,53 @@
 
 class Player {
 private:
+    int x;
+    int y;
     String spells[3];
+    size_t inventoryCount;
+    Item* inventory;
 
 public:
     Player() {
+        x = 0;
+        y = 0;
+
         spells[0] = "fireball";
         spells[1] = "waterspout";
         spells[2] = "eatshit";
+
+        inventoryCount = 0;
+        inventory = nullptr;
+    }
+
+    Player(int x, int y) {
+        this->x = x;
+        this->y = y;
+
+        spells[0] = "fireball";
+        spells[1] = "waterspout";
+        spells[2] = "eatshit";
+
+        inventoryCount = 0;
+        inventory = nullptr;
+    }
+
+    ~Player() {
+        delete[] inventory;
+    }
+
+    Player& addItem(const Item& newItem) {
+        Item* oldPtr = inventory;
+        
+        inventoryCount += 1;
+        inventory = new Item[inventoryCount];
+        for (int i = 0; i < inventoryCount - 1; i++) {
+            inventory[i] = oldPtr[i];
+        }
+        inventory[inventoryCount - 1] = newItem;
+        
+        delete[] oldPtr;
+        return *this;
     }
 };
 
@@ -21,7 +61,7 @@ int main() {
     rooms[0][2] = Room("There's a wombat in here.");
     rooms[1][1] = Room("This is the room you started in.", 0, nullptr);
 
-    /*test
+    /*
     Current layout of rooms
 
         {sword room}  {cold room}   {wombat room}
@@ -36,6 +76,8 @@ int main() {
     };
 
     pos currentRoom = { 1, 1 };
+
+    Player player;
 
     String userInput;
 

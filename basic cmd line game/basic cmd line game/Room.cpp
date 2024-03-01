@@ -36,6 +36,8 @@ Room::Room(String description, size_t itemCount, Item* items) {
     for (int i = 0; i < itemCount; i++) {
         this->items[i] = items[i];
     }
+
+    delete[] items;
 }
 
 Room::~Room() {
