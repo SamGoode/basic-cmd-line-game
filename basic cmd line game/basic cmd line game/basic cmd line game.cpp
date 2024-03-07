@@ -173,5 +173,4 @@ int main() {
 
         Sleep(1000 / tickrate);
     }
-    
 }
