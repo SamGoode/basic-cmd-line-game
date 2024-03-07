@@ -5,14 +5,6 @@ ItemList::ItemList() {
     items = nullptr;
 }
 
-ItemList::ItemList(const ItemList& itemList) {
-    count = itemList.count;
-    items = new Item[itemList.count];
-    for (int i = 0; i < itemList.count; i++) {
-        items[i] = itemList.items[i];
-    }
-}
-
 ItemList::ItemList(size_t count, Item* items) {
     this->count = count;
     this->items = new Item[count];
@@ -21,6 +13,14 @@ ItemList::ItemList(size_t count, Item* items) {
     }
 
     delete[] items;
+}
+
+ItemList::ItemList(const ItemList& itemList) {
+    count = itemList.count;
+    items = new Item[itemList.count];
+    for (int i = 0; i < itemList.count; i++) {
+        items[i] = itemList.items[i];
+    }
 }
 
 ItemList::~ItemList() {

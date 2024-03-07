@@ -9,9 +9,9 @@ class ItemList {
     public:
         ItemList();
 
-        ItemList(const ItemList& itemList);
-
         ItemList(size_t count, Item* items);
+
+        ItemList(const ItemList& itemList);
 
         ~ItemList();
 

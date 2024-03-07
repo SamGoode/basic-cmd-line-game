@@ -2,7 +2,7 @@
 #include "String.h"
 
 class Screen {
-    public:    
+    private:    
         char** screenMatrix;
     
     public:
@@ -14,6 +14,8 @@ class Screen {
         Screen(int width, int height);
 
         ~Screen();
+
+        Screen& operator=(const Screen& screen);
 
         void reset();
 

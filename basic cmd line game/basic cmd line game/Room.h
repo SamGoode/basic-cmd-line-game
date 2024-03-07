@@ -10,11 +10,11 @@ class Room {
     public:
         Room();
 
-        Room(const Room& room);
-
         Room(String description);
 
-        Room(String description, ItemList items);
+        Room(String description, const ItemList& items);
+
+        Room(const Room& room);
 
         Room& operator=(const Room& room);
 

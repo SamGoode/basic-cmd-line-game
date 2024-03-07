@@ -7,22 +7,22 @@ Room::Room() {
     items = ItemList();
 }
 
-Room::Room(const Room& room) {
-    exists = true;
-    description = room.description;
-    items = room.items;
-}
-
 Room::Room(String description) {
     exists = true;
     this->description = description;
     items = ItemList();
 }
 
-Room::Room(String description, ItemList items) {
+Room::Room(String description, const ItemList& items) {
     exists = true;
     this->description = description;
     this->items = items;
+}
+
+Room::Room(const Room& room) {
+    exists = true;
+    description = room.description;
+    items = room.items;
 }
 
 Room& Room::operator=(const Room& room) {

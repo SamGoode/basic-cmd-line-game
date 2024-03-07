@@ -3,7 +3,9 @@
 #include "String.h"
 
 Screen::Screen() {
-    
+    width = 0;
+    height = 0;
+    screenMatrix = nullptr;
 }
 
 Screen::Screen(int width, int height) {
@@ -26,8 +28,30 @@ Screen::~Screen() {
     for (int i = 0; i < height; i++) {
         delete[] screenMatrix[i];
     }
-
     delete[] screenMatrix;
+}
+
+Screen& Screen::operator=(const Screen& screen) {
+    for (int i = 0; i < height; i++) {
+        delete[] screenMatrix[i];
+    }
+    delete[] screenMatrix;
+
+    width = screen.width;
+    height = screen.height;
+
+    screenMatrix = new char*[screen.height];
+    for (int i = 0; i < screen.height; i++) {
+        screenMatrix[i] = new char[screen.width];
+    }
+
+    for (int i = 0; i < screen.height; i++) {
+        for (int j = 0; j < screen.width; j++) {
+            screenMatrix[i][j] = screen.screenMatrix[i][j];
+        }
+    }
+
+    return *this;
 }
 
 void Screen::reset() {
