@@ -26,10 +26,9 @@ String::String(const char* textPtr) {
     }
 
     dataPtr = new char[length + 1];
-    memcpy(dataPtr, textPtr, length);
-    /*for (int i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++) {
         *(dataPtr + i) = *(textPtr + i);
-    }*/
+    }
     *(dataPtr + length) = 0;
 }
 
@@ -80,15 +79,13 @@ String& String::Append(const String& str) {
     char* oldPtr = dataPtr;
     dataPtr = new char[length + str.Length() + 1];
 
-    memcpy(dataPtr, oldPtr, length - 1);
-    /*for (int i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++) {
         *(dataPtr + i) = *(oldPtr + i);
-    }*/
+    }
     
-    memcpy(dataPtr + length, str.CStr(), str.Length());
-    /*for (int i = 0; i < str.Length(); i++) {
+    for (int i = 0; i < str.Length(); i++) {
         *(dataPtr + length + i) = *(str.CStr() + i);
-    }*/
+    }
 
     length += str.Length();
     *(dataPtr + length) = 0;
@@ -100,11 +97,11 @@ String& String::Append(const char chr) {
     char* oldPtr = dataPtr;
     length++;
     dataPtr = new char[length + 1];
-
     memcpy(dataPtr, oldPtr, length - 1);
     /*for (int i = 0; i < length - 1; i++) {
         *(dataPtr + i) = *(oldPtr + i);
     }*/
+
     *(dataPtr + length - 1) = chr;
     *(dataPtr + length) = '\0';
 
@@ -351,18 +348,23 @@ String& String::operator+=(const char chr) {
 }
 
 String toString(int x) {
-    
-    int digits = 0;
-
+    int totalDigits = 0;
     for (int i = 0; x / (int)pow(10, i) > 0; i++) {
-        digits++;
+        totalDigits++;
     }
+    //123
+    //3 digits
+    //123/10^2 = 1
+    //123/10^1 = 2
+    //123/10^0 = 3
 
+    char* digits = new char[totalDigits + 1];
+    for (int i = 0; i < totalDigits; i++) {
+        digits[i] = (x / (int)pow(10, totalDigits - i - 1)) % 10 + 48;
+    }
+    *(digits + totalDigits) = 0;
 
-    
-    char a = x + 48;
-
-    String b;
-    b.Append(a);
-    return b;
+    String finalString = digits;
+    delete[] digits;
+    return finalString;
 }

@@ -57,19 +57,7 @@ int main() {
 
         screen.text("Player stats: ", 5, 5);
 
-        /*String str = toString(5);
-
-        std::cout << str.CStr();
-
-        return 0;*/
-
-        String coords = "coordinates: ";
-        
-        char blah = player.x + 48;
-        coords += '1';
-        coords += blah;
-        coords += ", ";
-        coords += (char)(player.y + 48);
+        String coords = String("coordinates: ") + toString(player.x) + ", " + toString(player.y);
 
         screen.text(coords, 10, 6);
 
