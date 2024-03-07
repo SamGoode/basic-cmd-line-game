@@ -5,13 +5,16 @@ class Item {
     private:
         String name;
         String description;
-
+        bool stacks;
+        int amount;
     public:
         Item();
 
         Item(const Item& item);
 
         Item(String name, String description);
+
+        Item(String name, String description, bool stacks, int amount);
 
         //virtual ~Item() = default;
         

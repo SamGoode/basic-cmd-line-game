@@ -51,7 +51,7 @@ String Room::getDescription() {
         return printOut;
     }
 
-    printOut += "\n\nItems:\n";
+    printOut += "\n\nballs:\n";
     for (int i = 0; i < items.getCount(); i++) {
         printOut += items[i].getName();
         printOut += " | ";
