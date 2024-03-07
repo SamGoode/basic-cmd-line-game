@@ -52,3 +52,5 @@ class String {
 		String& operator+=(const String& str);
 		String& operator+=(const char chr);
 };
+
+String toString(int x);

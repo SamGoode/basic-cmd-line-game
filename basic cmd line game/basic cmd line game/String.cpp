@@ -349,3 +349,20 @@ String& String::operator+=(const char chr) {
     Append(chr);
     return *this;
 }
+
+String toString(int x) {
+    
+    int digits = 0;
+
+    for (int i = 0; x / (int)pow(10, i) > 0; i++) {
+        digits++;
+    }
+
+
+    
+    char a = x + 48;
+
+    String b;
+    b.Append(a);
+    return b;
+}

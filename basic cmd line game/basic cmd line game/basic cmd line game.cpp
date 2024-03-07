@@ -36,24 +36,41 @@ int main() {
 
     SetCurrentConsoleFontEx(hout, false, &cfi);
 
-    SHORT width = 200;
-    SHORT height = 50;
+    SHORT width = 220;
+    SHORT height = 60;
     SMALL_RECT dim = { 0, 0, width - 1, height - 1 };
 
     SetConsoleScreenBufferSize(hout, { width, height });
     SetConsoleWindowInfo(hout, true, &dim);
 
-    Screen screen = Screen(width, height);
+    Screen screen = Screen(width, height - 1);
 
     int x = 0;
     //int y = 0;
 
     bool posx = true;
 
+    String userInput;
+
     while (true) {
         screen.reset();
 
-        screen.rect('a', x, 10, 5, 5);
+        screen.text("Player stats: ", 5, 5);
+
+        /*String str = toString(5);
+
+        std::cout << str.CStr();
+
+        return 0;*/
+
+        String coords = "coordinates: ";
+        coords += (char)(player.x + 48);
+        coords += ", ";
+        coords += (char)(player.y + 48);
+
+        screen.text(coords, 5, 6);
+
+        screen.rect('a', 100, 20, 5, 5);
 
         if (posx) {
             x += 2;
@@ -68,14 +85,53 @@ int main() {
         else if (x + 4 >= width - 1) {
             posx = false;
         }
-        
 
         screen.print();
-        
-        Sleep(1);
-    }
 
-    String userInput;
+        std::cout << std::endl;
+        userInput.ReadFromConsole();
+
+        if (userInput.ToLower() == "north") {
+            if (!rooms[player.y - 1][player.x].doesExist() || player.y == 0) {
+                //std::cout << "room doesn't exist.\n";
+                continue;
+            }
+
+            player.y--;
+            //break;
+        }
+        else if (userInput.ToLower() == "east") {
+            if (!rooms[player.y][player.x + 1].doesExist() || player.x == 2) {
+                //std::cout << "room doesn't exist.\n";
+                continue;
+            }
+
+            player.x++;
+            //break;
+        }
+        else if (userInput.ToLower() == "south") {
+            if (!rooms[player.y + 1][player.x].doesExist() || player.y == 2) {
+                //std::cout << "room doesn't exist.\n";
+                continue;
+            }
+
+            player.y++;
+            //break;
+        }
+        else if (userInput.ToLower() == "west") {
+            if (!rooms[player.y][player.x - 1].doesExist() || player.x == 0) {
+                //std::cout << "room doesn't exist.\n";
+                continue;
+            }
+
+            //rooms[0][1].addItem(Item("diamond", "this wasn't here before"));
+
+            player.x--;
+            //break;
+        }
+
+        //Sleep(1);
+    }
 
     while (true) {
         std::cout << "You entered the room\n\n";
