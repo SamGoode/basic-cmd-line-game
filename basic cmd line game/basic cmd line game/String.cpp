@@ -106,7 +106,7 @@ String& String::Append(const char chr) {
         *(dataPtr + i) = *(oldPtr + i);
     }*/
     *(dataPtr + length - 1) = chr;
-    *(dataPtr + length) = 0;
+    *(dataPtr + length) = '\0';
 
     delete[] oldPtr;
     return *this;

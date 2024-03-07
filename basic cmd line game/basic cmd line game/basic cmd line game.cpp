@@ -45,8 +45,8 @@ int main() {
 
     Screen screen = Screen(width, height - 1);
 
-    int x = 0;
-    //int y = 0;
+    int x = 100;
+    int y = 20;
 
     bool posx = true;
 
@@ -64,19 +64,22 @@ int main() {
         return 0;*/
 
         String coords = "coordinates: ";
-        coords += (char)(player.x + 48);
+        
+        char blah = player.x + 48;
+        coords += '1';
+        coords += blah;
         coords += ", ";
         coords += (char)(player.y + 48);
 
-        screen.text(coords, 5, 6);
+        screen.text(coords, 10, 6);
 
-        screen.rect('a', 100, 20, 5, 5);
+        screen.rect('a', x, y, 5, 5);
 
         if (posx) {
-            x += 2;
+            //x += 2;
         }
         else {
-            x -= 2;
+            //x -= 2;
         }
 
         if (x <= 0) {
@@ -97,6 +100,7 @@ int main() {
                 continue;
             }
 
+            y -= 2;
             player.y--;
             //break;
         }
@@ -106,6 +110,7 @@ int main() {
                 continue;
             }
 
+            x += 4;
             player.x++;
             //break;
         }
@@ -115,6 +120,7 @@ int main() {
                 continue;
             }
 
+            y += 2;
             player.y++;
             //break;
         }
@@ -126,6 +132,7 @@ int main() {
 
             //rooms[0][1].addItem(Item("diamond", "this wasn't here before"));
 
+            x -= 4;
             player.x--;
             //break;
         }
