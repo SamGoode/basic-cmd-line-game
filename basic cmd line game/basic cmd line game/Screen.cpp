@@ -2,6 +2,10 @@
 #include <iostream>
 #include "String.h"
 
+Screen::Screen() {
+    
+}
+
 Screen::Screen(int width, int height) {
     this->width = width;
     this->height = height;

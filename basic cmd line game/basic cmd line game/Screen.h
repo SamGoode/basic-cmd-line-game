@@ -2,12 +2,14 @@
 #include "String.h"
 
 class Screen {
-    private:    
+    public:    
         char** screenMatrix;
     
     public:
         int width;
         int height;
+
+        Screen();
 
         Screen(int width, int height);
 
