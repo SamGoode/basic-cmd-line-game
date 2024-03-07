@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include "String.h"
 
 class Screen {
     private:    
@@ -19,7 +19,7 @@ class Screen {
 
         void rect(char text, int x, int y, int width, int height);
 
-        void text(std::string text, int x, int y);
+        void text(String text, int x, int y);
 
         void print();
 };

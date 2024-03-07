@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 
 class String {
 	private:
@@ -11,8 +12,6 @@ class String {
 		String(const String& str);
 		
 		String(const char* textPtr);
-		
-		String(const char chr);
 
 		~String();
 
@@ -23,6 +22,7 @@ class String {
 		bool EqualTo(const String& str) const;
 
 		String& Append(const String& str);
+		String& Append(const char chr);
 		String& Prepend(const String& str);
 
 		const char* CStr() const;
@@ -50,4 +50,5 @@ class String {
 
 		String operator+(const String& str);
 		String& operator+=(const String& str);
+		String& operator+=(const char chr);
 };

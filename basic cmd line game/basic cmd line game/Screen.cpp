@@ -50,8 +50,8 @@ void Screen::rect(char text, int x, int y, int width, int height) {
     }
 }
 
-void Screen::text(std::string text, int x, int y) {
-    for (int i = 0; i < text.length(); i++) {
+void Screen::text(String text, int x, int y) {
+    for (int i = 0; i < text.Length(); i++) {
         input(text[i], x + i, y);
     }
 }
@@ -63,10 +63,10 @@ void Screen::print() {
             printout += screenMatrix[i][j];
         }
         if (i < height - 1) {
-            printout += "\n";
+            printout += '\n';
         }
     }
     printout += "\x1b[?25h";
-
-    printout.WriteToConsole();
+    
+    std::cout << printout.CStr();
 }

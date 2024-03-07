@@ -26,17 +26,11 @@ String::String(const char* textPtr) {
     }
 
     dataPtr = new char[length + 1];
-    for (int i = 0; i < length; i++) {
+    memcpy(dataPtr, textPtr, length);
+    /*for (int i = 0; i < length; i++) {
         *(dataPtr + i) = *(textPtr + i);
-    }
+    }*/
     *(dataPtr + length) = 0;
-}
-
-String::String(const char chr) {
-    length = 1;
-    dataPtr = new char[length + 1];
-    *dataPtr = chr;
-    *(dataPtr + 1) = 0;
 }
 
 //destructor clears memory at the address which the string's data is stored
@@ -86,16 +80,34 @@ String& String::Append(const String& str) {
     char* oldPtr = dataPtr;
     dataPtr = new char[length + str.Length() + 1];
 
-    for (int i = 0; i < length; i++) {
+    memcpy(dataPtr, oldPtr, length - 1);
+    /*for (int i = 0; i < length; i++) {
         *(dataPtr + i) = *(oldPtr + i);
-    }
+    }*/
     
-    for (int i = 0; i < str.Length(); i++) {
+    memcpy(dataPtr + length, str.CStr(), str.Length());
+    /*for (int i = 0; i < str.Length(); i++) {
         *(dataPtr + length + i) = *(str.CStr() + i);
-    }
+    }*/
 
     length += str.Length();
     *(dataPtr + length) = 0;
+    delete[] oldPtr;
+    return *this;
+}
+
+String& String::Append(const char chr) {
+    char* oldPtr = dataPtr;
+    length++;
+    dataPtr = new char[length + 1];
+
+    memcpy(dataPtr, oldPtr, length - 1);
+    /*for (int i = 0; i < length - 1; i++) {
+        *(dataPtr + i) = *(oldPtr + i);
+    }*/
+    *(dataPtr + length - 1) = chr;
+    *(dataPtr + length) = 0;
+
     delete[] oldPtr;
     return *this;
 }
@@ -330,5 +342,10 @@ String String::operator+(const String& str) {
 //appends rhs to lhs and returns lhs
 String& String::operator+=(const String& str) {
     Append(str);
+    return *this;
+}
+
+String& String::operator+=(const char chr) {
+    Append(chr);
     return *this;
 }

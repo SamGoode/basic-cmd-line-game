@@ -36,8 +36,8 @@ int main() {
 
     SetCurrentConsoleFontEx(hout, false, &cfi);
 
-    SHORT width = 250;
-    SHORT height = 70;
+    SHORT width = 200;
+    SHORT height = 50;
     SMALL_RECT dim = { 0, 0, width - 1, height - 1 };
 
     SetConsoleScreenBufferSize(hout, { width, height });
@@ -46,18 +46,32 @@ int main() {
     Screen screen = Screen(width, height);
 
     int x = 0;
-    int y = 0;
+    //int y = 0;
+
+    bool posx = true;
 
     while (true) {
         screen.reset();
 
-        screen.rect('a', x, y, 5, 5);
+        screen.rect('a', x, 10, 5, 5);
 
-        x++;
-        y++;
+        if (posx) {
+            x += 2;
+        }
+        else {
+            x -= 2;
+        }
+
+        if (x <= 0) {
+            posx = true;
+        }
+        else if (x + 4 >= width - 1) {
+            posx = false;
+        }
+        
 
         screen.print();
-
+        
         Sleep(1);
     }
 
