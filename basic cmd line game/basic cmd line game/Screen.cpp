@@ -51,8 +51,13 @@ void Screen::rect(char text, int x, int y, int width, int height) {
 }
 
 void Screen::text(String text, int x, int y) {
-    for (int i = 0; i < text.Length(); i++) {
-        input(text[i], x + i, y);
+    for (int i = 0, j = 0, k = 0; i < text.Length(); i++, j++) {
+        if (text[i] == '\n') {
+            j = -1;
+            k++;
+            continue;
+        }
+        input(text[i], x + j, y + k);
     }
 }
 

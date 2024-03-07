@@ -348,15 +348,17 @@ String& String::operator+=(const char chr) {
 }
 
 String toString(int x) {
+    String finalString;
+    
+    if (x == 0) {
+        finalString = "0";
+        return finalString;
+    }
+    
     int totalDigits = 0;
     for (int i = 0; x / (int)pow(10, i) > 0; i++) {
         totalDigits++;
     }
-    //123
-    //3 digits
-    //123/10^2 = 1
-    //123/10^1 = 2
-    //123/10^0 = 3
 
     char* digits = new char[totalDigits + 1];
     for (int i = 0; i < totalDigits; i++) {
@@ -364,7 +366,7 @@ String toString(int x) {
     }
     *(digits + totalDigits) = 0;
 
-    String finalString = digits;
+    finalString = digits;
     delete[] digits;
     return finalString;
 }

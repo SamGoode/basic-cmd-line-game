@@ -22,6 +22,10 @@ Player::Player(int x, int y) {
     inventory;
 }
 
+ItemList& Player::getInventory() {
+    return inventory;
+}
+
 Player& Player::addItem(Item newItem) {
     inventory.addItem(newItem);
 

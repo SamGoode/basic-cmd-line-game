@@ -14,5 +14,7 @@ class Player {
 
         Player(int x, int y);
 
+        ItemList& getInventory();
+
         Player& addItem(Item newItem);
 };
