@@ -8,9 +8,11 @@ class String {
 	public:
 		String();
 
-		String(const char* textPtr);
-
 		String(const String& str);
+		
+		String(const char* textPtr);
+		
+		String(const char chr);
 
 		~String();
 

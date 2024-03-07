@@ -3,9 +3,19 @@
 
 //default constructor
 String::String() {
+    length = 0;
     dataPtr = new char[1];
     *dataPtr = 0;
-    length = 0;
+}
+
+//constructs a copy string object of str
+String::String(const String& str) {
+    length = str.Length();
+    dataPtr = new char[length + 1];
+    for (int i = 0; i < length; i++) {
+        *(dataPtr + i) = *(str.CStr() + i);
+    }
+    *(dataPtr + length) = 0;
 }
 
 //constructs a string object that holds a copy of the data stored at textPtr
@@ -22,14 +32,11 @@ String::String(const char* textPtr) {
     *(dataPtr + length) = 0;
 }
 
-//constructs a copy string object of str
-String::String(const String& str) {
-    length = str.Length();
+String::String(const char chr) {
+    length = 1;
     dataPtr = new char[length + 1];
-    for (int i = 0; i < length; i++) {
-        *(dataPtr + i) = *(str.CStr() + i);
-    }
-    *(dataPtr + length) = 0;
+    *dataPtr = chr;
+    *(dataPtr + 1) = 0;
 }
 
 //destructor clears memory at the address which the string's data is stored

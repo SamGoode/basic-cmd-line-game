@@ -1,4 +1,6 @@
 #include <iostream>
+#include <windows.h>
+#include "Screen.h"
 #include "Player.h"
 #include "Room.h"
 
@@ -11,15 +13,53 @@ int main() {
     rooms[0][1] = Room("It's cold in here.", ItemList(2, new Item[2]{ Item("ice cube", "I'm a block of ice"), Item("gold coin", "I'm a golden circle") }));
     rooms[0][2] = Room("There's a wombat in here.");
     rooms[1][1] = Room("This is the room you started in.", ItemList());
+    rooms[1][0] = Room("It's a large room with training mannequins.", ItemList(1, new Item[1]{ Item("training mannequin", "It's a straw and cotton humanlike figure with slash marks") }));
     
     /*
     Current layout of rooms
 
         {sword room}  {cold room}   {wombat room}
-        {empty}       {start room}  {empty}
+        {mannequin room}       {start room}  {empty}
         {empty}       {empty}       {empty}
     
     */
+    
+    HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
+    
+    CONSOLE_FONT_INFOEX cfi;
+    cfi.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+    
+    GetCurrentConsoleFontEx(hout, false, &cfi);
+
+    cfi.dwFontSize.Y = 14;
+    cfi.dwFontSize.X = cfi.dwFontSize.Y / 2;
+
+    SetCurrentConsoleFontEx(hout, false, &cfi);
+
+    SHORT width = 250;
+    SHORT height = 70;
+    SMALL_RECT dim = { 0, 0, width - 1, height - 1 };
+
+    SetConsoleScreenBufferSize(hout, { width, height });
+    SetConsoleWindowInfo(hout, true, &dim);
+
+    Screen screen = Screen(width, height);
+
+    int x = 0;
+    int y = 0;
+
+    while (true) {
+        screen.reset();
+
+        screen.rect('a', x, y, 5, 5);
+
+        x++;
+        y++;
+
+        screen.print();
+
+        Sleep(1);
+    }
 
     String userInput;
 
