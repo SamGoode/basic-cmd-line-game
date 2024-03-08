@@ -3,6 +3,7 @@
 
 class Player {
     private:
+        int health;
         String spells[3];
         ItemList inventory;
 
@@ -14,7 +15,11 @@ class Player {
 
         Player(int x, int y);
 
+        int getHealth();
+
+        int addHealth(int amount);
+
         ItemList& getInventory();
 
-        Player& addItem(Item newItem);
+        Player& addItem(Item* newItem);
 };

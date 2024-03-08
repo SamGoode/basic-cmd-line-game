@@ -4,12 +4,12 @@
 class ItemList {
     private:
         size_t count;
-        Item* items;
+        Item** items;
 
     public:
         ItemList();
 
-        ItemList(size_t count, Item* items);
+        ItemList(size_t count, Item** items);
 
         ItemList(const ItemList& itemList);
 
@@ -17,9 +17,9 @@ class ItemList {
 
         ItemList& operator=(const ItemList& itemList);
 
-        Item& operator[](size_t index);
+        Item*& operator[](size_t index);
 
         size_t getCount();
 
-        ItemList& addItem(Item item);
+        ItemList& addItem(Item* item);
 };

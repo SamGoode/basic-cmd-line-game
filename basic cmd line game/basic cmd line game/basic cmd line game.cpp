@@ -3,6 +3,10 @@
 #include "Game.h"
 
 int main() {
+
+    //while (true) {
+    //    ItemList leak = ItemList(1, new Item*[1] { new Item("fancy sword", "I look fancy") });
+    //}
     /*
     Current layout of rooms
 

@@ -1,4 +1,5 @@
 #include "Item.h"
+#include "Player.h"
 
 Item::Item() {
     name = "???";
@@ -38,4 +39,25 @@ String& Item::getDescription() {
 
 const String& Item::getDescription() const {
     return description;
+}
+
+String Item::use(Player& player) {
+    return "I didn't do anything";
+}
+
+FoodItem::FoodItem() {
+    name = "???";
+    description = "???";
+    healAmount = 0;
+}
+
+FoodItem::FoodItem(String name, String description, int healAmount) {
+    this->name = name;
+    this->description = description;
+    this->healAmount = healAmount;
+}
+
+String FoodItem::use(Player& player) {
+    player.addHealth(healAmount);
+    return String("healed player for ") + toString(healAmount) + " hp";
 }

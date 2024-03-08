@@ -37,7 +37,7 @@ bool Room::doesExist() {
     return exists;
 }
 
-Room& Room::addItem(Item item) {
+Room& Room::addItem(Item* item) {
     items.addItem(item);
 
     return *this;
@@ -53,9 +53,9 @@ String Room::getDescription() {
 
     printOut += "\n\nballs:\n";
     for (int i = 0; i < items.getCount(); i++) {
-        printOut += items[i].getName();
+        printOut += items[i]->getName();
         printOut += " | ";
-        printOut += items[i].getDescription();
+        printOut += items[i]->getDescription();
         printOut += "\n";
     }
     printOut += "\n";

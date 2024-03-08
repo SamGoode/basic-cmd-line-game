@@ -20,7 +20,7 @@ class Room {
 
         bool doesExist();
 
-        Room& addItem(Item item);
+        Room& addItem(Item* item);
 
         String getDescription();
 };
