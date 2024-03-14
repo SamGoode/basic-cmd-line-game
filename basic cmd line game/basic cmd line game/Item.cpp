@@ -46,14 +46,14 @@ String Item::use(Player& player) {
 }
 
 FoodItem::FoodItem() {
-    name = "???";
-    description = "???";
+    this->getName() = "???";
+    this->getDescription() = "???";
     healAmount = 0;
 }
 
 FoodItem::FoodItem(String name, String description, int healAmount) {
-    this->name = name;
-    this->description = description;
+    this->getName() = name;
+    this->getDescription() = description;
     this->healAmount = healAmount;
 }
 

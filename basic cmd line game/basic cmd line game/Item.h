@@ -2,7 +2,7 @@
 #include "String.h"
 
 class Item {
-public:
+private:
     String name;
     String description;
     bool stacks;

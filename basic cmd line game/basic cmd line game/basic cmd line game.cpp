@@ -49,7 +49,7 @@ int main() {
 
     SMALL_RECT dim = { 0, 0, width - 1, height - 1 };
 
-    SetConsoleScreenBufferSize(hout, { width, 80 });
+    SetConsoleScreenBufferSize(hout, { width, height });
     SetConsoleWindowInfo(hout, true, &dim);
 
     Game game = Game(width, height);

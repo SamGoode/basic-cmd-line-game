@@ -22,4 +22,6 @@ class Player {
         ItemList& getInventory();
 
         //Player& addItem(Item* newItem);
+
+        String getDescription();
 };

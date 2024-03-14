@@ -5,11 +5,7 @@ Game::Game(int screenWidth, int screenHeight) {
     screen = Screen(screenWidth, screenHeight - 1);
 
     player = Player(1, 1);
-    player.getInventory().addItem(new Item("diamond", "wow shiny"), itemDatabase);
-    player.getInventory().addItem(new FoodItem("apple pie", "wow yummy", 30), itemDatabase);
-    player.getInventory().addItem(new Item("knife", "wow sharp"), itemDatabase);
-    player.getInventory().addItem(new Item("knife", "wow sharp"), itemDatabase);
-    player.getInventory().addItem(new Item("knife", "wow sharp"), itemDatabase);
+    player.getInventory() = ItemList(3, new Item*[3]{ new Item("diamond", "wow shiny"), new FoodItem("apple pie", "wow yummy", 30), new Item("knife", "wow sharp") }, itemDatabase);
     
     rooms[0][0] = Room("There's a sword stuck in a large boulder.", ItemList(1, new Item*[1]{ new Item("fancy sword", "I look fancy") }, itemDatabase));
     rooms[0][1] = Room("It's cold in here.", ItemList(2, new Item*[2]{ new Item("ice cube", "I'm a block of ice"), new Item("gold coin", "I'm a golden circle") }, itemDatabase));
@@ -32,11 +28,12 @@ void Game::drawRoom(char chr, int x, int y, int width, int height) {
 }
 
 void Game::showPlayerInfo(int x, int y) {
-    screen.text(String("Player stats:\n\nHealth: ") + toString(player.getHealth()) + "\n\nCoordinates: x:" + toString(player.x) + ", y : " + toString(player.y) + "\n\nInventory:\n" + toString(player.getInventory().getCount()) + " items", x, y);
-    for (int i = 0; i < player.getInventory().getCount(); i++) {
-        screen.text(player.getInventory()[i]->getName(), x, y + 7 + i * 3);
-        screen.text(player.getInventory()[i]->getDescription(), x + 2, y + 7 + i * 3 + 1);
-    }
+    //screen.text(String("Player stats:\n\nHealth: ") + toString(player.getHealth()) + "\n\nCoordinates: x:" + toString(player.x) + ", y : " + toString(player.y) + "\n\nInventory:\n" + toString(player.getInventory().getCount()) + " items", x, y);
+    //for (int i = 0; i < player.getInventory().getCount(); i++) {
+    //    screen.text(player.getInventory()[i]->getName(), x, y + 8 + i * 3);
+    //    screen.text(player.getInventory()[i]->getDescription(), x + 2, y + 8 + i * 3 + 1);
+    //}
+    screen.text(player.getDescription(), x, y);
 }
 
 void Game::showRoomInfo(int x, int y) {

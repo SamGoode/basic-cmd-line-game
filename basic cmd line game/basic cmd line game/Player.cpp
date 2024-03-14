@@ -44,3 +44,15 @@ ItemList& Player::getInventory() {
 //
 //    return *this;
 //}
+
+String Player::getDescription() {
+    String printout = "Player stats:\n\n";
+
+    printout += String("Health: ") + toString(health) + "\n\nCoordinates: x:" + toString(x) + ", y:" + toString(y) + "\n\nInventory:\n";
+
+    for (int i = 0; i < inventory.getCount(); i++) {
+        printout += inventory[i]->getName() + " | " + inventory[i]->getDescription() + "\n";
+    }
+
+    return printout;
+}
