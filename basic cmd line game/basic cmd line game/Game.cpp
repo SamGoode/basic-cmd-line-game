@@ -5,11 +5,11 @@ Game::Game(int screenWidth, int screenHeight) {
     screen = Screen(screenWidth, screenHeight - 1);
 
     player = Player(1, 1);
-    player.addItem(new Item("diamond", "wow shiny"));
+    /*player.addItem(new Item("diamond", "wow shiny"));
     player.addItem(new FoodItem("apple pie", "wow yummy", 30));
     player.addItem(new Item("knife", "wow sharp"));
     player.addItem(new Item("knife", "wow sharp"));
-    player.addItem(new Item("knife", "wow sharp"));
+    player.addItem(new Item("knife", "wow sharp"));*/
     
     rooms[0][0] = Room("There's a sword stuck in a large boulder.", ItemList(1, new Item*[1]{ new Item("fancy sword", "I look fancy") }));
     rooms[0][1] = Room("It's cold in here.", ItemList(2, new Item*[2]{ new Item("ice cube", "I'm a block of ice"), new Item("gold coin", "I'm a golden circle") }));

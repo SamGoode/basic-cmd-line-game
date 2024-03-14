@@ -4,9 +4,10 @@
 
 int main() {
 
-    //while (true) {
-    //    ItemList leak = ItemList(1, new Item*[1] { new Item("fancy sword", "I look fancy") });
-    //}
+    while (true) {
+        //ItemList leak = ItemList(2, new Item*[2] { new Item("fancy sword", "I look fancy"), new Item("gold coin", "I'm a golden circle") });
+        Game game = Game(220, 60);
+    }
     /*
     Current layout of rooms
 

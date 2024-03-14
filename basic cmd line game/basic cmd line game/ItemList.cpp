@@ -27,12 +27,10 @@ ItemList::~ItemList() {
     for (int i = 0; i < count; i++) {
         delete items[i];
     }
-
     delete[] items;
 }
 
 ItemList& ItemList::operator=(const ItemList& itemList) {
-    delete[] items;
     count = itemList.count;
     items = new Item*[itemList.count];
     for (int i = 0; i < itemList.count; i++) {
@@ -56,9 +54,14 @@ ItemList& ItemList::addItem(Item* item) {
     count++;
     items = new Item*[count];
     for (int i = 0; i < count - 1; i++) {
-        items[i] = oldPtr[i];
+        items[i] = new Item;
+        *items[i] = *oldPtr[i];
     }
+    //items[count - 1] = new Item;
     items[count - 1] = item;
+
+    //delete item;
+
     
     return *this;
 }
