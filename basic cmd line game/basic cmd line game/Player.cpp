@@ -39,8 +39,8 @@ ItemList& Player::getInventory() {
     return inventory;
 }
 
-Player& Player::addItem(Item* newItem) {
-    inventory.addItem(newItem);
-
-    return *this;
-}
+//Player& Player::addItem(Item* newItem) {
+//    inventory.addItem(newItem);
+//
+//    return *this;
+//}

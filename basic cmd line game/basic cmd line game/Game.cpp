@@ -5,17 +5,23 @@ Game::Game(int screenWidth, int screenHeight) {
     screen = Screen(screenWidth, screenHeight - 1);
 
     player = Player(1, 1);
-    /*player.addItem(new Item("diamond", "wow shiny"));
-    player.addItem(new FoodItem("apple pie", "wow yummy", 30));
-    player.addItem(new Item("knife", "wow sharp"));
-    player.addItem(new Item("knife", "wow sharp"));
-    player.addItem(new Item("knife", "wow sharp"));*/
+    player.getInventory().addItem(new Item("diamond", "wow shiny"), itemDatabase);
+    player.getInventory().addItem(new FoodItem("apple pie", "wow yummy", 30), itemDatabase);
+    player.getInventory().addItem(new Item("knife", "wow sharp"), itemDatabase);
+    player.getInventory().addItem(new Item("knife", "wow sharp"), itemDatabase);
+    player.getInventory().addItem(new Item("knife", "wow sharp"), itemDatabase);
     
-    rooms[0][0] = Room("There's a sword stuck in a large boulder.", ItemList(1, new Item*[1]{ new Item("fancy sword", "I look fancy") }));
-    rooms[0][1] = Room("It's cold in here.", ItemList(2, new Item*[2]{ new Item("ice cube", "I'm a block of ice"), new Item("gold coin", "I'm a golden circle") }));
+    rooms[0][0] = Room("There's a sword stuck in a large boulder.", ItemList(1, new Item*[1]{ new Item("fancy sword", "I look fancy") }, itemDatabase));
+    rooms[0][1] = Room("It's cold in here.", ItemList(2, new Item*[2]{ new Item("ice cube", "I'm a block of ice"), new Item("gold coin", "I'm a golden circle") }, itemDatabase));
     rooms[0][2] = Room("There's a wombat in here.");
     rooms[1][1] = Room("This is the room you started in.");
-    rooms[1][0] = Room("It's a large room with training mannequins.", ItemList(1, new Item*[1]{ new Item("training mannequin", "It's a straw and cotton humanlike figure with slash marks") }));
+    rooms[1][0] = Room("It's a large room with training mannequins.", ItemList(1, new Item*[1]{ new Item("training mannequin", "It's a straw and cotton humanlike figure with slash marks") }, itemDatabase));
+}
+
+Game::~Game() {
+    for (int i = 0; i < itemDatabase.getCount(); i++) {
+        delete itemDatabase[i];
+    }
 }
 
 void Game::drawRoom(char chr, int x, int y, int width, int height) {
@@ -60,10 +66,9 @@ void Game::inputLine() {
 }
 
 void Game::processInput() {
+    response = "";
     if (userInput.ToLower() == "eat") {
-        response = player.getInventory()[1]->use(player) + " | " + player.getInventory()[1]->getName() + "  " + typeid(player.getInventory()[1]).name();
-        //FoodItem tempFood = FoodItem("poison", "don't eat me", 10);
-        //response = tempFood.use(player) + " | " + tempFood.getName() + " " + typeid(tempFood).name();;
+        response = player.getInventory()[1]->use(player) + " | " + player.getInventory()[1]->getName() + "  " + typeid(*player.getInventory()[1]).name();
     }
     else if (userInput.ToLower() == "north") {
         if (!rooms[player.y - 1][player.x].doesExist() || player.y == 0) {

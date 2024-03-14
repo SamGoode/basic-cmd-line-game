@@ -8,11 +8,14 @@ class Game {
         Screen screen;
         Player player;
         Room rooms[3][3];
+        ItemList itemDatabase;
         String userInput;
         String response;
 
     public:
         Game(int screenWidth, int screenHeight);
+
+        ~Game();
 
         void drawRoom(char chr, int x, int y, int width, int height);
 

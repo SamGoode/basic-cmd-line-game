@@ -1,5 +1,4 @@
 #include "String.h"
-#include <iostream>
 
 //default constructor
 String::String() {
@@ -37,13 +36,13 @@ String::~String() {
     delete[] dataPtr;
 }
 
-//returns length of string object excluding the null terminator in the form of size_t
-size_t String::Length() const {
+//returns length of string object excluding the null terminator in the form of int
+int String::Length() const {
 	return length;
 }
 
 //returns a reference to the character stored at index within the string object
-char& String::CharacterAt(size_t index) {
+char& String::CharacterAt(int index) {
     if (index > length) {
         return *(dataPtr + length); //returns null terminator
     }
@@ -51,7 +50,7 @@ char& String::CharacterAt(size_t index) {
     return *(dataPtr + index);
 }
 
-const char& String::CharacterAt(size_t index) const {
+const char& String::CharacterAt(int index) const {
     if (index > length) {
         return *(dataPtr + length); //returns null terminator
     }
@@ -156,7 +155,7 @@ String& String::ToUpper() {
 }
 
 //finds first occurrence of str in string and object and returns the index of where it's found (returns -1 if can't be found)
-size_t String::Find(const String& str) {
+int String::Find(const String& str) {
     if (length < str.Length()) {
         return -1;
     }
@@ -181,12 +180,12 @@ size_t String::Find(const String& str) {
 }
 
 //find method, but starts seach at startIndex
-size_t String::Find(size_t startIndex, const String& str) {
+int String::Find(int startIndex, const String& str) {
     if (length - startIndex < str.Length()) {
         return -1;
     }
 
-    for (size_t i = startIndex; i < length; i++) {
+    for (int i = startIndex; i < length; i++) {
         if (length - i < str.Length()) {
             break;
         }
@@ -215,7 +214,7 @@ String& String::Replace(const String& find, const String& replace) {
     dataPtr = new char[0];
     length = 0;
 
-    for (size_t i = 0; i < oldStr.Length(); i++) {
+    for (int i = 0; i < oldStr.Length(); i++) {
         if (i == oldStr.Find(i, find)) {
             Append(replace);
             i += find.Length() - 1;
@@ -282,11 +281,11 @@ String& String::operator=(const String& str) {
 }
 
 //finds character stored in string object at index (e.g obj[i] returns character stored at i)
-char& String::operator[](size_t index) {
+char& String::operator[](int index) {
     return CharacterAt(index);
 }
 
-const char& String::operator[](size_t index) const {
+const char& String::operator[](int index) const {
     return CharacterAt(index);
 }
 
@@ -369,4 +368,8 @@ String toString(int x) {
     finalString = digits;
     delete[] digits;
     return finalString;
+}
+
+std::ostream& operator<<(std::ostream& out, const String& str) {
+    return out << str.CStr();
 }

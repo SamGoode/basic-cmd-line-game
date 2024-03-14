@@ -1,10 +1,10 @@
 #pragma once
-#include <cstddef>
+#include <iostream>
 
 class String {
 	private:
 		char* dataPtr;
-		size_t length;
+		int length;
 
 	public:
 		String();
@@ -15,9 +15,9 @@ class String {
 
 		~String();
 
-		size_t Length() const;
-		char& CharacterAt(size_t index);
-		const char& CharacterAt(size_t index) const;
+		int Length() const;
+		char& CharacterAt(int index);
+		const char& CharacterAt(int index) const;
 
 		bool EqualTo(const String& str) const;
 
@@ -30,8 +30,8 @@ class String {
 		String& ToLower();
 		String& ToUpper();
 
-		size_t Find(const String& str);
-		size_t Find(size_t startIndex, const String& str);
+		int Find(const String& str);
+		int Find(int startIndex, const String& str);
 
 		String& Replace(const String& find, const String& replace);
 
@@ -43,8 +43,8 @@ class String {
 
 		String& operator=(const String& str);
 
-		char& operator[](size_t _index);
-		const char& operator[](size_t _index) const;
+		char& operator[](int _index);
+		const char& operator[](int _index) const;
 
 		bool operator<(const String& str);
 
@@ -54,3 +54,5 @@ class String {
 };
 
 String toString(int x);
+
+std::ostream& operator<<(std::ostream& out, const String& str);

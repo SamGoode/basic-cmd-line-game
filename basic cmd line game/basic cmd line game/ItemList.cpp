@@ -1,15 +1,17 @@
 #include "ItemList.h"
+#include <stdexcept>
 
 ItemList::ItemList() {
     count = 0;
     items = nullptr;
 }
 
-ItemList::ItemList(size_t count, Item** items) {
+ItemList::ItemList(int count, Item** items, ItemList& itemDatabase) {
     this->count = count;
     this->items = new Item*[count];
     for (int i = 0; i < count; i++) {
         this->items[i] = items[i];
+        itemDatabase.addItem(items[i]);
     }
 
     delete[] items;
@@ -24,13 +26,11 @@ ItemList::ItemList(const ItemList& itemList) {
 }
 
 ItemList::~ItemList() {
-    for (int i = 0; i < count; i++) {
-        delete items[i];
-    }
     delete[] items;
 }
 
 ItemList& ItemList::operator=(const ItemList& itemList) {
+    delete[] items;
     count = itemList.count;
     items = new Item*[itemList.count];
     for (int i = 0; i < itemList.count; i++) {
@@ -40,11 +40,15 @@ ItemList& ItemList::operator=(const ItemList& itemList) {
     return *this;
 }
 
-Item*& ItemList::operator[](size_t index) {
+Item*& ItemList::operator[](int index) {
+    if (index < 0 || index >= count) {
+        throw std::out_of_range("ItemList array out of bounds");
+    }
+
     return items[index];
 }
 
-size_t ItemList::getCount() {
+int ItemList::getCount() {
     return count;
 }
 
@@ -54,14 +58,18 @@ ItemList& ItemList::addItem(Item* item) {
     count++;
     items = new Item*[count];
     for (int i = 0; i < count - 1; i++) {
-        items[i] = new Item;
-        *items[i] = *oldPtr[i];
+        items[i] = oldPtr[i];
     }
-    //items[count - 1] = new Item;
     items[count - 1] = item;
 
-    //delete item;
-
+    delete[] oldPtr;
     
+    return *this;
+}
+
+ItemList& ItemList::addItem(Item* item, ItemList& itemDatabase) {
+    addItem(item);
+    itemDatabase.addItem(item);
+
     return *this;
 }

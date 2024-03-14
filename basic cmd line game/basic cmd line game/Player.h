@@ -21,5 +21,5 @@ class Player {
 
         ItemList& getInventory();
 
-        Player& addItem(Item* newItem);
+        //Player& addItem(Item* newItem);
 };
