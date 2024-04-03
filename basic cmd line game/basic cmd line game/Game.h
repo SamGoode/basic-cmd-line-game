@@ -7,8 +7,9 @@ class Game {
     private:
         Screen screen;
         Player player;
-        Room rooms[3][3];
+        Room rooms[5][5];
         ItemList itemDatabase;
+        int inputState;
         String userInput;
         String response;
 
