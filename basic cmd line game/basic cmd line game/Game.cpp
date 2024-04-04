@@ -97,7 +97,7 @@ void Game::processInput() {
                 player.y--;
             }
             else if (userInput.ToLower() == "east") {
-                if (!rooms[player.y][player.x + 1].doesExist() || player.x == 2) {
+                if (!rooms[player.y][player.x + 1].doesExist() || player.x == 4) {
                     response = "room doesn't exist.";
                     return;
                 }
@@ -106,7 +106,7 @@ void Game::processInput() {
                 player.x++;
             }
             else if (userInput.ToLower() == "south") {
-                if (!rooms[player.y + 1][player.x].doesExist() || player.y == 2) {
+                if (!rooms[player.y + 1][player.x].doesExist() || player.y == 4) {
                     response = "room doesn't exist.";
                     return;
                 }
