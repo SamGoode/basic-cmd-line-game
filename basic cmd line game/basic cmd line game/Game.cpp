@@ -8,12 +8,18 @@ Game::Game(int screenWidth, int screenHeight) {
     player.getInventory() = ItemList(3, new Item*[3]{ new Item("diamond", "wow shiny"), new FoodItem("apple pie", "wow yummy", 30), new Item("knife", "wow sharp") }, itemDatabase);
     
     rooms[0][2] = Room("Boss room");
+    rooms[1][0] = Room("This room is undergoing construction.");
     rooms[1][3] = Room("It's cold in here.", ItemList(2, new Item*[2]{ new Item("ice cube", "I'm a block of ice"), new Item("gold coin", "I'm a golden circle") }, itemDatabase));
+    rooms[2][0] = Room("This room is undergoing construction.");
+    rooms[2][1] = Room("This room is undergoing construction.");
     rooms[2][2] = Room("This is the room you started in.");
     rooms[2][3] = Room("It's dark in here");
-    rooms[3][1] = Room("There's a sword stuck in a large boulder.", ItemList(1, new Item*[1]{ new Item("fancy sword", "I look fancy") }, itemDatabase));
+    rooms[2][4] = Room("This room is undergoing construction.");
+    rooms[3][0] = Room("This room is undergoing construction.");
+    rooms[3][2] = Room("There's a sword stuck in a large boulder.", ItemList(1, new Item*[1]{ new Item("fancy sword", "I look fancy") }, itemDatabase));
+    rooms[3][4] = Room("This room is undergoing construction.");
+    rooms[4][2] = Room("There's a wombat in here.");
     rooms[4][1] = Room("It's a large room with training mannequins.", ItemList(1, new Item*[1]{ new Item("training mannequin", "It's a straw and cotton humanlike figure with slash marks") }, itemDatabase));
-    rooms[3][2] = Room("There's a wombat in here.");
 
     inputState = 0;
 }
@@ -43,7 +49,7 @@ void Game::showMap(int x, int y) {
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++) {
             if (rooms[i][j].doesExist()) {
-                drawRoom('x', x - 4 + 13*(j - 2), y - 4 + 9 * (i - 2), 8, 6);
+                drawRoom('x', x - 4 + 12*(j - 2), y - 4 + 9*(i - 2), 8, 6);
                 //screen.rect(' ', x - 5 - 13 + 13 * j, y - 1 - 11 + 11 * i, 2, 2);
             }
         }
