@@ -6,6 +6,7 @@ class Player {
         int health;
         String spells[3];
         ItemList inventory;
+        int currentInvIndex;
 
     public:
         int x;
@@ -19,9 +20,13 @@ class Player {
 
         int addHealth(int amount);
 
+        String getDescription();
+
         ItemList& getInventory();
 
         //Player& addItem(Item* newItem);
 
-        String getDescription();
+        Item*& getItem();
+
+        String useItem();
 };

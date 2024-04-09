@@ -54,13 +54,13 @@ void Game::showMap(int x, int y) {
             }
         }
     }
-    screen.rect('=', x - 1 + 13*(player.x - 2), y - 2 + 9*(player.y - 2), 2, 2);
+    screen.rect('=', x - 1 + 12*(player.x - 2), y - 2 + 9*(player.y - 2), 2, 2);
 }
 
 void Game::showCommandLine(int x, int y) {
     switch (inputState) {
         case 0:
-            screen.text("Choose an action 'move', 'eat', 'fight'", x, y);
+            screen.text("Choose an action 'move', 'use', 'fight'", x, y);
             break;
         case 1:
             screen.text("Move 'north', 'east', 'south', 'west', or go 'back'", x, y);
@@ -82,8 +82,8 @@ void Game::processInput() {
             if (userInput.ToLower() == "move") {
                 inputState = 1;
             }
-            else if (userInput.ToLower() == "eat") {
-                response = "this doesn't work yet";//player.getInventory()[1]->use(player) + " | " + player.getInventory()[1]->getName() + "  " + typeid(*player.getInventory()[1]).name();
+            else if (userInput.ToLower() == "use") {
+                response = player.useItem() + " | " + player.getItem()->getName() + "  " + typeid(*player.getItem()).name();
             }
             else if (userInput.ToLower() == "fight") {
                 response = "this doesn't work yet";

@@ -11,6 +11,7 @@ Player::Player() {
     spells[2] = "eatshit";
 
     inventory;
+    currentInvIndex = 0;
 }
 
 Player::Player(int x, int y) {
@@ -24,6 +25,7 @@ Player::Player(int x, int y) {
     spells[2] = "eatshit";
 
     inventory;
+    currentInvIndex = 0;
 }
 
 int Player::getHealth() {
@@ -33,6 +35,21 @@ int Player::getHealth() {
 int Player::addHealth(int amount) {
     health += amount;
     return health;
+}
+
+String Player::getDescription() {
+    String printout = "Player stats:\n\n";
+
+    printout += String("Health: ") + toString(health) + "\n\nCoordinates: x:" + toString(x) + ", y:" + toString(y) + "\n\nInventory:\n";
+
+    for (int i = 0; i < inventory.getCount(); i++) {
+        if (i == currentInvIndex) {
+            printout += ">>";
+        }
+        printout += inventory[i]->getName() + " | " + inventory[i]->getDescription() + "\n";
+    }
+
+    return printout;
 }
 
 ItemList& Player::getInventory() {
@@ -45,14 +62,10 @@ ItemList& Player::getInventory() {
 //    return *this;
 //}
 
-String Player::getDescription() {
-    String printout = "Player stats:\n\n";
+Item*& Player::getItem() {
+    return inventory[currentInvIndex];
+}
 
-    printout += String("Health: ") + toString(health) + "\n\nCoordinates: x:" + toString(x) + ", y:" + toString(y) + "\n\nInventory:\n";
-
-    for (int i = 0; i < inventory.getCount(); i++) {
-        printout += inventory[i]->getName() + " | " + inventory[i]->getDescription() + "\n";
-    }
-
-    return printout;
+String Player::useItem() {
+    return getItem()->use(*this);
 }
