@@ -327,14 +327,6 @@ bool String::operator<(const String& str) {
     return true;
 }
 
-
-//returns a separate string object which stores the data of lhs + rhs
-String String::operator+(const String& str) {
-    String newStr = this->CStr();
-    newStr.Append(str);
-    return newStr;
-}
-
 //appends rhs to lhs and returns lhs
 String& String::operator+=(const String& str) {
     Append(str);
@@ -348,26 +340,35 @@ String& String::operator+=(const char chr) {
 
 String toString(int x) {
     String finalString;
-    
-    if (x == 0) {
-        finalString = "0";
-        return finalString;
+
+    if (x < 0) {
+        finalString = "-";
+        x = x * -1;
     }
     
-    int totalDigits = 0;
-    for (int i = 0; x / (int)pow(10, i) > 0; i++) {
+    int totalDigits = 1;
+    for (int i = 1; x / (int)pow(10, i) > 0; i++) {
         totalDigits++;
     }
 
+    char a = 48; //'0'
+
     char* digits = new char[totalDigits + 1];
     for (int i = 0; i < totalDigits; i++) {
-        digits[i] = (x / (int)pow(10, totalDigits - i - 1)) % 10 + 48;
+        digits[i] = ((x / (int)pow(10, totalDigits - i - 1)) % 10) + 48;
     }
     *(digits + totalDigits) = 0;
 
-    finalString = digits;
+    finalString += digits;
     delete[] digits;
     return finalString;
+}
+
+//returns a separate string object which stores the data of lhs + rhs
+String operator+(const String& lhs, const String& rhs) {
+    String newStr = lhs.CStr();
+    newStr.Append(rhs);
+    return newStr;
 }
 
 std::ostream& operator<<(std::ostream& out, const String& str) {

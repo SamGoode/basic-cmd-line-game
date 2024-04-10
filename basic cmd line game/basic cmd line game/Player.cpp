@@ -25,7 +25,7 @@ Player::Player(int x, int y) {
     spells[2] = "eatshit";
 
     inventory;
-    currentInvIndex = 0;
+    currentInvIndex = 1;
 }
 
 int Player::getHealth() {
@@ -40,7 +40,8 @@ int Player::addHealth(int amount) {
 String Player::getDescription() {
     String printout = "Player stats:\n\n";
 
-    printout += String("Health: ") + toString(health) + "\n\nCoordinates: x:" + toString(x) + ", y:" + toString(y) + "\n\nInventory:\n";
+    //offset printed coordinates so centre room (starting room) is at 0, 0
+    printout += "Health: " + toString(health) + "\n\nCoordinates: x:" + toString(x-2) + ", y:" + toString(y-2) + "\n\nInventory:\n";
 
     for (int i = 0; i < inventory.getCount(); i++) {
         if (i == currentInvIndex) {
@@ -56,11 +57,20 @@ ItemList& Player::getInventory() {
     return inventory;
 }
 
-//Player& Player::addItem(Item* newItem) {
-//    inventory.addItem(newItem);
-//
-//    return *this;
-//}
+void Player::setInvIndex(int newIndex) {
+    if (newIndex < 0) {
+        newIndex = 0;
+    }
+    else if (newIndex > inventory.getCount() - 1) {
+        newIndex = inventory.getCount() - 1;
+    }
+    
+    currentInvIndex = newIndex;
+}
+
+void Player::shiftInvIndex(int shift) {
+    setInvIndex(currentInvIndex + shift);
+}
 
 Item*& Player::getItem() {
     return inventory[currentInvIndex];

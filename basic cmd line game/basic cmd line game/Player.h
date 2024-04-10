@@ -11,7 +11,8 @@ class Player {
     public:
         int x;
         int y;
-
+    
+    public:
         Player();
 
         Player(int x, int y);
@@ -24,7 +25,9 @@ class Player {
 
         ItemList& getInventory();
 
-        //Player& addItem(Item* newItem);
+        void setInvIndex(int newIndex);
+
+        void shiftInvIndex(int shift);
 
         Item*& getItem();
 

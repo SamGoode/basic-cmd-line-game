@@ -48,11 +48,12 @@ class String {
 
 		bool operator<(const String& str);
 
-		String operator+(const String& str);
 		String& operator+=(const String& str);
 		String& operator+=(const char chr);
 };
 
 String toString(int x);
+
+String operator+(const String& lhs, const String& rhs);
 
 std::ostream& operator<<(std::ostream& out, const String& str);

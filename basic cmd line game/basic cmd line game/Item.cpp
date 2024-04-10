@@ -59,5 +59,5 @@ FoodItem::FoodItem(String name, String description, int healAmount) {
 
 String FoodItem::use(Player& player) {
     player.addHealth(healAmount);
-    return String("healed player for ") + toString(healAmount) + " hp";
+    return "healed player for " + toString(healAmount) + " hp";
 }

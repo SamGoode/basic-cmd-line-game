@@ -44,7 +44,7 @@ Room& Room::addItem(Item* item) {
 }
 
 String Room::getDescription() {
-    String printOut = description;
+    String printOut = "Room:\n\n" + description;
 
     if (items.getCount() == 0) {
         printOut += "\n\n";

@@ -38,7 +38,11 @@ void Game::drawRoom(char chr, int x, int y, int width, int height) {
 }
 
 void Game::showPlayerInfo(int x, int y) {
-    screen.text(player.getDescription(), x, y);
+    screen.rect('_', x+1, y, 26, 1);
+    screen.rect('|', x, y+1, 1, 14);
+    screen.rect('|', x+27, y+1, 1, 14);
+    screen.rect('_', x+1, y+14, 26, 1);
+    screen.text(player.getDescription(), x+2, y+2);
 }
 
 void Game::showRoomInfo(int x, int y) {
@@ -60,14 +64,19 @@ void Game::showMap(int x, int y) {
 void Game::showCommandLine(int x, int y) {
     switch (inputState) {
         case 0:
-            screen.text("Choose an action 'move', 'use', 'fight'", x, y);
+            screen.text("[move] [inventory] [fight]", x, y);
             break;
         case 1:
-            screen.text("Move 'north', 'east', 'south', 'west', or go 'back'", x, y);
+            screen.text("       [north]\n\n[west]   Move   [east]\n\n       [south]", x, y-4);
+            screen.text("[back]", x, y + 2);
+            break;
+        case 2:
+            screen.text("[use] or scroll [up] [down]", x, y);
+            screen.text("[back]", x , y + 2);
             break;
     }
 
-    screen.text(response, x, y + 2);
+    screen.text(response, x, y + 5);
 }
 
 void Game::inputLine() {
@@ -82,8 +91,8 @@ void Game::processInput() {
             if (userInput.ToLower() == "move") {
                 inputState = 1;
             }
-            else if (userInput.ToLower() == "use") {
-                response = player.useItem() + " | " + player.getItem()->getName() + "  " + typeid(*player.getItem()).name();
+            else if (userInput.ToLower() == "inventory") {
+                inputState = 2;
             }
             else if (userInput.ToLower() == "fight") {
                 response = "this doesn't work yet";
@@ -138,19 +147,36 @@ void Game::processInput() {
                 response = "invalid input";
             }
             break;
+        case 2:
+            if (userInput.ToLower() == "use") {
+                response = player.useItem() + " | " + player.getItem()->getName() + "  " + "Debug: " + typeid(*player.getItem()).name();
+            }
+            else if (userInput.ToLower() == "up") {
+                player.shiftInvIndex(-1);
+            }
+            else if (userInput.ToLower() == "down") {
+                player.shiftInvIndex(1);
+            }
+            else if (userInput.ToLower() == "back") {
+                inputState = 0;
+            }
+            else {
+                response = "invalid input";
+            }
+            break;
     }
 }
 
 void Game::run() {
     screen.reset();
 
-    showPlayerInfo(10, 3);
+    showPlayerInfo(4, 1);
 
     showRoomInfo(screen.width - 50, 3);
 
     showMap(screen.width / 2, screen.height / 2);
 
-    showCommandLine(5, screen.height - 5);
+    showCommandLine(5, screen.height - 7);
 
     screen.print();
 
