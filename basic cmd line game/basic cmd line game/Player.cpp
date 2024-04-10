@@ -25,7 +25,7 @@ Player::Player(int x, int y) {
     spells[2] = "eatshit";
 
     inventory;
-    currentInvIndex = 1;
+    currentInvIndex = 0;
 }
 
 int Player::getHealth() {
@@ -45,9 +45,13 @@ String Player::getDescription() {
 
     for (int i = 0; i < inventory.getCount(); i++) {
         if (i == currentInvIndex) {
-            printout += ">>";
+            printout += 175;
         }
-        printout += inventory[i]->getName() + " | " + inventory[i]->getDescription() + "\n";
+        printout += inventory[i]->getName() + " | " + inventory[i]->getDescription();
+        if (i == currentInvIndex) {
+            printout += 174;
+        }
+        printout += "\n";
     }
 
     return printout;

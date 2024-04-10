@@ -2,7 +2,7 @@
 #include <iostream>
 
 Game::Game(int screenWidth, int screenHeight) {
-    screen = Screen(screenWidth, screenHeight - 1);
+    screen = Screen(screenWidth, screenHeight);
 
     player = Player(2, 2);
     player.getInventory() = ItemList(3, new Item*[3]{ new Item("diamond", "wow shiny"), new FoodItem("apple pie", "wow yummy", 30), new Item("knife", "wow sharp") }, itemDatabase);
@@ -31,56 +31,80 @@ Game::~Game() {
 }
 
 void Game::drawRoom(char chr, int x, int y, int width, int height) {
-    screen.rect(chr, x, y - 1, width, 2);
-    screen.rect(chr, x - 1, y, 2, height);
-    screen.rect(chr, x, y + height - 1, width, 2);
-    screen.rect(chr, x + width - 1, y, 2, height);
+    screen.rect(chr, x, y, width, 1);
+    screen.rect(chr, x, y + height - 1, width, 1);
+    screen.rect(chr, x, y + 1, 2, height - 2);
+    screen.rect(chr, x + width - 2, y + 1, 2, height - 2);
+}
+
+void Game::drawPlayer(int x, int y) {
+    screen.text("(O0)\n/|\\\\", x, y);
+}
+
+void Game::drawBorder(int x, int y, int width, int height) {
+    screen.input(201, x, y);
+    screen.input(200, x, y+height+1);
+    screen.input(187, x+width+1, y);
+    screen.input(188, x+width+1, y+height+1);
+
+    screen.rect(205, x + 1, y, width, 1);
+    screen.rect(205, x + 1, y + height + 1, width, 1);
+    screen.rect(186, x, y + 1, 1, height);
+    screen.rect(186, x + width + 1, y + 1, 1, height);
 }
 
 void Game::showPlayerInfo(int x, int y) {
-    screen.rect('_', x+1, y, 26, 1);
-    screen.rect('|', x, y+1, 1, 14);
-    screen.rect('|', x+27, y+1, 1, 14);
-    screen.rect('_', x+1, y+14, 26, 1);
+    drawBorder(x, y, 26, 14);
+
     screen.text(player.getDescription(), x+2, y+2);
 }
 
 void Game::showRoomInfo(int x, int y) {
-    screen.text(rooms[player.y][player.x].getDescription(), x, y);
+    drawBorder(x, y, 35, 10);
+
+    screen.text(rooms[player.y][player.x].getDescription(), x+2, y+2);
 }
 
 void Game::showMap(int x, int y) {
+    drawBorder(x - 40, y - 21, 78, 38);
+
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++) {
             if (rooms[i][j].doesExist()) {
-                drawRoom('x', x - 4 + 12*(j - 2), y - 4 + 9*(i - 2), 8, 6);
-                //screen.rect(' ', x - 5 - 13 + 13 * j, y - 1 - 11 + 11 * i, 2, 2);
+                drawRoom(177, x - 6 + 14 * (j - 2), y - 4 + 7 * (i - 2), 12, 6);
+                //177screen.rect(' ', x - 5 - 13 + 13 * j, y - 1 - 11 + 11 * i, 2, 2);
             }
         }
     }
-    screen.rect('=', x - 1 + 12*(player.x - 2), y - 2 + 9*(player.y - 2), 2, 2);
+
+    drawPlayer(x - 2 + 14 * (player.x - 2), y - 2 + 7 * (player.y - 2));
 }
 
 void Game::showCommandLine(int x, int y) {
+    drawBorder(x, y, 40, 13);
+
     switch (inputState) {
         case 0:
-            screen.text("[move] [inventory] [fight]", x, y);
+            screen.text("[move] [inventory] [fight]", x+2, y+3);
             break;
         case 1:
-            screen.text("       [north]\n\n[west]   Move   [east]\n\n       [south]", x, y-4);
-            screen.text("[back]", x, y + 2);
+            screen.text("       [north]\n\n[west]  Move   [east]\n\n       [south]", x+4, y+3);
+            screen.text("[back] |\n_______|", x+1, y + 1);
+            
             break;
         case 2:
-            screen.text("[use] or scroll [up] [down]", x, y);
-            screen.text("[back]", x , y + 2);
+            screen.text("[use] or scroll [up] [down]", x+2, y+4);
+            screen.text("[back]", x+2, y + 6);
             break;
     }
 
-    screen.text(response, x, y + 5);
+    screen.text(response, x+2, y + 11);
+
+    screen.input(175, x + 1, y + 13);
 }
 
-void Game::inputLine() {
-    std::cout << std::endl << "     ";
+void Game::inputLine(int x, int y) {
+    std::cout << "\x1b[" + toString(y+1) + ";" + toString(x+1) + "H";
     userInput.ReadFromConsole();
 }
 
@@ -176,11 +200,11 @@ void Game::run() {
 
     showMap(screen.width / 2, screen.height / 2);
 
-    showCommandLine(5, screen.height - 7);
+    showCommandLine(5, screen.height - 15);
 
     screen.print();
 
-    inputLine();
+    inputLine(7, screen.height - 2);
 
     processInput();
 }

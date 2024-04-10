@@ -19,6 +19,10 @@ class Game {
         ~Game();
 
         void drawRoom(char chr, int x, int y, int width, int height);
+        
+        void drawPlayer(int x, int y);
+
+        void drawBorder(int x, int y, int width, int height);
 
         void showPlayerInfo(int x, int y);
 
@@ -28,7 +32,7 @@ class Game {
 
         void showCommandLine(int x, int y);
 
-        void inputLine();
+        void inputLine(int x, int y);
 
         void processInput();
 
