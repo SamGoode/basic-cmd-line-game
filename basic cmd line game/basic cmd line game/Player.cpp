@@ -54,6 +54,11 @@ String Player::getDescription() {
         printout += "\n";
     }
 
+    printout += "\nSpellbook:\n";
+    for (int i = 0; i < 3; i++) {
+        printout += spells[i] + "\n";
+    }
+
     return printout;
 }
 

@@ -19,7 +19,7 @@ Game::Game(int screenWidth, int screenHeight) {
     rooms[3][2] = Room("There's a sword stuck in a large boulder.", ItemList(1, new Item*[1]{ new Item("fancy sword", "I look fancy") }, itemDatabase));
     rooms[3][4] = Room("This room is undergoing construction.");
     rooms[4][2] = Room("There's a wombat in here.");
-    rooms[4][1] = Room("It's a large room with training mannequins.", ItemList(1, new Item*[1]{ new Item("training mannequin", "It's a straw and cotton humanlike figure with slash marks") }, itemDatabase));
+    rooms[4][1] = Room("It's a large room with training mannequins.", ItemList(1, new Item*[1]{ new Item("training dummy", "It's covered in slash marks") }, itemDatabase));
 
     inputState = 0;
 }
@@ -54,19 +54,22 @@ void Game::drawBorder(int x, int y, int width, int height) {
 }
 
 void Game::showPlayerInfo(int x, int y) {
-    drawBorder(x, y, 26, 14);
+    drawBorder(x, y, 40, 20);
+    
+    drawBorder(x + 31, y + 1, 6, 2);
+    drawPlayer(x + 33, y + 2);
 
-    screen.text(player.getDescription(), x+2, y+2);
+    screen.text(player.getDescription(), x+3, y+2);
 }
 
 void Game::showRoomInfo(int x, int y) {
-    drawBorder(x, y, 35, 10);
+    drawBorder(x, y, 76, 15);
 
-    screen.text(rooms[player.y][player.x].getDescription(), x+2, y+2);
+    screen.text(rooms[player.y][player.x].getDescription(), x+3, y+2);
 }
 
 void Game::showMap(int x, int y) {
-    drawBorder(x - 40, y - 21, 78, 38);
+    drawBorder(x - 39, y - 21, 76, 38);
 
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++) {
@@ -81,26 +84,39 @@ void Game::showMap(int x, int y) {
 }
 
 void Game::showCommandLine(int x, int y) {
-    drawBorder(x, y, 40, 13);
+    drawBorder(x, y, 40, 20);
 
     switch (inputState) {
         case 0:
-            screen.text("[move] [inventory] [fight]", x+2, y+3);
+            screen.text("[move]   [inventory]   [fight]", x+6, y+10);
             break;
         case 1:
-            screen.text("       [north]\n\n[west]  Move   [east]\n\n       [south]", x+4, y+3);
-            screen.text("[back] |\n_______|", x+1, y + 1);
+            screen.text("       [north]\n\n          ^\n[west]  < + >  [east]\n          v\n\n       [south]", x + 10, y + 6);
+            screen.text(" [back] ", x + 1, y + 1);
             
+            screen.rect(196, x + 1, y + 2, 8, 1);
+            screen.rect(179, x + 9, y + 1, 1, 1);
+
+            screen.input(209, x + 9, y);
+            screen.input(199, x, y + 2);
+            screen.input(217, x + 9, y + 2);
             break;
         case 2:
-            screen.text("[use] or scroll [up] [down]", x+2, y+4);
-            screen.text("[back]", x+2, y + 6);
+            screen.text("[use] current selected item\n\nor\n\nselect different item by\n\nscrolling [up] [down]\n\n[select]ing based on order", x+6, y+5);
+            screen.text(" [back] ", x + 1, y + 1);
+
+            screen.rect(196, x + 1, y + 2, 8, 1);
+            screen.rect(179, x + 9, y + 1, 1, 1);
+
+            screen.input(209, x + 9, y);
+            screen.input(199, x, y + 2);
+            screen.input(217, x + 9, y + 2);
             break;
     }
 
-    screen.text(response, x+2, y + 11);
+    screen.text(response, x+4, y + 17);
 
-    screen.input(175, x + 1, y + 13);
+    screen.input(175, x + 2, y + 19);
 }
 
 void Game::inputLine(int x, int y) {
@@ -173,13 +189,16 @@ void Game::processInput() {
             break;
         case 2:
             if (userInput.ToLower() == "use") {
-                response = player.useItem() + " | " + player.getItem()->getName() + "  " + "Debug: " + typeid(*player.getItem()).name();
+                response = player.useItem() + " | " + player.getItem()->getName() + "\nDebug: " + typeid(*player.getItem()).name();
             }
             else if (userInput.ToLower() == "up") {
                 player.shiftInvIndex(-1);
             }
             else if (userInput.ToLower() == "down") {
                 player.shiftInvIndex(1);
+            }
+            else if (userInput.ToLower().Find("select") == 0) {
+                player.setInvIndex(0);
             }
             else if (userInput.ToLower() == "back") {
                 inputState = 0;
@@ -194,17 +213,17 @@ void Game::processInput() {
 void Game::run() {
     screen.reset();
 
-    showPlayerInfo(4, 1);
+    showPlayerInfo(2, 1);
 
-    showRoomInfo(screen.width - 50, 3);
+    showRoomInfo(screen.width - 80, screen.height-18);
 
-    showMap(screen.width / 2, screen.height / 2);
+    showMap(screen.width / 2 + 69, screen.height / 2 - 8);
 
-    showCommandLine(5, screen.height - 15);
+    showCommandLine(2, screen.height - 23);
 
     screen.print();
 
-    inputLine(7, screen.height - 2);
+    inputLine(6, screen.height - 4);
 
     processInput();
 }
