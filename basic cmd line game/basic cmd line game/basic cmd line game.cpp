@@ -32,6 +32,8 @@ int main() {
     //game ticks per second
     int tickrate = 200;
 
+    SetConsoleOutputCP(437);
+
     SHORT width = 220;
     SHORT height = 60;
 

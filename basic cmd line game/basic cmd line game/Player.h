@@ -32,4 +32,6 @@ class Player {
         Item*& getItem();
 
         String useItem();
+
+        int findItemIndex(String itemName);
 };

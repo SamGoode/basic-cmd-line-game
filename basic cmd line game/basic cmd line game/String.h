@@ -54,6 +54,8 @@ class String {
 
 String toString(int x);
 
+int toInt(String str);
+
 String operator+(const String& lhs, const String& rhs);
 
 std::ostream& operator<<(std::ostream& out, const String& str);

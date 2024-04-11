@@ -364,6 +364,21 @@ String toString(int x) {
     return finalString;
 }
 
+//only works for positive ints
+int toInt(String str) {
+    int finalInt = 0;
+    
+    for (int i = 0; i < str.Length(); i++) {
+        if (str[i] < 48 || str[i] > 57) {
+            return 0;
+        }
+
+        finalInt += ((int)str[i] - 48) * ((int)pow(10, str.Length() - i - 1));
+    }
+
+    return finalInt;
+}
+
 //returns a separate string object which stores the data of lhs + rhs
 String operator+(const String& lhs, const String& rhs) {
     String newStr = lhs.CStr();

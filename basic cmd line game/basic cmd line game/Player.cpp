@@ -6,9 +6,9 @@ Player::Player() {
 
     health = 100;
 
-    spells[0] = "fireball";
-    spells[1] = "waterspout";
-    spells[2] = "eatshit";
+    spells[0] = "eatshit";
+    spells[1] = "fireball";
+    spells[2] = "waterspout";
 
     inventory;
     currentInvIndex = 0;
@@ -87,4 +87,25 @@ Item*& Player::getItem() {
 
 String Player::useItem() {
     return getItem()->use(*this);
+}
+
+int Player::findItemIndex(String itemName) {
+    int index = inventory.getCount() / 2;
+    int nextIndex = 0;
+
+    while (true) {
+        if (itemName == inventory[index]->getName()) {
+            return index;
+        }
+        else if (itemName < inventory[index]->getName()) {
+            nextIndex = index / 2;
+        }
+        else {
+            nextIndex = index + index / 2;
+        }
+
+        if (nextIndex == index) {
+            return -1;
+        }
+    }
 }

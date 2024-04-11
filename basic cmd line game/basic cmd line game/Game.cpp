@@ -5,11 +5,11 @@ Game::Game(int screenWidth, int screenHeight) {
     screen = Screen(screenWidth, screenHeight);
 
     player = Player(2, 2);
-    player.getInventory() = ItemList(3, new Item*[3]{ new Item("diamond", "wow shiny"), new FoodItem("apple pie", "wow yummy", 30), new Item("knife", "wow sharp") }, itemDatabase);
+    player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("apple pie", "wow yummy", 30), new Item("diamond", "wow shiny"), new Item("knife", "wow sharp") }, itemDatabase);
     
     rooms[0][2] = Room("Boss room");
     rooms[1][0] = Room("This room is undergoing construction.");
-    rooms[1][3] = Room("It's cold in here.", ItemList(2, new Item*[2]{ new Item("ice cube", "I'm a block of ice"), new Item("gold coin", "I'm a golden circle") }, itemDatabase));
+    rooms[1][3] = Room("It's cold in here.", ItemList(2, new Item*[2]{ new Item("gold coin", "I'm a golden circle"), new Item("ice cube", "I'm a block of ice") }, itemDatabase));
     rooms[2][0] = Room("This room is undergoing construction.");
     rooms[2][1] = Room("This room is undergoing construction.");
     rooms[2][2] = Room("This is the room you started in.");
@@ -102,7 +102,7 @@ void Game::showCommandLine(int x, int y) {
             screen.input(217, x + 9, y + 2);
             break;
         case 2:
-            screen.text("[use] current selected item\n\nor\n\nselect different item by\n\nscrolling [up] [down]\n\n[select]ing based on order", x+6, y+5);
+            screen.text("[use] current selected item\n\nselect different item by\n\nscrolling [up] [down]\n          or\n[select]ing based on index\n[search] by name", x+6, y+5);
             screen.text(" [back] ", x + 1, y + 1);
 
             screen.rect(196, x + 1, y + 2, 8, 1);
@@ -197,8 +197,17 @@ void Game::processInput() {
             else if (userInput.ToLower() == "down") {
                 player.shiftInvIndex(1);
             }
-            else if (userInput.ToLower().Find("select") == 0) {
-                player.setInvIndex(0);
+            else if (userInput.ToLower().Find("select ") == 0) {
+                //this is some unreliable parsing
+                userInput.Replace("select ", "");
+                player.setInvIndex(toInt(userInput));
+            }
+            else if (userInput.ToLower().Find("search ") == 0) {
+                userInput.Replace("search ", "");
+                //response = userInput;
+                //response = player.getInventory()[player.getInventory().getCount() / 2]->getName();
+                response = (userInput < player.getInventory()[player.getInventory().getCount() / 2]->getName()) ? "true" : "false";
+                //response = toString(player.findItemIndex(userInput));
             }
             else if (userInput.ToLower() == "back") {
                 inputState = 0;

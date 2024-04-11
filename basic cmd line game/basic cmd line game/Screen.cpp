@@ -91,6 +91,7 @@ void Screen::text(String text, int x, int y) {
 
 void Screen::print() {
     String printout = "\x1b[?25l\x1b[1;1H";
+    //printout += "\x1b[38;2;255;255;0m";
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             printout += screenMatrix[i][j];
