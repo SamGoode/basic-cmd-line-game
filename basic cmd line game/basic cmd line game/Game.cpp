@@ -206,8 +206,9 @@ void Game::processInput() {
                 userInput.Replace("search ", "");
                 //response = userInput;
                 //response = player.getInventory()[player.getInventory().getCount() / 2]->getName();
-                response = (userInput < player.getInventory()[player.getInventory().getCount() / 2]->getName()) ? "true" : "false";
-                //response = toString(player.findItemIndex(userInput));
+                //response = (userInput < player.getInventory()[player.getInventory().getCount() / 2]->getName()) ? "true" : "false";
+                //response = (userInput == player.getInventory()[player.getInventory().getCount() / 4]->getName()) ? "true" : "false";
+                response = toString(player.findItemIndex(userInput));
             }
             else if (userInput.ToLower() == "back") {
                 inputState = 0;

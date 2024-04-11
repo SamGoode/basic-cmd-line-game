@@ -90,22 +90,26 @@ String Player::useItem() {
 }
 
 int Player::findItemIndex(String itemName) {
-    int index = inventory.getCount() / 2;
-    int nextIndex = 0;
+    int upperBound = inventory.getCount() - 1;
+    int lowerBound = 0;
+    int index;
 
     while (true) {
+        index = ((upperBound - lowerBound) / 2) + lowerBound;
+
         if (itemName == inventory[index]->getName()) {
             return index;
         }
-        else if (itemName < inventory[index]->getName()) {
-            nextIndex = index / 2;
-        }
-        else {
-            nextIndex = index + index / 2;
+
+        if (upperBound <= lowerBound) {
+            return -1;
         }
 
-        if (nextIndex == index) {
-            return -1;
+        if (itemName < inventory[index]->getName()) {
+            upperBound = index - 1;
+        }
+        else {
+            lowerBound = index + 1;
         }
     }
 }
