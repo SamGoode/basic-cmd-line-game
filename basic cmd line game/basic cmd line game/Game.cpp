@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <iostream>
+#include <windows.h>
 
 Game::Game(int screenWidth, int screenHeight) {
     screen = Screen(screenWidth, screenHeight);
@@ -42,10 +43,10 @@ void Game::drawPlayer(int x, int y) {
 }
 
 void Game::drawBorder(int x, int y, int width, int height) {
-    screen.input(201, x, y);
-    screen.input(200, x, y+height+1);
-    screen.input(187, x+width+1, y);
-    screen.input(188, x+width+1, y+height+1);
+    screen.input(201, 255, 100, 255, x, y);
+    screen.input(200, 255, 100, 255, x, y+height+1);
+    screen.input(187, 255, 100, 255, x+width+1, y);
+    screen.input(188, 255, 100, 255, x+width+1, y+height+1);
 
     screen.rect(205, x + 1, y, width, 1);
     screen.rect(205, x + 1, y + height + 1, width, 1);
@@ -54,12 +55,12 @@ void Game::drawBorder(int x, int y, int width, int height) {
 }
 
 void Game::showPlayerInfo(int x, int y) {
-    drawBorder(x, y, 40, 20);
+    drawBorder(x, y, 100, 20);
     
     drawBorder(x + 31, y + 1, 6, 2);
     drawPlayer(x + 33, y + 2);
 
-    screen.text(player.getDescription(), x+3, y+2);
+    screen.text(player.getDescription(inputState), x+3, y+2);
 }
 
 void Game::showRoomInfo(int x, int y) {
@@ -97,9 +98,9 @@ void Game::showCommandLine(int x, int y) {
             screen.rect(196, x + 1, y + 2, 8, 1);
             screen.rect(179, x + 9, y + 1, 1, 1);
 
-            screen.input(209, x + 9, y);
-            screen.input(199, x, y + 2);
-            screen.input(217, x + 9, y + 2);
+            screen.input(209, 255, 100, 255, x + 9, y);
+            screen.input(199, 255, 100, 255, x, y + 2);
+            screen.input(217, 255, 100, 255, x + 9, y + 2);
             break;
         case 2:
             screen.text("[use] current selected item\n\nselect different item by\n\nscrolling [up] [down]\n          or\n[select]ing based on index\n[search] by name", x+6, y+5);
@@ -108,15 +109,15 @@ void Game::showCommandLine(int x, int y) {
             screen.rect(196, x + 1, y + 2, 8, 1);
             screen.rect(179, x + 9, y + 1, 1, 1);
 
-            screen.input(209, x + 9, y);
-            screen.input(199, x, y + 2);
-            screen.input(217, x + 9, y + 2);
+            screen.input(209, 255, 100, 255, x + 9, y);
+            screen.input(199, 255, 100, 255, x, y + 2);
+            screen.input(217, 255, 100, 255, x + 9, y + 2);
             break;
     }
 
     screen.text(response, x+4, y + 17);
 
-    screen.input(175, x + 2, y + 19);
+    screen.input(175, 255, 100, 255, x + 2, y + 19);
 }
 
 void Game::inputLine(int x, int y) {
@@ -200,15 +201,24 @@ void Game::processInput() {
             else if (userInput.ToLower().Find("select ") == 0) {
                 //this is some unreliable parsing
                 userInput.Replace("select ", "");
-                player.setInvIndex(toInt(userInput));
+                if (toInt(userInput) == -1) {
+                    response = "invalid input";
+                }
+                else {
+                    player.setInvIndex(toInt(userInput));
+                }
             }
             else if (userInput.ToLower().Find("search ") == 0) {
                 userInput.Replace("search ", "");
-                //response = userInput;
-                //response = player.getInventory()[player.getInventory().getCount() / 2]->getName();
-                //response = (userInput < player.getInventory()[player.getInventory().getCount() / 2]->getName()) ? "true" : "false";
-                //response = (userInput == player.getInventory()[player.getInventory().getCount() / 4]->getName()) ? "true" : "false";
-                response = toString(player.findItemIndex(userInput));
+
+                int searchResult = player.findItemIndex(userInput);
+                if (searchResult == -1) {
+                    response = "'" + userInput + "' not found";
+                }
+                else {
+                    response = "'" + userInput + "' found at index " + toString(searchResult);
+                    player.setInvIndex(searchResult);
+                }
             }
             else if (userInput.ToLower() == "back") {
                 inputState = 0;
@@ -220,12 +230,20 @@ void Game::processInput() {
     }
 }
 
+int x = 2;
+int y = 1;
+
 void Game::run() {
     screen.reset();
 
-    showPlayerInfo(2, 1);
+    if (GetAsyncKeyState(VK_RIGHT)) x+=2;
+    if (GetAsyncKeyState(VK_LEFT)) x-=2;
+    if (GetAsyncKeyState(VK_UP)) y--;
+    if (GetAsyncKeyState(VK_DOWN)) y++;
 
-    showRoomInfo(screen.width - 80, screen.height-18);
+    showPlayerInfo(0, 0);
+
+    showRoomInfo(screen.width - 80, 0);//screen.height-18);
 
     showMap(screen.width / 2 + 69, screen.height / 2 - 8);
 

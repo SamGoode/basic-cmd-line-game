@@ -21,7 +21,7 @@ class Player {
 
         int addHealth(int amount);
 
-        String getDescription();
+        String getDescription(int inputState);
 
         ItemList& getInventory();
 

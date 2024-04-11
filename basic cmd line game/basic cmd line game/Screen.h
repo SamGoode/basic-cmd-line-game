@@ -3,7 +3,7 @@
 
 class Screen {
     private:    
-        char** screenMatrix;
+        unsigned int** screenMatrix;
     
     public:
         int width;
@@ -19,7 +19,7 @@ class Screen {
 
         void reset();
 
-        void input(char text, int x, int y);
+        void input(unsigned char text, unsigned char r, unsigned char g, unsigned char b, int x, int y);
 
         void rect(char text, int x, int y, int width, int height);
 
@@ -27,3 +27,7 @@ class Screen {
 
         void print();
 };
+//int* ptr;
+//char* ptr2 = (char*)ptr
+//* (ptr2);//0x30
+//*(ptr2+1)//

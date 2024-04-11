@@ -1,4 +1,5 @@
 #include "String.h"
+#include <charconv>
 
 //default constructor
 String::String() {
@@ -75,18 +76,23 @@ bool String::EqualTo(const String& str) const {
 
 //appends a copy of the data stored at str to current string object and returns itself
 String& String::Append(const String& str) {
+    int originalLength = Length();
+    int strLength = str.Length();
     char* oldPtr = dataPtr;
-    dataPtr = new char[length + str.Length() + 1];
+    dataPtr = new char[length + strLength + 1];
 
-    for (int i = 0; i < length; i++) {
-        *(dataPtr + i) = *(oldPtr + i);
-    }
+    //for (int i = 0; i < length; i++) {
+    //    *(dataPtr + i) = *(oldPtr + i);
+    //}
+
+    strcpy(dataPtr, oldPtr);
+    strcpy(dataPtr + originalLength, str.CStr());
     
-    for (int i = 0; i < str.Length(); i++) {
+    /*for (int i = 0; i < str.Length(); i++) {
         *(dataPtr + length + i) = *(str.CStr() + i);
-    }
+    }*/
 
-    length += str.Length();
+    length += strLength;
     *(dataPtr + length) = 0;
     delete[] oldPtr;
     return *this;
@@ -341,6 +347,12 @@ String& String::operator+=(const char chr) {
 String toString(int x) {
     String finalString;
 
+    char buffer[12]{};
+
+    std::to_chars_result res = std::to_chars(std::begin(buffer), std::end(buffer), x);
+
+    return buffer;
+
     if (x < 0) {
         finalString = "-";
         x = x * -1;
@@ -351,7 +363,9 @@ String toString(int x) {
         totalDigits++;
     }
 
-    char a = 48; //'0'
+    char a = '0';
+    int b = (int)a;
+    //b == 48
 
     char* digits = new char[totalDigits + 1];
     for (int i = 0; i < totalDigits; i++) {
@@ -370,7 +384,7 @@ int toInt(String str) {
     
     for (int i = 0; i < str.Length(); i++) {
         if (str[i] < 48 || str[i] > 57) {
-            return 0;
+            return -1;
         }
 
         finalInt += ((int)str[i] - 48) * ((int)pow(10, str.Length() - i - 1));

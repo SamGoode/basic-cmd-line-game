@@ -37,26 +37,29 @@ int Player::addHealth(int amount) {
     return health;
 }
 
-String Player::getDescription() {
-    String printout = "Player stats:\n\n";
+String Player::getDescription(int inputState) {
+    String printout = " Player stats:\n\n";
 
     //offset printed coordinates so centre room (starting room) is at 0, 0
-    printout += "Health: " + toString(health) + "\n\nCoordinates: x:" + toString(x-2) + ", y:" + toString(y-2) + "\n\nInventory:\n";
+    printout += " Health: " + toString(health) + "\n\n Coordinates: x:" + toString(x-2) + ", y:" + toString(y-2) + "\n\n Inventory:\n";
 
     for (int i = 0; i < inventory.getCount(); i++) {
-        if (i == currentInvIndex) {
+        if (i == currentInvIndex && inputState == 2) {
             printout += 175;
         }
+        else {
+            printout += " ";
+        }
         printout += inventory[i]->getName() + " | " + inventory[i]->getDescription();
-        if (i == currentInvIndex) {
+        if (i == currentInvIndex && inputState == 2) {
             printout += 174;
         }
         printout += "\n";
     }
 
-    printout += "\nSpellbook:\n";
+    printout += "\n Spellbook:\n";
     for (int i = 0; i < 3; i++) {
-        printout += spells[i] + "\n";
+        printout += " " + spells[i] + "\n";
     }
 
     return printout;

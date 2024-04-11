@@ -3,6 +3,13 @@
 #include "Game.h"
 
 int main() {
+    /*int chrColour = 0x3064303D;
+    char* byte = (char*) &chrColour;
+    std::cout << *(byte+1);*/
+    
+    //screen.input(chr, r, g, b);
+    //screen.input(*(byte+3), *(byte+2), *(byte+1), *byte)
+    
 
     //while (true) {
     //    /*ItemList database = ItemList();
