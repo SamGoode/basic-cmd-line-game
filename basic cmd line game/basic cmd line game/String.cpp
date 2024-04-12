@@ -128,7 +128,7 @@ String& String::Prepend(const String& str) {
 }
 
 //returns the starting address of where the string object's data is stored in memory
-const char* String::CStr() const {
+char* String::CStr() const {
     return dataPtr;
 }
 

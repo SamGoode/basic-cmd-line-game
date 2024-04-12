@@ -25,7 +25,7 @@ class String {
 		String& Append(const char chr);
 		String& Prepend(const String& str);
 
-		const char* CStr() const;
+		char* CStr() const;
 
 		String& ToLower();
 		String& ToUpper();

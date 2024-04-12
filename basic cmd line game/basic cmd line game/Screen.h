@@ -3,7 +3,7 @@
 
 class Screen {
     private:    
-        char** screenMatrix;
+        char* screenMatrix;
     
     public:
         int width;
