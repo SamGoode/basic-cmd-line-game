@@ -4,7 +4,7 @@
 Game::Game(int screenWidth, int screenHeight) {
     screen = Screen(screenWidth, screenHeight);
 
-    player = Player(2, 2);
+    player = Player(*this, 2, 2);
     player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("apple pie", "wow yummy", 30), new Item("diamond", "wow shiny"), new Item("knife", "wow sharp") }, itemDatabase);
     
     rooms[0][2] = Room("Boss room");
@@ -59,7 +59,7 @@ void Game::showPlayerInfo(int x, int y) {
     drawBorder(x + 31, y + 1, 6, 2);
     drawPlayer(x + 33, y + 2);
 
-    screen.text(player.getDescription(), x+3, y+2);
+    screen.text(player.getDescription(), x+2, y+2);
 }
 
 void Game::showRoomInfo(int x, int y) {
@@ -88,7 +88,7 @@ void Game::showCommandLine(int x, int y) {
 
     switch (inputState) {
         case 0:
-            screen.text("[move]   [inventory]   [fight]", x+6, y+10);
+            screen.text("[move]   [inventory]   [fight]\n\n         [spellbook]", x+6, y+10);
             break;
         case 1:
             screen.text("       [north]\n\n          ^\n[west]  < + >  [east]\n          v\n\n       [south]", x + 10, y + 6);
@@ -102,7 +102,7 @@ void Game::showCommandLine(int x, int y) {
             screen.input(217, x + 9, y + 2);
             break;
         case 2:
-            screen.text("[use] current selected item\n\nselect different item by\n\nscrolling [up] [down]\n          or\n[select]ing based on index\n[search] by name", x+6, y+5);
+            screen.text("[use] current selected item\n\nselect different item by\n\nscrolling [up] [down]\n          or\n[select]ing based on index\n[search]ing by name", x+6, y+5);
             screen.text(" [back] ", x + 1, y + 1);
 
             screen.rect(196, x + 1, y + 2, 8, 1);
@@ -112,6 +112,16 @@ void Game::showCommandLine(int x, int y) {
             screen.input(199, x, y + 2);
             screen.input(217, x + 9, y + 2);
             break;
+        case 3:
+            screen.text("[use] current selected item\n\nselect different spell by\n\nscrolling [up] [down]\n          or\n[select]ing based on index\n[search]ing by name", x + 6, y + 5);
+            screen.text(" [back] ", x + 1, y + 1);
+
+            screen.rect(196, x + 1, y + 2, 8, 1);
+            screen.rect(179, x + 9, y + 1, 1, 1);
+
+            screen.input(209, x + 9, y);
+            screen.input(199, x, y + 2);
+            screen.input(217, x + 9, y + 2);
     }
 
     screen.text(response, x+4, y + 17);
@@ -122,6 +132,10 @@ void Game::showCommandLine(int x, int y) {
 void Game::inputLine(int x, int y) {
     std::cout << "\x1b[" + toString(y+1) + ";" + toString(x+1) + "H";
     userInput.ReadFromConsole();
+}
+
+int Game::getInputState() {
+    return inputState;
 }
 
 void Game::processInput() {
@@ -136,6 +150,9 @@ void Game::processInput() {
             }
             else if (userInput.ToLower() == "fight") {
                 response = "this doesn't work yet";
+            }
+            else if (userInput.ToLower() == "spellbook") {
+                inputState = 3;
             }
             else {
                 response = "invalid input";
@@ -202,11 +219,52 @@ void Game::processInput() {
             }
             else if (userInput.ToLower().Find("search ") == 0) {
                 userInput.Replace("search ", "");
-                //response = userInput;
-                //response = player.getInventory()[player.getInventory().getCount() / 2]->getName();
-                //response = (userInput < player.getInventory()[player.getInventory().getCount() / 2]->getName()) ? "true" : "false";
-                //response = (userInput == player.getInventory()[player.getInventory().getCount() / 4]->getName()) ? "true" : "false";
-                response = toString(player.findItemIndex(userInput));
+
+                int searchResult = player.findItemIndex(userInput);
+                if (searchResult == -1) {
+                    response = "'" + userInput + "' not found";
+                }
+                else {
+                    response = "'" + userInput + "' found at index " + toString(searchResult);
+                    player.setInvIndex(searchResult);
+                }
+            }
+            else if (userInput.ToLower() == "back") {
+                inputState = 0;
+            }
+            else {
+                response = "invalid input";
+            }
+            break;
+        case 3:
+            if (userInput.ToLower() == "use") {
+                response = "doesn't work yet";//player.useItem() + " | " + player.getItem()->getName() + "\nDebug: " + typeid(*player.getItem()).name();
+            }
+            else if (userInput.ToLower() == "up") {
+                player.shiftSpellIndex(-1);
+            }
+            else if (userInput.ToLower() == "down") {
+                player.shiftSpellIndex(1);
+            }
+            else if (userInput.ToLower().Find("select ") == 0) {
+                //this is some unreliable parsing
+                userInput.Replace("select ", "");
+                player.setSpellIndex(toInt(userInput));
+            }
+            else if (userInput.ToLower().Find("search ") == 0) {
+                userInput.Replace("search ", "");
+
+                response = "doesn't work yet";
+                return;
+
+                int searchResult = player.findItemIndex(userInput);
+                if (searchResult == -1) {
+                    response = "'" + userInput + "' not found";
+                }
+                else {
+                    response = "'" + userInput + "' found at index " + toString(searchResult);
+                    player.setInvIndex(searchResult);
+                }
             }
             else if (userInput.ToLower() == "back") {
                 inputState = 0;

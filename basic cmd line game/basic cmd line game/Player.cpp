@@ -1,31 +1,38 @@
 #include "Player.h"
+#include "Game.h"
 
 Player::Player() {
-    x = 0;
-    y = 0;
+    ownerPtr = nullptr;
 
     health = 100;
+
+    inventory;
+    currentInvIndex = 0;
 
     spells[0] = "eatshit";
     spells[1] = "fireball";
     spells[2] = "waterspout";
+    currentSpellIndex = 0;
+
+    x = 0;
+    y = 0;
+}
+
+Player::Player(Game& owner, int x, int y) {
+    ownerPtr = &owner;
+
+    health = 100;
 
     inventory;
     currentInvIndex = 0;
-}
-
-Player::Player(int x, int y) {
-    this->x = x;
-    this->y = y;
-
-    health = 100;
 
     spells[0] = "fireball";
     spells[1] = "waterspout";
     spells[2] = "eatshit";
+    currentSpellIndex = 0;
 
-    inventory;
-    currentInvIndex = 0;
+    this->x = x;
+    this->y = y;
 }
 
 int Player::getHealth() {
@@ -38,25 +45,46 @@ int Player::addHealth(int amount) {
 }
 
 String Player::getDescription() {
-    String printout = "Player stats:\n\n";
+    String printout = "  Player stats:\n\n";
 
     //offset printed coordinates so centre room (starting room) is at 0, 0
-    printout += "Health: " + toString(health) + "\n\nCoordinates: x:" + toString(x-2) + ", y:" + toString(y-2) + "\n\nInventory:\n";
+    printout += "  Health: " + toString(health) + "\n\n  Coordinates: x:" + toString(x-2) + ", y:" + toString(y-2) + "\n\n  Inventory:\n";
 
     for (int i = 0; i < inventory.getCount(); i++) {
-        if (i == currentInvIndex) {
+        if (i == currentInvIndex && ownerPtr->getInputState() == 2) {
+            printout += 175;
             printout += 175;
         }
+        else {
+            printout += "  ";
+        }
+        
         printout += inventory[i]->getName() + " | " + inventory[i]->getDescription();
-        if (i == currentInvIndex) {
+        
+        if (i == currentInvIndex && ownerPtr->getInputState() == 2) {
+            printout += 174;
             printout += 174;
         }
         printout += "\n";
     }
 
-    printout += "\nSpellbook:\n";
+    printout += "\n  Spellbook:\n";
     for (int i = 0; i < 3; i++) {
-        printout += spells[i] + "\n";
+        if (i == currentSpellIndex && ownerPtr->getInputState() == 3) {
+            printout += 175;
+            printout += 175;
+        }
+        else {
+            printout += "  ";
+        }
+
+        printout += spells[i];
+        
+        if (i == currentSpellIndex && ownerPtr->getInputState() == 3) {
+            printout += 174;
+            printout += 174;
+        }
+        printout += "\n";
     }
 
     return printout;
@@ -112,4 +140,19 @@ int Player::findItemIndex(String itemName) {
             lowerBound = index + 1;
         }
     }
+}
+
+void Player::setSpellIndex(int newIndex) {
+    if (newIndex < 0) {
+        newIndex = 0;
+    }
+    else if (newIndex > 3 - 1) {
+        newIndex = 3 - 1;
+    }
+
+    currentSpellIndex = newIndex;
+}
+
+void Player::shiftSpellIndex(int shift) {
+    setSpellIndex(currentSpellIndex + shift);
 }

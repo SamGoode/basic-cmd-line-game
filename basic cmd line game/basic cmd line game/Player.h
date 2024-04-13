@@ -3,10 +3,12 @@
 
 class Player {
     private:
+        class Game* ownerPtr;
         int health;
-        String spells[3];
         ItemList inventory;
         int currentInvIndex;
+        String spells[3];
+        int currentSpellIndex;
 
     public:
         int x;
@@ -15,7 +17,7 @@ class Player {
     public:
         Player();
 
-        Player(int x, int y);
+        Player(Game& owner, int x, int y);
 
         int getHealth();
 
@@ -34,4 +36,8 @@ class Player {
         String useItem();
 
         int findItemIndex(String itemName);
+
+        void setSpellIndex(int newIndex);
+
+        void shiftSpellIndex(int shift);
 };

@@ -34,6 +34,8 @@ class Game {
 
         void inputLine(int x, int y);
 
+        int getInputState();
+
         void processInput();
 
         void run();
