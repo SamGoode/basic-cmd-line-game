@@ -175,8 +175,6 @@ void Game::processInput() {
                     return;
                 }
 
-                //rooms[0][1].addItem(Item("diamond", "this wasn't here before"));
-
                 response = "You entered the room to the west";
                 player.x--;
             }

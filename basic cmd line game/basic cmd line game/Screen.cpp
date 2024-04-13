@@ -13,16 +13,7 @@ Screen::Screen(int width, int height) {
     this->height = height;
     matrixSize = (width + 1) * height;
 
-    //width = 220
-    // 0 1 2 3 ... 217 218 219 220
-    // 221 222 ... 438 439 440 441
-    // 442 443 ... 659 660 661 662
-    // 
-    // 220 441 662 
-    // i % 221 == 220
-
     screenMatrix = new char[matrixSize];
-
     for (int i = 0; i < matrixSize; i++) {
         if (i % (this->width+1) == this->width) {
             screenMatrix[i] = '\n';
@@ -46,11 +37,10 @@ Screen& Screen::operator=(const Screen& screen) {
     matrixSize = screen.matrixSize;
 
     screenMatrix = new char[matrixSize];
-
     for (int i = 0; i < matrixSize; i++) {
         screenMatrix[i] = screen.screenMatrix[i];
     }
-    screenMatrix[matrixSize] = 0;
+    screenMatrix[matrixSize - 1] = 0;
 
     return *this;
 }
@@ -71,10 +61,6 @@ void Screen::input(char text, int x, int y) {
     if (x < 0 || x >= width || y < 0 || y >= height) {
         return;
     }
-
-    // 0   1
-    // 221 222
-    // 442 443
 
     screenMatrix[x + y * (width+1)] = text;
 }
