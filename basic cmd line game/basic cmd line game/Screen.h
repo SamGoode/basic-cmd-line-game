@@ -4,6 +4,7 @@
 class Screen {
     private:    
         char* screenMatrix;
+        int matrixSize;
     
     public:
         int width;

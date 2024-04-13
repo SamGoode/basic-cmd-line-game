@@ -223,7 +223,7 @@ void Game::processInput() {
 void Game::run() {
     screen.reset();
 
-    showPlayerInfo(0, 0);
+    showPlayerInfo(2, 1);
 
     showRoomInfo(screen.width - 80, screen.height-18);
 
