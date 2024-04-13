@@ -12,76 +12,39 @@ Screen::Screen(int width, int height) {
     this->width = width;
     this->height = height;
 
-    //screenMatrix = new char[width * height];
+    screenMatrix = new char[this->width * this->height + 1];
 
-    /*for (int i = 0; i < width * height;i++) {
+    for (int i = 0; i < this->width * this->height; i++) {
         screenMatrix[i] = ' ';
-
-        
-    }*/
-
-    //screenMatrix = new char*[height];
-    //for (int i = 0; i < height; i++) {
-    //    screenMatrix[i] = new char[width];
-    //}
-
-    //for (int i = 0; i < height; i++) {
-    //    for (int j = 0; j < width; j++) {
-    //        screenMatrix[i][j] = ' ';
-    //    }
-    //}
+    }
+    screenMatrix[this->width * this->height] = 0;
 }
 
 Screen::~Screen() {
-    //for (int i = 0; i < height; i++) {
-    //    delete[] screenMatrix[i];
-    //}
     delete[] screenMatrix;
 }
 
 Screen& Screen::operator=(const Screen& screen) {
-    //for (int i = 0; i < height; i++) {
-    //    delete[] screenMatrix[i];
-    //}
     delete[] screenMatrix;
 
     width = screen.width;
     height = screen.height;
 
-    screenMatrix = new char[width * height];
+    screenMatrix = new char[width * height + 1];
 
-    for (int i = 0; i < screen.width * screen.height; i++) {
+    for (int i = 0; i < width * height; i++) {
         screenMatrix[i] = screen.screenMatrix[i];
     }
-
-    //screenMatrix = new char*[screen.height];
-    //for (int i = 0; i < screen.height; i++) {
-    //    screenMatrix[i] = new char[screen.width];
-    //}
-
-    //for (int i = 0; i < screen.height; i++) {
-    //    for (int j = 0; j < screen.width; j++) {
-    //        screenMatrix[i][j] = screen.screenMatrix[i][j];
-    //    }
-    //}
+    screenMatrix[width * height] = 0;
 
     return *this;
 }
 
 void Screen::reset() {
-    //for (int i = 0; i < height; i++) {
-    //    for (int j = 0; j < width; j++) {
-    //        screenMatrix[i][j] = ' ';
-    //    }
-    //}
-
-    for (int i = 0; i < width * height;i++) {
-        screenMatrix[i] = 'a';
-
-        /*if (i % width == 0) {
-            screenMatrix[i + 1] = '\n';
-        }*/
+    for (int i = 0; i < width * height; i++) {
+        screenMatrix[i] = ' ';
     }
+    screenMatrix[width * height] = 0;
 }
 
 void Screen::input(char text, int x, int y) {
@@ -89,7 +52,7 @@ void Screen::input(char text, int x, int y) {
         return;
     }
 
-    screenMatrix[x + y * height];
+    screenMatrix[x + y * width] = text;
 }
 
 void Screen::rect(char text, int x, int y, int width, int height) {
@@ -112,23 +75,9 @@ void Screen::text(String text, int x, int y) {
 }
 
 void Screen::print() {
-    
     std::cout << "\x1b[?25l\x1b[1;1H";
-    //String printout;
 
     //printout += "\x1b[38;2;255;255;0m";
 
-    std::cout << screenMatrix[1];
-
-    /*for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            printout += screenMatrix[i][j];
-        }
-        if (i < height - 1) {
-            printout += '\n';
-        }
-    }
-    printout += "\x1b[?25h";
-    */
-    //std::cout << printout.CStr();
+    std::cout << screenMatrix;
 }
