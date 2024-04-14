@@ -1,5 +1,6 @@
 #pragma once
 #include "ItemList.h"
+#include "Spell.h"
 
 class Player {
     private:
@@ -7,8 +8,9 @@ class Player {
         int health;
         ItemList inventory;
         int currentInvIndex;
-        String spells[3];
+        String spells[4];
         int currentSpellIndex;
+        TeleportSpell teleportSpell;
 
     public:
         int x;
@@ -40,4 +42,6 @@ class Player {
         void setSpellIndex(int newIndex);
 
         void shiftSpellIndex(int shift);
+
+        String useSpell();
 };

@@ -238,7 +238,7 @@ void Game::processInput() {
             break;
         case 3:
             if (userInput.ToLower() == "use") {
-                response = "doesn't work yet";//player.useItem() + " | " + player.getItem()->getName() + "\nDebug: " + typeid(*player.getItem()).name();
+                response = player.useSpell();
             }
             else if (userInput.ToLower() == "up") {
                 player.shiftSpellIndex(-1);

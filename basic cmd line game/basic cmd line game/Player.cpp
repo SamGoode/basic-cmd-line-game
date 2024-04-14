@@ -9,10 +9,13 @@ Player::Player() {
     inventory;
     currentInvIndex = 0;
 
-    spells[0] = "eatshit";
-    spells[1] = "fireball";
-    spells[2] = "waterspout";
+    spells[0] = "teleport";
+    spells[1] = "eatshit";
+    spells[2] = "fireball";
+    spells[3] = "waterspout";
     currentSpellIndex = 0;
+
+    teleportSpell = TeleportSpell("teleport", "teleports the player to specified coordinates");
 
     x = 0;
     y = 0;
@@ -26,9 +29,10 @@ Player::Player(Game& owner, int x, int y) {
     inventory;
     currentInvIndex = 0;
 
-    spells[0] = "fireball";
-    spells[1] = "waterspout";
-    spells[2] = "eatshit";
+    spells[0] = "teleport";
+    spells[1] = "fireball";
+    spells[2] = "waterspout";
+    spells[3] = "eatshit";
     currentSpellIndex = 0;
 
     this->x = x;
@@ -155,4 +159,12 @@ void Player::setSpellIndex(int newIndex) {
 
 void Player::shiftSpellIndex(int shift) {
     setSpellIndex(currentSpellIndex + shift);
+}
+
+String Player::useSpell() {
+    if (spells[currentSpellIndex] == "teleport") {
+        return teleportSpell.use(*this);
+    }
+
+    return "wtf";
 }

@@ -1,4 +1,5 @@
 #include "Spell.h"
+#include "Player.h"
 
 Spell::Spell() {
 	name = "???";
@@ -52,6 +53,9 @@ TeleportSpell::TeleportSpell(String name, String description) {
 	this->getDescription() = description;
 }
 
-String TeleportSpell::use(Player& player, int x, int y) {
+String TeleportSpell::use(Player& player) {
+	player.x = 0;
+	player.y = 2;
 
+	return "teleported player to -2, 0";
 }
