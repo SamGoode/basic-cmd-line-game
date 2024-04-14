@@ -2,33 +2,34 @@
 #include "String.h"
 
 class Item {
-private:
-    String name;
-    String description;
-    bool stacks;
-    int amount;
-public:
-    Item();
+    private:
+        String name;
+        String description;
+        bool stacks;
+        int amount;
 
-    Item(const Item& item);
+    public:
+        Item();
 
-    Item(String name, String description);
+        Item(const Item& item);
 
-    Item(String name, String description, bool stacks, int amount);
+        Item(String name, String description);
 
-    virtual ~Item() = default;
+        Item(String name, String description, bool stacks, int amount);
 
-    Item& operator=(const Item& item);
+        virtual ~Item() = default;
 
-    String& getName();
+        Item& operator=(const Item& item);
 
-    const String& getName() const;
+        String& getName();
 
-    String& getDescription();
+        const String& getName() const;
 
-    const String& getDescription() const;
+        String& getDescription();
 
-    virtual String use(class Player& player);
+        const String& getDescription() const;
+
+        virtual String use(class Player& player);
 };
 
 class FoodItem : public Item {
