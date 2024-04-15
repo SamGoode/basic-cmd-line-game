@@ -26,6 +26,8 @@ class Spell {
 		const String& getDescription() const;
 
 		virtual String use(class Player& player);
+
+		virtual String use(class Player& player, int arg, ...);
 };
 
 class TeleportSpell : public Spell {
@@ -34,5 +36,5 @@ class TeleportSpell : public Spell {
 
 		TeleportSpell(String name, String description);
 
-		String use(class Player& player) override;
+		String use(class Player& player, int arg, ...) override;
 };

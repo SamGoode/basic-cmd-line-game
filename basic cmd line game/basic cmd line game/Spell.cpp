@@ -43,6 +43,10 @@ String Spell::use(Player& player) {
 	return "I didn't do anything";
 }
 
+String Spell::use(Player& player, int arg, ...) {
+	return "I didn't do anything";
+}
+
 TeleportSpell::TeleportSpell() {
 	this->getName() = "???";
 	this->getDescription() = "???";
@@ -53,9 +57,9 @@ TeleportSpell::TeleportSpell(String name, String description) {
 	this->getDescription() = description;
 }
 
-String TeleportSpell::use(Player& player) {
-	player.x = 0;
-	player.y = 2;
+String TeleportSpell::use(Player& player, int arg, ...) {
+	player.x = *((int*)&arg);
+	player.y = *((int*)&arg + 2);
 
-	return "teleported player to -2, 0";
+	return "teleported player to " + toString(player.x - 2) + ", " + toString(player.y - 2);
 }

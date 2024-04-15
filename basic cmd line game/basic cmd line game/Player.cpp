@@ -163,7 +163,7 @@ void Player::shiftSpellIndex(int shift) {
 
 String Player::useSpell() {
     if (spells[currentSpellIndex] == "teleport") {
-        return teleportSpell.use(*this);
+        return teleportSpell.use(*this, 2, 2);
     }
 
     return "wtf";

@@ -113,9 +113,9 @@ void Game::showCommandLine(int x, int y) {
             screen.input(217, x + 9, y + 2);
             break;
         case 3:
-            screen.text("[use] current selected item\n\nselect different spell by\n\nscrolling [up] [down]\n          or\n[select]ing based on index\n[search]ing by name", x + 6, y + 5);
+            screen.text("[use] current selected spell\n\nselect different spell by\n\nscrolling [up] [down]\n          or\n[select]ing based on index\n[search]ing by name", x + 6, y + 5);
             screen.text(" [back] ", x + 1, y + 1);
-
+            
             screen.rect(196, x + 1, y + 2, 8, 1);
             screen.rect(179, x + 9, y + 1, 1, 1);
 
