@@ -2,19 +2,7 @@
 #include <windows.h>
 #include "Game.h"
 
-void testFunc(int arg, ...) {
-    /*for (int i = 0; i < 10; i++) {
-        std::cout << *(((int*)&player) + i) << ' ';
-    }*/
-
-    std::cout << *((int*)&arg + 0) << ' ';
-    std::cout << *((int*)&arg + 2) << ' ';
-}
-
 int main() {
-    //testFunc(25, 420, 69, 4, 7);
-    //return 0;
-
     //while (true) {
     //    /*ItemList database = ItemList();
 
@@ -29,7 +17,7 @@ int main() {
     //        delete database[i];
     //    }*/
 
-    //    Game game = Game(220, 60);
+        //Game game = Game(220, 60);
     //}
     /*
     Current layout of rooms

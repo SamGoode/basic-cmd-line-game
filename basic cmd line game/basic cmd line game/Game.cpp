@@ -4,6 +4,8 @@
 Game::Game(int screenWidth, int screenHeight) {
     screen = Screen(screenWidth, screenHeight);
 
+    config = { 70, screenHeight - 23 };
+
     player = Player(*this, 2, 2);
     player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("apple pie", "wow yummy", 30), new Item("diamond", "wow shiny"), new Item("knife", "wow sharp") }, itemDatabase);
     
@@ -28,6 +30,11 @@ Game::~Game() {
     for (int i = 0; i < itemDatabase.getCount(); i++) {
         delete itemDatabase[i];
     }
+
+    for (int i = 0; i < 3;i++) {
+        delete player.getSpellBook()[i];
+    }
+    delete[] player.getSpellBook();
 }
 
 void Game::drawRoom(char chr, int x, int y, int width, int height) {
@@ -35,56 +42,99 @@ void Game::drawRoom(char chr, int x, int y, int width, int height) {
     screen.rect(chr, x, y + height - 1, width, 1);
     screen.rect(chr, x, y + 1, 2, height - 2);
     screen.rect(chr, x + width - 2, y + 1, 2, height - 2);
+    screen.rect(' ', x + 2, y + 1, width - 4, height - 2);
 }
 
 void Game::drawPlayer(int x, int y) {
     screen.text("(O0)\n/|\\\\", x, y);
 }
 
-void Game::drawBorder(int x, int y, int width, int height) {
-    screen.input(201, x, y);
-    screen.input(200, x, y+height+1);
-    screen.input(187, x+width+1, y);
-    screen.input(188, x+width+1, y+height+1);
+void Game::drawDuck(int x, int y) {
+    screen.text("  _ \n(__)", x, y);
+    screen.input(247, x, y);
+    screen.input(233, x + 1, y);
+}
 
-    screen.rect(205, x + 1, y, width, 1);
-    screen.rect(205, x + 1, y + height + 1, width, 1);
-    screen.rect(186, x, y + 1, 1, height);
-    screen.rect(186, x + width + 1, y + 1, 1, height);
+void Game::drawBorder(int x, int y, int width, int height, bool isThick) {
+    if (isThick) {
+        screen.input(201, x, y);
+        screen.input(200, x, y + height + 1);
+        screen.input(187, x + width + 1, y);
+        screen.input(188, x + width + 1, y + height + 1);
+
+        screen.rect(205, x + 1, y, width, 1);
+        screen.rect(205, x + 1, y + height + 1, width, 1);
+        screen.rect(186, x, y + 1, 1, height);
+        screen.rect(186, x + width + 1, y + 1, 1, height);
+    }
+    else {
+        screen.input(218, x, y);
+        screen.input(192, x, y + height + 1);
+        screen.input(191, x + width + 1, y);
+        screen.input(217, x + width + 1, y + height + 1);
+
+        screen.rect(196, x + 1, y, width, 1);
+        screen.rect(196, x + 1, y + height + 1, width, 1);
+        screen.rect(179, x, y + 1, 1, height);
+        screen.rect(179, x + width + 1, y + 1, 1, height);
+    }
 }
 
 void Game::showPlayerInfo(int x, int y) {
-    drawBorder(x, y, 40, 20);
+    drawBorder(x, y, 40, 20, true);
     
-    drawBorder(x + 31, y + 1, 6, 2);
+    drawBorder(x + 31, y + 1, 6, 2, false);
     drawPlayer(x + 33, y + 2);
 
     screen.text(player.getDescription(), x+2, y+2);
 }
 
 void Game::showRoomInfo(int x, int y) {
-    drawBorder(x, y, 76, 15);
+    drawBorder(x, y, 76, 15, true);
 
     screen.text(rooms[player.y][player.x].getDescription(), x+3, y+2);
 }
 
 void Game::showMap(int x, int y) {
-    drawBorder(x - 39, y - 21, 76, 38);
+    drawBorder(x - 39, y - 21, 76, 38, true);
+    screen.rect(177, x - 38, y - 20, 76, 38);
 
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++) {
             if (rooms[i][j].doesExist()) {
-                drawRoom(177, x - 6 + 14 * (j - 2), y - 4 + 7 * (i - 2), 12, 6);
-                //177screen.rect(' ', x - 5 - 13 + 13 * j, y - 1 - 11 + 11 * i, 2, 2);
+                drawRoom(' ', (x - 6) + 14 * (j - 2), (y - 4) + 7 * (i - 2), 12, 6);
+
+                if (rooms[i][j + 1].doesExist() && j < 4) {
+                    screen.rect(' ', (x + 6) + 14 * (j - 2), (y - 2) + 7 * (i - 2), 2, 2);
+                }
+                if (rooms[i + 1][j].doesExist() && i < 4) {
+                    screen.rect(' ', (x - 2) + 14 * (j - 2), (y + 2) + 7 * (i - 2), 4, 1);
+                }
             }
         }
     }
+    
+    drawDuck((x - 2) + 14 * (0), (y - 2) + 7 * (-2));
+    drawPlayer((x - 2) + 14 * (player.x - 2), (y - 2) + 7 * (player.y - 2));
+}
 
-    drawPlayer(x - 2 + 14 * (player.x - 2), y - 2 + 7 * (player.y - 2));
+void Game::showDetails(int x, int y) {
+    drawBorder(x, y, 40, 20, true);
+    screen.text("Details", x + 17, y + 1);
+    screen.rect(205, x + 1, y + 2, 40, 1);
+
+    switch (inputState) {
+        case 2:
+            screen.text("Item:\n" + player.getItem()->getName() + "\n\nDescription:\n" + player.getItem()->getDescription(), x + 3, y + 4);
+            break;
+        case 3:
+            screen.text("Spell:\n" + player.getSpell()->getName() + "\n\nDescription:\n" + player.getSpell()->getDescription(), x + 3, y + 4);
+            break;
+    }
 }
 
 void Game::showCommandLine(int x, int y) {
-    drawBorder(x, y, 40, 20);
+    drawBorder(x, y, 40, 20, true);
 
     switch (inputState) {
         case 0:
@@ -102,7 +152,7 @@ void Game::showCommandLine(int x, int y) {
             screen.input(217, x + 9, y + 2);
             break;
         case 2:
-            screen.text("[use] current selected item\n\nselect different item by\n\nscrolling [up] [down]\n          or\n[select]ing based on index\n[search]ing by name", x+6, y+5);
+            screen.text("[use] current selected item\n\nselect different item by\n\nscrolling [up] [down]\n[select]ing based on index\n[search]ing by name", x+6, y+5);
             screen.text(" [back] ", x + 1, y + 1);
 
             screen.rect(196, x + 1, y + 2, 8, 1);
@@ -113,7 +163,7 @@ void Game::showCommandLine(int x, int y) {
             screen.input(217, x + 9, y + 2);
             break;
         case 3:
-            screen.text("[use] current selected spell\n\nselect different spell by\n\nscrolling [up] [down]\n          or\n[select]ing based on index\n[search]ing by name", x + 6, y + 5);
+            screen.text("[cast] current selected spell\n\nselect different spell by\n\nscrolling [up] [down]\n[select]ing based on index\n[search]ing by name", x + 6, y + 5);
             screen.text(" [back] ", x + 1, y + 1);
             
             screen.rect(196, x + 1, y + 2, 8, 1);
@@ -204,7 +254,7 @@ void Game::processInput() {
             break;
         case 2:
             if (userInput.ToLower() == "use") {
-                response = player.useItem() + " | " + player.getItem()->getName() + "\nDebug: " + typeid(*player.getItem()).name();
+                response = player.useItem() + "\nDebug: " + player.getItem()->getName() + "|" + typeid(*player.getItem()).name();
             }
             else if (userInput.ToLower() == "up") {
                 player.shiftInvIndex(-1);
@@ -237,8 +287,8 @@ void Game::processInput() {
             }
             break;
         case 3:
-            if (userInput.ToLower() == "use") {
-                response = player.useSpell();
+            if (userInput.ToLower() == "cast") {
+                response = player.castSpell() + "\nDebug: " + player.getSpell()->getName() + "|" + typeid(*player.getSpell()).name();
             }
             else if (userInput.ToLower() == "up") {
                 player.shiftSpellIndex(-1);
@@ -254,16 +304,13 @@ void Game::processInput() {
             else if (userInput.ToLower().Find("search ") == 0) {
                 userInput.Replace("search ", "");
 
-                response = "doesn't work yet";
-                return;
-
-                int searchResult = player.findItemIndex(userInput);
+                int searchResult = player.findSpellIndex(userInput);
                 if (searchResult == -1) {
                     response = "'" + userInput + "' not found";
                 }
                 else {
                     response = "'" + userInput + "' found at index " + toString(searchResult);
-                    player.setInvIndex(searchResult);
+                    player.setSpellIndex(searchResult);
                 }
             }
             else if (userInput.ToLower() == "back") {
@@ -280,16 +327,20 @@ void Game::run() {
     screen.reset();
 
     showPlayerInfo(2, 1);
+    
+    if (inputState > 1) {
+        showDetails(2, 24);
+    }
 
     showRoomInfo(screen.width - 80, screen.height-18);
 
     showMap(screen.width / 2 + 69, screen.height / 2 - 8);
 
-    showCommandLine(2, screen.height - 23);
+    showCommandLine(config.x, config.y);
 
     screen.print();
 
-    inputLine(6, screen.height - 4);
+    inputLine(config.x + 4, config.y + 19);
 
     processInput();
 }

@@ -24,4 +24,6 @@ class ItemList {
         ItemList& addItem(Item* item);
         //const ItemList& addItem(Item* item) const;
         ItemList& addItem(Item* item, ItemList& masterList);
+
+        ItemList& insertItem(Item* item, int index);
 };

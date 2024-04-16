@@ -1,16 +1,18 @@
 #pragma once
 #include "ItemList.h"
-#include "Spell.h"
+#include "Spells.h"
 
 class Player {
     private:
         class Game* ownerPtr;
         int health;
+        
         ItemList inventory;
         int currentInvIndex;
-        String spells[4];
+
+        SpellBase** spellBook;
+        int spellCount;
         int currentSpellIndex;
-        TeleportSpell teleportSpell;
 
     public:
         int x;
@@ -21,27 +23,26 @@ class Player {
 
         Player(Game& owner, int x, int y);
 
-        int getHealth();
+        Player& operator=(const Player& spell);
 
+        int getHealth();
         int addHealth(int amount);
 
         String getDescription();
 
         ItemList& getInventory();
-
         void setInvIndex(int newIndex);
-
         void shiftInvIndex(int shift);
 
         Item*& getItem();
-
         String useItem();
-
         int findItemIndex(String itemName);
 
+        SpellBase**& getSpellBook();
         void setSpellIndex(int newIndex);
-
         void shiftSpellIndex(int shift);
 
-        String useSpell();
+        SpellBase*& getSpell();
+        String castSpell();
+        int findSpellIndex(String spellName);
 };

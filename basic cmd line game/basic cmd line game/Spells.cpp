@@ -1,49 +1,45 @@
-#include "Spell.h"
+#include "Spells.h"
 #include "Player.h"
 
-Spell::Spell() {
+SpellBase::SpellBase() {
 	name = "???";
 	description = "???";
 }
 
-Spell::Spell(const Spell& spell) {
+SpellBase::SpellBase(const SpellBase& spell) {
 	name = spell.name;
 	description = spell.description;
 }
 
-Spell::Spell(String name, String description) {
+SpellBase::SpellBase(String name, String description) {
 	this->name = name;
 	this->description = description;
 }
 
-Spell& Spell::operator=(const Spell& spell) {
+SpellBase& SpellBase::operator=(const SpellBase& spell) {
 	name = spell.name;
 	description = spell.description;
 
 	return *this;
 }
 
-String& Spell::getName() {
+String& SpellBase::getName() {
 	return name;
 }
 
-const String& Spell::getName() const {
+const String& SpellBase::getName() const {
 	return name;
 }
 
-String& Spell::getDescription() {
+String& SpellBase::getDescription() {
 	return description;
 }
 
-const String& Spell::getDescription() const {
+const String& SpellBase::getDescription() const {
 	return description;
 }
 
-String Spell::use(Player& player) {
-	return "I didn't do anything";
-}
-
-String Spell::use(Player& player, int arg, ...) {
+String SpellBase::cast(Player& player, int arg, ...) {
 	return "I didn't do anything";
 }
 
@@ -57,7 +53,7 @@ TeleportSpell::TeleportSpell(String name, String description) {
 	this->getDescription() = description;
 }
 
-String TeleportSpell::use(Player& player, int arg, ...) {
+String TeleportSpell::cast(Player& player, int arg, ...) {
 	player.x = *((int*)&arg);
 	player.y = *((int*)&arg + 2);
 

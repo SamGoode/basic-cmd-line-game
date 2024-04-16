@@ -9,13 +9,9 @@ Player::Player() {
     inventory;
     currentInvIndex = 0;
 
-    spells[0] = "teleport";
-    spells[1] = "eatshit";
-    spells[2] = "fireball";
-    spells[3] = "waterspout";
+    spellCount = 0;
+    spellBook = nullptr;
     currentSpellIndex = 0;
-
-    teleportSpell = TeleportSpell("teleport", "teleports the player to specified coordinates");
 
     x = 0;
     y = 0;
@@ -29,14 +25,38 @@ Player::Player(Game& owner, int x, int y) {
     inventory;
     currentInvIndex = 0;
 
-    spells[0] = "teleport";
-    spells[1] = "fireball";
-    spells[2] = "waterspout";
-    spells[3] = "eatshit";
+    spellCount = 3;
+    spellBook = new SpellBase*[spellCount];
+    spellBook[0] = new SpellBase("hiya", "I don't actually do anything");
+    spellBook[1] = new TeleportSpell("teleport", "teleports the player to specified\ncoordinates");
+    spellBook[2] = new SpellBase("dummy spell", "doesn't do anything");
     currentSpellIndex = 0;
 
     this->x = x;
     this->y = y;
+}
+
+Player& Player::operator=(const Player& player) {
+    ownerPtr = player.ownerPtr;
+
+    health = player.health;
+
+    inventory = player.inventory;
+    currentInvIndex = player.currentInvIndex;
+
+    for (int i = 0; i < spellCount; i++) {
+        delete spellBook[i];
+    }
+    delete[] spellBook;
+
+    spellCount = player.spellCount;
+    spellBook = player.spellBook;
+    currentSpellIndex = 0;
+
+    x = player.x;
+    y = player.y;
+
+    return *this;
 }
 
 int Player::getHealth() {
@@ -49,10 +69,10 @@ int Player::addHealth(int amount) {
 }
 
 String Player::getDescription() {
-    String printout = "  Player stats:\n\n";
+    String printout = " Player stats:\n\n";
 
     //offset printed coordinates so centre room (starting room) is at 0, 0
-    printout += "  Health: " + toString(health) + "\n\n  Coordinates: x:" + toString(x-2) + ", y:" + toString(y-2) + "\n\n  Inventory:\n";
+    printout += " Health: " + toString(health) + "\n\n Coordinates: x:" + toString(x-2) + ", y:" + toString(y-2) + "\n\n Inventory:\n";
 
     for (int i = 0; i < inventory.getCount(); i++) {
         if (i == currentInvIndex && ownerPtr->getInputState() == 2) {
@@ -63,7 +83,7 @@ String Player::getDescription() {
             printout += "  ";
         }
         
-        printout += inventory[i]->getName() + " | " + inventory[i]->getDescription();
+        printout += inventory[i]->getName();
         
         if (i == currentInvIndex && ownerPtr->getInputState() == 2) {
             printout += 174;
@@ -72,8 +92,8 @@ String Player::getDescription() {
         printout += "\n";
     }
 
-    printout += "\n  Spellbook:\n";
-    for (int i = 0; i < 3; i++) {
+    printout += "\n Spellbook:\n";
+    for (int i = 0; i < spellCount; i++) {
         if (i == currentSpellIndex && ownerPtr->getInputState() == 3) {
             printout += 175;
             printout += 175;
@@ -82,7 +102,7 @@ String Player::getDescription() {
             printout += "  ";
         }
 
-        printout += spells[i];
+        printout += spellBook[i]->getName();
         
         if (i == currentSpellIndex && ownerPtr->getInputState() == 3) {
             printout += 174;
@@ -146,6 +166,10 @@ int Player::findItemIndex(String itemName) {
     }
 }
 
+SpellBase**& Player::getSpellBook() {
+    return spellBook;
+}
+
 void Player::setSpellIndex(int newIndex) {
     if (newIndex < 0) {
         newIndex = 0;
@@ -161,10 +185,35 @@ void Player::shiftSpellIndex(int shift) {
     setSpellIndex(currentSpellIndex + shift);
 }
 
-String Player::useSpell() {
-    if (spells[currentSpellIndex] == "teleport") {
-        return teleportSpell.use(*this, 2, 2);
-    }
+SpellBase*& Player::getSpell() {
+    return spellBook[currentSpellIndex];
+}
 
-    return "wtf";
+String Player::castSpell() {
+    return getSpell()->cast(*this, 0, 2);
+}
+
+int Player::findSpellIndex(String spellName) {
+    int upperBound = spellCount - 1;
+    int lowerBound = 0;
+    int index;
+
+    while (true) {
+        index = ((upperBound - lowerBound) / 2) + lowerBound;
+
+        if (spellName == spellBook[index]->getName()) {
+            return index;
+        }
+
+        if (upperBound <= lowerBound) {
+            return -1;
+        }
+
+        if (spellName < spellBook[index]->getName()) {
+            upperBound = index - 1;
+        }
+        else {
+            lowerBound = index + 1;
+        }
+    }
 }
