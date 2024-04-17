@@ -19,7 +19,7 @@ Game::Game(int screenWidth, int screenHeight) {
     animY = 0;
 
     player = Player(*this, 2, 2);
-    player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("apple pie", "wow yummy", 30), new Item("diamond", "wow shiny"), new Item("knife", "wow sharp") }, itemDatabase);
+    player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("apple pie", "Wow yummy", 30), new Item("diamond", "Wow shiny"), new Item("knife", "Wow sharp") }, itemDatabase);
     
     rooms[0][2] = Room("Boss room");
     rooms[1][0] = Room("This room is undergoing construction.");
@@ -184,37 +184,37 @@ void Game::showCommandLine(int x, int y) {
             screen.text("[move]   [inventory]   [fight]\n\n         [spellbook]", x+6, y+10);
             break;
         case 1:
-            screen.text("       [north]\n\n          ^\n[west]  < + >  [east]\n          v\n\n       [south]", x + 10, y + 6);
-            screen.text(" [back] ", x + 1, y + 3);
-            
             screen.rect(196, x + 1, y + 4, 8, 1);
             screen.rect(179, x + 9, y + 3, 1, 1);
 
-            //screen.input(209, x + 9, y+2);
             screen.input(195, x, y + 4);
             screen.input(217, x + 9, y + 4);
+
+            screen.text("[back]", x + 2, y + 3);
+            
+            screen.text("       [north]\n\n          ^\n[west]  < + >  [east]\n          v\n\n       [south]", x + 10, y + 6);
             break;
         case 2:
-            screen.text("[use] current selected item\n\nselect different item by\n\nscrolling [up] [down]\n[select]ing based on index\n[search]ing by name", x+6, y+5);
-            screen.text(" [back] ", x + 1, y + 1);
+            screen.rect(196, x + 1, y + 4, 8, 1);
+            screen.rect(179, x + 9, y + 3, 1, 1);
 
-            screen.rect(196, x + 1, y + 2, 8, 1);
-            screen.rect(179, x + 9, y + 1, 1, 1);
+            screen.input(195, x, y + 4);
+            screen.input(217, x + 9, y + 4);
 
-            screen.input(209, x + 9, y);
-            screen.input(199, x, y + 2);
-            screen.input(217, x + 9, y + 2);
+            screen.text("[back]", x + 2, y + 3);
+
+            screen.text("[use] current selected item\n\nselect different item by\n\nscrolling [up] [down]\n[select]ing based on index\n[search]ing by name", x + 6, y + 6);
             break;
         case 3:
-            screen.text("[cast] current selected spell\n\nselect different spell by\n\nscrolling [up] [down]\n[select]ing based on index\n[search]ing by name", x + 6, y + 5);
-            screen.text(" [back] ", x + 1, y + 1);
-            
-            screen.rect(196, x + 1, y + 2, 8, 1);
-            screen.rect(179, x + 9, y + 1, 1, 1);
+            screen.rect(196, x + 1, y + 4, 8, 1);
+            screen.rect(179, x + 9, y + 3, 1, 1);
 
-            screen.input(209, x + 9, y);
-            screen.input(199, x, y + 2);
-            screen.input(217, x + 9, y + 2);
+            screen.input(195, x, y + 4);
+            screen.input(217, x + 9, y + 4);
+
+            screen.text("[back]", x + 2, y + 3);
+            
+            screen.text("[cast] current selected spell\n\nselect different spell by\n\nscrolling [up] [down]\n[select]ing based on index\n[search]ing by name", x + 6, y + 6);
     }
 
     screen.text(response, x + 5, y + 17);

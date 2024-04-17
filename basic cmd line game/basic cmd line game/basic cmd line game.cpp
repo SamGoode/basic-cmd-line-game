@@ -38,6 +38,10 @@ int main() {
 
     HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
 
+    DWORD consoleMode;
+    GetConsoleMode(hout, &consoleMode);
+    SetConsoleMode(hout, consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+
     CONSOLE_FONT_INFOEX cfi;
     cfi.cbSize = sizeof(CONSOLE_FONT_INFOEX);
 
