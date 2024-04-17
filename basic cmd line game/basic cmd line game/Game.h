@@ -3,14 +3,29 @@
 #include "Player.h"
 #include "Room.h"
 
-struct Config {
-    int x;
-    int y;
-};
-
 class Game {
     private:
+        struct Config {
+            struct UISettings {
+                int x;
+                int y;
+            };
+
+            UISettings playerInfo;
+            UISettings roomInfo;
+            UISettings map;
+            UISettings details;
+            UISettings commandLine;
+        };
+
+    private:
         Screen screen;
+        bool isAnimating;
+        int animID;
+        int animCount;
+        int animX;
+        int animY;
+        String tempStr;
         Config config;
         Player player;
         Room rooms[5][5];
@@ -23,6 +38,8 @@ class Game {
         Game(int screenWidth, int screenHeight);
 
         ~Game();
+
+        int getInputState();
 
         void drawRoom(char chr, int x, int y, int width, int height);
         
@@ -44,9 +61,13 @@ class Game {
 
         void inputLine(int x, int y);
 
-        int getInputState();
-
         void processInput();
+
+        void startAnimation(int ID);
+
+        void runAnimation(int ID);
+
+        void endAnimation(int ID);
 
         void run();
 };

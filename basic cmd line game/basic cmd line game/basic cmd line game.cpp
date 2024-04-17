@@ -3,16 +3,6 @@
 #include "Game.h"
 
 int main() {
-    int test = 2147483648;//0x7FFFFFFF;
-    //test = test + 1;
-    std::cout << "toString() test: " << toString(test) + " testing" << std::endl;
-    //2146483647
-    //4292967294
-    std::cout << "toInt() test: " << toInt("2146483648") << std::endl;
-    //test++;
-    std::cout << test << std::endl;
-    return 0;
-
     //while (true) {
     //    /*ItemList database = ItemList();
 
@@ -39,7 +29,7 @@ int main() {
     */
 
     //game ticks per second
-    int tickrate = 200;
+    int tickrate = 100;
 
     SetConsoleOutputCP(437);
 

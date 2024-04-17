@@ -4,7 +4,19 @@
 Game::Game(int screenWidth, int screenHeight) {
     screen = Screen(screenWidth, screenHeight);
 
-    config = { 70, screenHeight - 23 };
+    config = {
+        {2, 1},
+        {screen.width - 80, screen.height - 18},
+        {screen.width / 2 + 69, screen.height / 2 - 8},
+        {2, 24},
+        {70, screenHeight - 23}
+    };
+
+    isAnimating = false;
+    animID = 0;
+    animCount = 0;
+    animX = 0;
+    animY = 0;
 
     player = Player(*this, 2, 2);
     player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("apple pie", "wow yummy", 30), new Item("diamond", "wow shiny"), new Item("knife", "wow sharp") }, itemDatabase);
@@ -35,6 +47,10 @@ Game::~Game() {
         delete player.getSpellBook()[i];
     }
     delete[] player.getSpellBook();
+}
+
+int Game::getInputState() {
+    return inputState;
 }
 
 void Game::drawRoom(char chr, int x, int y, int width, int height) {
@@ -115,7 +131,7 @@ void Game::showMap(int x, int y) {
     }
     
     drawDuck((x - 2) + 14 * (0), (y - 2) + 7 * (-2));
-    drawPlayer((x - 2) + 14 * (player.x - 2), (y - 2) + 7 * (player.y - 2));
+    drawPlayer((x - 2) + 14 * (player.x - 2) + animX, (y - 2) + 7 * (player.y - 2) + animY);
 }
 
 void Game::showDetails(int x, int y) {
@@ -184,10 +200,6 @@ void Game::inputLine(int x, int y) {
     userInput.ReadFromConsole();
 }
 
-int Game::getInputState() {
-    return inputState;
-}
-
 void Game::processInput() {
     response = "";
     switch (inputState) {
@@ -217,6 +229,7 @@ void Game::processInput() {
 
                 response = "You entered the room to the north";
                 player.y--;
+                startAnimation(0);
             }
             else if (userInput.ToLower() == "east") {
                 if (!rooms[player.y][player.x + 1].doesExist() || player.x == 4) {
@@ -226,6 +239,7 @@ void Game::processInput() {
 
                 response = "You entered the room to the east";
                 player.x++;
+                startAnimation(1);
             }
             else if (userInput.ToLower() == "south") {
                 if (!rooms[player.y + 1][player.x].doesExist() || player.y == 4) {
@@ -235,6 +249,7 @@ void Game::processInput() {
 
                 response = "You entered the room to the south";
                 player.y++;
+                startAnimation(2);
             }
             else if (userInput.ToLower() == "west") {
                 if (!rooms[player.y][player.x - 1].doesExist() || player.x == 0) {
@@ -244,6 +259,7 @@ void Game::processInput() {
 
                 response = "You entered the room to the west";
                 player.x--;
+                startAnimation(3);
             }
             else if (userInput.ToLower() == "back") {
                 inputState = 0;
@@ -300,6 +316,7 @@ void Game::processInput() {
             else if (userInput.ToLower().Find("select ") == 0) {
                 //this is some unreliable parsing
                 userInput.Replace("select ", "");
+                response = "tried to go to " + toString(toInt(userInput));
                 player.setSpellIndex(toInt(userInput));
             }
             else if (userInput.ToLower().Find("search ") == 0) {
@@ -324,24 +341,124 @@ void Game::processInput() {
     }
 }
 
+void Game::startAnimation(int ID) {
+    isAnimating = true;
+    animID = ID;
+    tempStr = response;
+    response = "";
+
+    switch (ID) {
+        case 0:
+            player.y++;
+            break;
+        case 1:
+            player.x--;
+            break;
+        case 2:
+            player.y--;
+            break;
+        case 3:
+            player.x++;
+            break;
+    }
+}
+
+void Game::runAnimation(int ID) {
+    switch (ID) {
+        case 0:
+            if (animCount % 5 == 0) {
+                animY -= 1;
+            }
+
+            animCount++;
+
+            if (animCount > 34) {
+                endAnimation(ID);
+            }
+            break;
+        case 1:
+            if (animCount % 5 == 0) {
+                animX += 2;
+            }
+
+            animCount++;
+
+            if (animCount > 34) {
+                endAnimation(ID);
+            }
+            break;
+        case 2:
+            if (animCount % 5 == 0) {
+                animY += 1;
+            }
+
+            animCount++;
+
+            if (animCount > 34) {
+                endAnimation(ID);
+            }
+            break;
+        case 3:
+            if (animCount % 5 == 0) {
+                animX -= 2;
+            }
+
+            animCount++;
+
+            if (animCount > 34) {
+                endAnimation(ID);
+            }
+            break;
+    }
+}
+
+void Game::endAnimation(int ID) {
+    isAnimating = false;
+    animCount = 0;
+    animX = 0;
+    animY = 0;
+    response = tempStr;
+
+    switch (ID) {
+        case 0:
+            player.y--;
+            break;
+        case 1:
+            player.x++;
+            break;
+        case 2:
+            player.y++;
+            break;
+        case 3:
+            player.x--;
+            break;
+    }
+}
+
 void Game::run() {
     screen.reset();
 
-    showPlayerInfo(2, 1);
+    showPlayerInfo(config.playerInfo.x, config.playerInfo.y);
     
+    showRoomInfo(config.roomInfo.x, config.roomInfo.y);
+
+    showMap(config.map.x, config.map.y);
+
     if (inputState > 1) {
-        showDetails(2, 24);
+        showDetails(config.details.x, config.details.y);
     }
-
-    showRoomInfo(screen.width - 80, screen.height-18);
-
-    showMap(screen.width / 2 + 69, screen.height / 2 - 8);
-
-    showCommandLine(config.x, config.y);
-
+    
+    showCommandLine(config.commandLine.x, config.commandLine.y);
+    
     screen.print();
 
-    inputLine(config.x + 4, config.y + 19);
+    if (isAnimating) {
+        runAnimation(animID);
+        
+        return;
+    }
+
+    inputLine(config.commandLine.x + 4, config.commandLine.y + 19);
 
     processInput();
 }
