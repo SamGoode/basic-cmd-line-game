@@ -356,8 +356,8 @@ String toString(int x) {
         totalChars++;
     }
 
-    // int can have a max of 12 chars (e.g -2147483648) plus room for null terminator
-    char chars[13]; 
+    // int can have a max of 11 chars (e.g -2147483648) plus room for null terminator
+    char chars[12]; 
     for (int i = 0; i < totalChars; i++) {
         if (i == 0) {
             if (isNegative) {
@@ -372,20 +372,24 @@ String toString(int x) {
     return chars;
 }
 
-//only works for positive ints
+//breaks apart at numbers would go over 2146483647
 int toInt(const String& str) {
     int finalInt = 0;
     
+    if (str.Length() > 11) {
+        return 0x80000000;
+    }
+
     for (int i = 0; i < str.Length(); i++) {
         if (str[i] < 48 || str[i] > 57) {
             if (i == 0 && str[0] == '-') {
                 continue;
             }
 
-            return 0xFFFFFFFF;
+            return 0x80000000;
         }
 
-        finalInt += ((int)str[i] - 48) * ((int)pow(10, str.Length() - i - 1));
+        finalInt += ((int)str[i] - 48) * ((int)pow(10, str.Length() - 1 - i));
     }
 
     if (str[0] == '-') {
