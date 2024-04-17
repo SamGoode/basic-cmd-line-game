@@ -54,7 +54,7 @@ class String {
 
 String toString(int x);
 
-int toInt(String str);
+int toInt(const String& str);
 
 String operator+(const String& lhs, const String& rhs);
 

@@ -3,6 +3,14 @@
 #include "Game.h"
 
 int main() {
+    std::cout << "toString() test: " << toString(0x80000000) + " testing" << std::endl;
+    std::cout << "toInt() test: " << toInt("-12345678901") << std::endl;
+    int test = 0x7FFFFFFF;
+    //test++;
+    test = test * -1;
+    std::cout << test << std::endl;
+    return 0;
+
     //while (true) {
     //    /*ItemList database = ItemList();
 

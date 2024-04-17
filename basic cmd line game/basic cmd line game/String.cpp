@@ -323,7 +323,6 @@ bool String::operator<(const String& str) {
         }
     }
 
-
     return true;
 }
 
@@ -339,41 +338,58 @@ String& String::operator+=(const char chr) {
 }
 
 String toString(int x) {
-    String finalString;
+    bool isNegative = false;
+    int totalChars = 1;
+
+    //-2147483648 can't be multiplied by negative 1
+    if (x == 0x80000000) {
+        return "-2147483648";
+    }
 
     if (x < 0) {
-        finalString = "-";
+        isNegative = true;
+        totalChars++;
         x = x * -1;
     }
     
-    int totalDigits = 1;
     for (int i = 1; x / (int)pow(10, i) > 0; i++) {
-        totalDigits++;
+        totalChars++;
     }
 
-    char a = 48; //'0'
-
-    char* digits = new char[totalDigits + 1];
-    for (int i = 0; i < totalDigits; i++) {
-        digits[i] = ((x / (int)pow(10, totalDigits - i - 1)) % 10) + 48;
+    // int can have a max of 12 chars (e.g -2147483648) plus room for null terminator
+    char chars[13]; 
+    for (int i = 0; i < totalChars; i++) {
+        if (i == 0) {
+            if (isNegative) {
+                chars[0] = '-';
+                continue;
+            }
+        }
+        chars[i] = ((x / (int)pow(10, totalChars - 1 - i)) % 10) + 48;
     }
-    *(digits + totalDigits) = 0;
+    chars[totalChars] = 0;
 
-    finalString += digits;
-    delete[] digits;
-    return finalString;
+    return chars;
 }
 
 //only works for positive ints
-int toInt(String str) {
+int toInt(const String& str) {
     int finalInt = 0;
     
     for (int i = 0; i < str.Length(); i++) {
         if (str[i] < 48 || str[i] > 57) {
-            return 0;
+            if (i == 0 && str[0] == '-') {
+                continue;
+            }
+
+            return 0xFFFFFFFF;
         }
 
         finalInt += ((int)str[i] - 48) * ((int)pow(10, str.Length() - i - 1));
+    }
+
+    if (str[0] == '-') {
+        finalInt = finalInt * -1;
     }
 
     return finalInt;

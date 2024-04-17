@@ -265,6 +265,7 @@ void Game::processInput() {
             else if (userInput.ToLower().Find("select ") == 0) {
                 //this is some unreliable parsing
                 userInput.Replace("select ", "");
+                response = "tried to go to " + toString(toInt(userInput));
                 player.setInvIndex(toInt(userInput));
             }
             else if (userInput.ToLower().Find("search ") == 0) {
