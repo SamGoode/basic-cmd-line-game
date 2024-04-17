@@ -96,19 +96,37 @@ void Game::drawBorder(int x, int y, int width, int height, bool isThick) {
     }
 }
 
-void Game::showPlayerInfo(int x, int y) {
-    drawBorder(x, y, 40, 20, true);
-    
-    drawBorder(x + 31, y + 1, 6, 2, false);
-    drawPlayer(x + 33, y + 2);
+void Game::drawUIWindow(int x, int y, int width, int height) {
+    drawBorder(x, y, width, height, false);
+    drawBorder(x, y, width, 1, true);
 
-    screen.text(player.getDescription(), x+2, y+2);
+    screen.input(186, x, y + 20);
+    screen.input(200, x, y + 21);
+    screen.input(205, x + 1, y + 21);
+    screen.input(205, x + 2, y + 21);
+
+    screen.input(186, x + 41, y + 20);
+    screen.input(188, x + 41, y + 21);
+    screen.input(205, x + 40, y + 21);
+    screen.input(205, x + 39, y + 21);
+}
+
+void Game::showPlayerInfo(int x, int y) {
+    drawUIWindow(x, y, 40, 20);
+    screen.text("Player Profile", x + 14, y + 1);
+    
+    drawBorder(x + 31, y + 3, 6, 2, false);
+    drawPlayer(x + 33, y + 4);
+
+    screen.text(player.getDescription(), x+2, y+4);
 }
 
 void Game::showRoomInfo(int x, int y) {
-    drawBorder(x, y, 76, 15, true);
+    //drawBorder(x, y, 76, 15, true);
+    drawUIWindow(x, y, 76, 15);
+    screen.text("Room Info", x + 34, y + 1);
 
-    screen.text(rooms[player.y][player.x].getDescription(), x+3, y+2);
+    screen.text(rooms[player.y][player.x].getDescription(), x+3, y+4);
 }
 
 void Game::showMap(int x, int y) {
@@ -135,9 +153,17 @@ void Game::showMap(int x, int y) {
 }
 
 void Game::showDetails(int x, int y) {
-    drawBorder(x, y, 40, 20, true);
+    //drawBorder(x, y, 40, 20, false);
+    drawUIWindow(x, y, 40, 20);
     screen.text("Details", x + 17, y + 1);
-    screen.rect(205, x + 1, y + 2, 40, 1);
+    //drawBorder(x, y, 40, 1, true);
+    //screen.rect(205, x + 1, y + 2, 40, 1);
+    
+    //screen.input(204, x, y + 2);
+    //screen.input(185, x + 41, y + 2);
+
+    //screen.input(195, x, y + 2);
+    //screen.input(180, x + 41, y + 2);
 
     switch (inputState) {
         case 2:
@@ -150,7 +176,8 @@ void Game::showDetails(int x, int y) {
 }
 
 void Game::showCommandLine(int x, int y) {
-    drawBorder(x, y, 40, 20, true);
+    drawUIWindow(x, y, 40, 20);
+    screen.text("Input Console", x + 14, y + 1);
 
     switch (inputState) {
         case 0:
@@ -158,14 +185,14 @@ void Game::showCommandLine(int x, int y) {
             break;
         case 1:
             screen.text("       [north]\n\n          ^\n[west]  < + >  [east]\n          v\n\n       [south]", x + 10, y + 6);
-            screen.text(" [back] ", x + 1, y + 1);
+            screen.text(" [back] ", x + 1, y + 3);
             
-            screen.rect(196, x + 1, y + 2, 8, 1);
-            screen.rect(179, x + 9, y + 1, 1, 1);
+            screen.rect(196, x + 1, y + 4, 8, 1);
+            screen.rect(179, x + 9, y + 3, 1, 1);
 
-            screen.input(209, x + 9, y);
-            screen.input(199, x, y + 2);
-            screen.input(217, x + 9, y + 2);
+            //screen.input(209, x + 9, y+2);
+            screen.input(195, x, y + 4);
+            screen.input(217, x + 9, y + 4);
             break;
         case 2:
             screen.text("[use] current selected item\n\nselect different item by\n\nscrolling [up] [down]\n[select]ing based on index\n[search]ing by name", x+6, y+5);
@@ -190,9 +217,9 @@ void Game::showCommandLine(int x, int y) {
             screen.input(217, x + 9, y + 2);
     }
 
-    screen.text(response, x+4, y + 17);
+    screen.text(response, x + 5, y + 17);
 
-    screen.input(175, x + 2, y + 19);
+    screen.input(175, x + 3, y + 19);
 }
 
 void Game::inputLine(int x, int y) {
@@ -458,7 +485,7 @@ void Game::run() {
         return;
     }
 
-    inputLine(config.commandLine.x + 4, config.commandLine.y + 19);
+    inputLine(config.commandLine.x + 5, config.commandLine.y + 19);
 
     processInput();
 }

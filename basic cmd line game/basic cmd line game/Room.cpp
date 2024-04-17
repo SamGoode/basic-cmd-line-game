@@ -44,14 +44,14 @@ Room& Room::addItem(Item* item) {
 }
 
 String Room::getDescription() {
-    String printOut = "Room:\n\n" + description;
+    String printOut = description;
 
     if (items.getCount() == 0) {
         printOut += "\n\n";
         return printOut;
     }
 
-    printOut += "\n\nitems:\n";
+    printOut += "\n\nItems:\n";
     for (int i = 0; i < items.getCount(); i++) {
         printOut += items[i]->getName();
         printOut += " | ";

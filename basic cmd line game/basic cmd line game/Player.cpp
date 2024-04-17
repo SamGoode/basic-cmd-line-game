@@ -27,9 +27,9 @@ Player::Player(Game& owner, int x, int y) {
 
     spellCount = 3;
     spellBook = new SpellBase*[spellCount];
-    spellBook[0] = new SpellBase("hiya", "I don't actually do anything");
-    spellBook[1] = new TeleportSpell("teleport", "teleports the player to specified\ncoordinates");
-    spellBook[2] = new SpellBase("dummy spell", "doesn't do anything");
+    spellBook[0] = new SpellBase("dummy spell", "Doesn't do anything");
+    spellBook[1] = new SpellBase("hiya", "I don't actually do anything");
+    spellBook[2] = new TeleportSpell("teleport", "Teleports the player to specified\ncoordinates");
     currentSpellIndex = 0;
 
     this->x = x;
@@ -69,10 +69,8 @@ int Player::addHealth(int amount) {
 }
 
 String Player::getDescription() {
-    String printout = " Player stats:\n\n";
-
     //offset printed coordinates so centre room (starting room) is at 0, 0
-    printout += " Health: " + toString(health) + "\n\n Coordinates: x:" + toString(x-2) + ", y:" + toString(y-2) + "\n\n Inventory:\n";
+    String printout = " Health: " + toString(health) + "\n\n Coordinates: x:" + toString(x-2) + ", y:" + toString(y-2) + "\n\n Inventory:\n";
 
     for (int i = 0; i < inventory.getCount(); i++) {
         if (i == currentInvIndex && ownerPtr->getInputState() == 2) {

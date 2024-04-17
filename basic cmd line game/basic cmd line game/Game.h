@@ -49,6 +49,8 @@ class Game {
 
         void drawBorder(int x, int y, int width, int height, bool isThick);
 
+        void drawUIWindow(int x, int y, int width, int height);
+
         void showPlayerInfo(int x, int y);
 
         void showRoomInfo(int x, int y);
