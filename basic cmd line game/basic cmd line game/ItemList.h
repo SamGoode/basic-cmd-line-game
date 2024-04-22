@@ -22,8 +22,9 @@ class ItemList {
         int getCount();
 
         ItemList& addItem(Item* item);
-        //const ItemList& addItem(Item* item) const;
         ItemList& addItem(Item* item, ItemList& masterList);
+        
+        ItemList& removeItem(int index);
 
         ItemList& insertItem(Item* item, int index);
 };

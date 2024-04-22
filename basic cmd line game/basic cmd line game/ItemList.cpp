@@ -74,12 +74,30 @@ ItemList& ItemList::addItem(Item* item, ItemList& itemDatabase) {
     return *this;
 }
 
+ItemList& ItemList::removeItem(int index) {
+    Item** oldPtr = items;
+
+    count--;
+    items = new Item*[count];
+    for (int i = 0, j = 0; i < count; i++, j++) {
+        if (i == index) {
+            j++;
+        }
+
+        items[i] = oldPtr[j];
+    }
+
+    delete[] oldPtr;
+
+    return *this;
+}
+
 ItemList& ItemList::insertItem(Item* item, int index) {
     Item** oldPtr = items;
 
     count++;
     items = new Item*[count];
-    for (int i = 0, j = 0; i < count - 1; i++, j++) {
+    for (int i = 0, j = 0; i < count; i++, j++) {
         if (i == index) {
             j--;
             items[i] = item;

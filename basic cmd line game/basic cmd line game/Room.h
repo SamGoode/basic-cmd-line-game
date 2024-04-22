@@ -3,16 +3,19 @@
 
 class Room {
     private:
+        class Game* ownerPtr;
+
         bool exists;
         String description;
         ItemList items;
+        int currentItemsIndex;
 
     public:
         Room();
 
-        Room(String description);
+        Room(Game& owner, String description);
 
-        Room(String description, const ItemList& items);
+        Room(Game& owner, String description, const ItemList& items);
 
         Room(const Room& room);
 
@@ -20,7 +23,15 @@ class Room {
 
         bool doesExist();
 
-        Room& addItem(Item* item);
+        //Room& addItem(Item* item);
 
         String getDescription();
+
+        ItemList& getItems();
+
+        Item*& getItem();
+        Room& removeItem();
+
+        void setItemsIndex(int newIndex);
+        void shiftItemsIndex(int shift);
 };
