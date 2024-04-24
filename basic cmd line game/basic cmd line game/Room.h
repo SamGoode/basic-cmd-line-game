@@ -30,7 +30,7 @@ class Room {
         ItemList& getItems();
 
         Item*& getItem();
-        Room& removeItem();
+        Item*& removeItem();
 
         void setItemsIndex(int newIndex);
         void shiftItemsIndex(int shift);

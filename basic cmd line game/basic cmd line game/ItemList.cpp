@@ -52,6 +52,31 @@ int ItemList::getCount() {
     return count;
 }
 
+int ItemList::findItemIndex(const String& itemName) {
+    int upperBound = getCount() - 1;
+    int lowerBound = 0;
+    int index;
+
+    while (true) {
+        index = ((upperBound - lowerBound) / 2) + lowerBound;
+
+        if (itemName == items[index]->getName()) {
+            return index;
+        }
+
+        if (upperBound <= lowerBound) {
+            return -1;
+        }
+
+        if (itemName < items[index]->getName()) {
+            upperBound = index - 1;
+        }
+        else {
+            lowerBound = index + 1;
+        }
+    }
+}
+
 ItemList& ItemList::addItem(Item* item) {
     Item** oldPtr = items;
 

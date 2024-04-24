@@ -90,10 +90,11 @@ Item*& Room::getItem() {
     return items[currentItemsIndex];
 }
 
-Room& Room::removeItem() {
+Item*& Room::removeItem() {
+    Item* itemRef = items[currentItemsIndex];
     items.removeItem(currentItemsIndex);
 
-    return *this;
+    return itemRef;
 }
 
 void Room::setItemsIndex(int newIndex) {

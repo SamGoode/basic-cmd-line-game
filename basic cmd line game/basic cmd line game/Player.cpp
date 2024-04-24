@@ -139,7 +139,7 @@ String Player::useItem() {
     return getItem()->use(*this);
 }
 
-int Player::findItemIndex(String itemName) {
+int Player::findItemIndex(const String& itemName) {
     int upperBound = inventory.getCount() - 1;
     int lowerBound = 0;
     int index;
@@ -162,6 +162,19 @@ int Player::findItemIndex(String itemName) {
             lowerBound = index + 1;
         }
     }
+}
+
+Item*& Player::takeItem(Room& room) {
+    if (!room.doesExist() || room.getItems().getCount() == 0) {
+        Item* null = nullptr;
+        return null;
+    }
+
+    Item* item = room.removeItem();
+    room.shiftItemsIndex(-1);
+
+    inventory.insertItem(item, 1);
+    return item;
 }
 
 SpellBase**& Player::getSpellBook() {
@@ -191,7 +204,7 @@ String Player::castSpell() {
     return getSpell()->cast(*this, 0, 2);
 }
 
-int Player::findSpellIndex(String spellName) {
+int Player::findSpellIndex(const String& spellName) {
     int upperBound = spellCount - 1;
     int lowerBound = 0;
     int index;

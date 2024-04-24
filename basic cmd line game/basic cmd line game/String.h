@@ -39,6 +39,7 @@ class String {
 		String& WriteToConsole();
 
 		bool operator==(const String& str);
+		bool operator==(const String& str) const;
 		bool operator!=(const String& str);
 
 		String& operator=(const String& str);
@@ -47,6 +48,7 @@ class String {
 		const char& operator[](int _index) const;
 
 		bool operator<(const String& str);
+		bool operator<(const String& str) const;
 
 		String& operator+=(const String& str);
 		String& operator+=(const char chr);

@@ -388,7 +388,8 @@ void Game::processInput() {
                 }
 
                 response = "You took the " + rooms[player.y][player.x].getItem()->getName() + "\nDebug: " + typeid(*rooms[player.y][player.x].getItem()).name();
-                rooms[player.y][player.x].removeItem();
+                //rooms[player.y][player.x].removeItem();
+                player.takeItem(rooms[player.y][player.x]);
             }
             else if (userInput.ToLower() == "up") {
                 rooms[player.y][player.x].shiftItemsIndex(-1);

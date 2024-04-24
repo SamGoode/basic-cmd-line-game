@@ -1,5 +1,5 @@
 #pragma once
-#include "ItemList.h"
+#include "Room.h"
 #include "Spells.h"
 
 class Player {
@@ -36,7 +36,8 @@ class Player {
 
         Item*& getItem();
         String useItem();
-        int findItemIndex(String itemName);
+        int findItemIndex(const String& itemName);
+        Item*& takeItem(Room& room);
 
         SpellBase**& getSpellBook();
         void setSpellIndex(int newIndex);
@@ -44,5 +45,5 @@ class Player {
 
         SpellBase*& getSpell();
         String castSpell();
-        int findSpellIndex(String spellName);
+        int findSpellIndex(const String& spellName);
 };

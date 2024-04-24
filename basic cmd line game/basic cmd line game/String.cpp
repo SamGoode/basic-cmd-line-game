@@ -261,6 +261,10 @@ bool String::operator==(const String& str) {
     return EqualTo(str);
 }
 
+bool String::operator==(const String& str) const {
+    return EqualTo(str);
+}
+
 //returns false if lhs == rhs
 bool String::operator!=(const String& str) {
     return !EqualTo(str);
@@ -301,6 +305,40 @@ bool String::operator<(const String& str) {
         char a = *(dataPtr + i);
         char b = *(str.CStr() + i);
         
+        if ((a < 65 || a > 90) && (a < 97 || a > 122)) {
+            continue;
+        }
+        if ((b < 65 || b > 90) && (b < 97 || b > 122)) {
+            continue;
+        }
+
+        if (a >= 97) {
+            a -= 32;
+        }
+        if (b >= 97) {
+            b -= 32;
+        }
+
+        if (a < b) {
+            return true;
+        }
+        if (a > b) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool String::operator<(const String& str) const {
+    if (EqualTo(str)) {
+        return true;
+    }
+
+    for (int i = 0; i < length && i < str.Length(); i++) {
+        char a = *(dataPtr + i);
+        char b = *(str.CStr() + i);
+
         if ((a < 65 || a > 90) && (a < 97 || a > 122)) {
             continue;
         }
