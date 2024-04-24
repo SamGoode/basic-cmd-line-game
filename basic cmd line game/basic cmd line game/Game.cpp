@@ -329,7 +329,7 @@ void Game::processInput() {
             else if (userInput.ToLower().Find("search ") == 0) {
                 userInput.Replace("search ", "");
 
-                int searchResult = player.findItemIndex(userInput);
+                int searchResult = player.getInventory().findItemIndex(userInput);
                 if (searchResult == -1) {
                     response = "'" + userInput + "' not found";
                 }

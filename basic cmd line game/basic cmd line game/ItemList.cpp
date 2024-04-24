@@ -58,6 +58,7 @@ int ItemList::findItemIndex(const String& itemName) {
     int index;
 
     while (true) {
+        // (u - l)/2 + l can probably be simplified to (u + l)/2
         index = ((upperBound - lowerBound) / 2) + lowerBound;
 
         if (itemName == items[index]->getName()) {
@@ -66,6 +67,32 @@ int ItemList::findItemIndex(const String& itemName) {
 
         if (upperBound <= lowerBound) {
             return -1;
+        }
+
+        if (itemName < items[index]->getName()) {
+            upperBound = index - 1;
+        }
+        else {
+            lowerBound = index + 1;
+        }
+    }
+}
+
+int ItemList::findSlotIndex(const String& itemName) {
+    int upperBound = getCount() - 1;
+    int lowerBound = 0;
+    int index;
+
+    while (true) {
+        // (u - l)/2 + l can probably be simplified to (u + l)/2
+        index = ((upperBound - lowerBound) / 2) + lowerBound;
+
+        //if (itemName == items[index]->getName()) {
+        //    return index;
+        //}
+
+        if (upperBound <= lowerBound) {
+            return index;
         }
 
         if (itemName < items[index]->getName()) {

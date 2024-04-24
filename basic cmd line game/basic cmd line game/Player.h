@@ -36,7 +36,6 @@ class Player {
 
         Item*& getItem();
         String useItem();
-        int findItemIndex(const String& itemName);
         Item*& takeItem(Room& room);
 
         SpellBase**& getSpellBook();

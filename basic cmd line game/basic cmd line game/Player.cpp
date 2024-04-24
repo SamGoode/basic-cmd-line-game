@@ -139,31 +139,6 @@ String Player::useItem() {
     return getItem()->use(*this);
 }
 
-int Player::findItemIndex(const String& itemName) {
-    int upperBound = inventory.getCount() - 1;
-    int lowerBound = 0;
-    int index;
-
-    while (true) {
-        index = ((upperBound - lowerBound) / 2) + lowerBound;
-
-        if (itemName == inventory[index]->getName()) {
-            return index;
-        }
-
-        if (upperBound <= lowerBound) {
-            return -1;
-        }
-
-        if (itemName < inventory[index]->getName()) {
-            upperBound = index - 1;
-        }
-        else {
-            lowerBound = index + 1;
-        }
-    }
-}
-
 Item*& Player::takeItem(Room& room) {
     if (!room.doesExist() || room.getItems().getCount() == 0) {
         Item* null = nullptr;
@@ -173,7 +148,7 @@ Item*& Player::takeItem(Room& room) {
     Item* item = room.removeItem();
     room.shiftItemsIndex(-1);
 
-    inventory.insertItem(item, 1);
+    inventory.insertItem(item, inventory.findSlotIndex(item->getName()));
     return item;
 }
 

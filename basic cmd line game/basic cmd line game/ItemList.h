@@ -22,6 +22,7 @@ class ItemList {
         int getCount();
 
         int findItemIndex(const String& itemName);
+        int findSlotIndex(const String& itemName);
 
         ItemList& addItem(Item* item);
         ItemList& addItem(Item* item, ItemList& masterList);
