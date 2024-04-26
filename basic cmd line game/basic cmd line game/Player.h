@@ -35,10 +35,12 @@ class Player {
         int shiftPos(int shiftX, int shiftY);
 
         int getHealth();
-        int addHealth(int amount);
+        int setHealth(int amount);
+        int shiftHealth(int amount);
 
         int getMana();
-        int addMana(int amount);
+        int setMana(int amount);
+        int shiftMana(int amount);
 
         String getDescription();
 

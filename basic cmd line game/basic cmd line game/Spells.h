@@ -22,12 +22,16 @@ class SpellBase {
 		SpellBase& operator=(const SpellBase& spell);
 
 		String& getName();
-
 		const String& getName() const;
 
 		String& getDescription();
-
 		const String& getDescription() const;
+
+		int getCost();
+		SpellBase& setCost(int amount);
+
+		int getDamage();
+		SpellBase& setDamage(int amount);
 
 		virtual String cast(class Player& player, int argCount, int* args);
 };

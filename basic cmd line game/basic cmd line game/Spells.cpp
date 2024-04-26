@@ -52,6 +52,24 @@ const String& SpellBase::getDescription() const {
 	return description;
 }
 
+int SpellBase::getCost() {
+	return cost;
+}
+
+SpellBase& SpellBase::setCost(int amount) {
+	cost = amount;
+	return *this;
+}
+
+int SpellBase::getDamage() {
+	return damage;
+}
+
+SpellBase& SpellBase::setDamage(int amount) {
+	damage = amount;
+	return *this;
+}
+
 String SpellBase::cast(Player& player, int argCount, int* args) {
 	if (argCount > 0) {
 		delete[] args;
@@ -64,11 +82,13 @@ String SpellBase::cast(Player& player, int argCount, int* args) {
 TeleportSpell::TeleportSpell() {
 	this->getName() = "???";
 	this->getDescription() = "???";
+	this->setCost(5);
 }
 
 TeleportSpell::TeleportSpell(String name, String description) {
 	this->getName() = name;
 	this->getDescription() = description;
+	this->setCost(5);
 }
 
 String TeleportSpell::cast(Player& player, int argCount, int* args) {
@@ -91,6 +111,7 @@ String TeleportSpell::cast(Player& player, int argCount, int* args) {
 
 	switch (player.setPos(destX, destY)) {
 		case 0:
+			player.shiftMana(-getCost());
 			return "teleported player to " + toString(destX - 2) + ", " + toString(destY - 2);
 			break;
 		case 1:

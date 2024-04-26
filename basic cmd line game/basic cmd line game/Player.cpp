@@ -103,9 +103,26 @@ int Player::getHealth() {
     return health;
 }
 
-int Player::addHealth(int amount) {
-    health += amount;
+int Player::setHealth(int amount) {
+    health = amount;
     return health;
+}
+
+int Player::shiftHealth(int amount) {
+    return setHealth(health + amount);
+}
+
+int Player::getMana() {
+    return mana;
+}
+
+int Player::setMana(int amount) {
+    mana = amount;
+    return mana;
+}
+
+int Player::shiftMana(int amount) {
+    return setMana(mana + amount);
 }
 
 String Player::getDescription() {
