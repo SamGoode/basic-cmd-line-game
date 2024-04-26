@@ -8,8 +8,9 @@ Game::Game(int screenWidth, int screenHeight) {
         {2, 1},
         {screen.width - 80, screen.height - 18},
         {screen.width / 2 + 69, screen.height / 2 - 8},
+        {50, 2},
         {2, 24},
-        {60, screenHeight - 23}
+        {59, screenHeight - 23}
     };
 
     isAnimating = false;
@@ -18,21 +19,26 @@ Game::Game(int screenWidth, int screenHeight) {
     animX = 0;
     animY = 0;
 
+    //spellBook[0] = new SpellBase("dummy spell", "Doesn't do anything");
+    //spellBook[1] = new SpellBase("hiya", "I don't actually do anything");
+    //spellBook[2] = new TeleportSpell("teleport", "Teleports the player to specified\ncoordinates.\nUsage: cast {x} {y}");
+
     player = Player(*this, 2, 2);
-    player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("apple pie", "Wow yummy", 30), new Item("diamond", "Wow shiny"), new Item("knife", "Wow sharp") }, itemDatabase);
+    player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("apple pie", "Wow yummy", 30), new Item("diamond", "Wow shiny"), new Item("knife", "Wow sharp") }, itemMasterList);
+    player.getSpellBook() = SpellList(3, new SpellBase*[3] { new SpellBase("dummy spell", "Doesn't do anything"), new SpellBase("hiya", "I don't actually do anything"), new TeleportSpell() }, spellMasterList);
     
     rooms[0][2] = Room(*this, "Boss room");
     rooms[1][0] = Room(*this, "This room is undergoing construction.");
-    rooms[1][3] = Room(*this, "It's cold in here.", ItemList(2, new Item*[2]{ new Item("gold coin", "I'm a golden circle"), new Item("ice cube", "I'm a block of ice") }, itemDatabase));
+    rooms[1][3] = Room(*this, "It's cold in here.", ItemList(2, new Item*[2]{ new Item("gold coin", "I'm a golden circle"), new Item("ice cube", "I'm a block of ice") }, itemMasterList));
     rooms[2][0] = Room(*this, "This room is undergoing construction.");
     rooms[2][1] = Room(*this, "This room is undergoing construction.");
     rooms[2][2] = Room(*this, "This is the room you started in.");
     rooms[2][3] = Room(*this, "It's dark in here");
     rooms[2][4] = Room(*this, "This room is undergoing construction.");
     rooms[3][0] = Room(*this, "This room is undergoing construction.");
-    rooms[3][2] = Room(*this, "There's a sword stuck in a large boulder.", ItemList(1, new Item*[1]{ new Item("fancy sword", "I look fancy") }, itemDatabase));
+    rooms[3][2] = Room(*this, "There's a sword stuck in a large boulder.", ItemList(1, new Item*[1]{ new Item("fancy sword", "I look fancy") }, itemMasterList));
     rooms[3][4] = Room(*this, "This room is undergoing construction.");
-    rooms[4][1] = Room(*this, "It's a large room with training mannequins.", ItemList(1, new Item*[1]{ new Item("training dummy", "It's covered in slash marks") }, itemDatabase));
+    rooms[4][1] = Room(*this, "It's a large room with training mannequins.", ItemList(1, new Item*[1]{ new Item("training dummy", "It's covered in slash marks") }, itemMasterList));
     rooms[4][2] = Room(*this, "There's a wombat in here.");
     rooms[4][3] = Room(*this, "This room is undergoing construction.");
     rooms[4][4] = Room(*this, "This room is undergoing construction.");
@@ -41,14 +47,16 @@ Game::Game(int screenWidth, int screenHeight) {
 }
 
 Game::~Game() {
-    for (int i = 0; i < itemDatabase.getCount(); i++) {
-        delete itemDatabase[i];
+    //this is a quite a wacky way of handling it
+    //using shared_ptr would be better but if I went down that route, 
+    //then I'd want to make my own shared_ptr class
+    for (int i = 0; i < itemMasterList.getCount(); i++) {
+        delete itemMasterList[i];
     }
 
-    for (int i = 0; i < 3;i++) {
-        delete player.getSpellBook()[i];
+    for (int i = 0; i < spellMasterList.getCount(); i++) {
+        delete spellMasterList[i];
     }
-    delete[] player.getSpellBook();
 }
 
 Room& Game::getCurrentRoom() {
@@ -184,7 +192,7 @@ void Game::showDetails(int x, int y) {
             screen.text("Item:\n" + player.getItem()->getName() + "\n\nDescription:\n" + player.getItem()->getDescription(), x + 3, y + 4);
             break;
         case 3:
-            screen.text("Spell:\n" + player.getSpell()->getName() + "\n\nDescription:\n" + player.getSpell()->getDescription(), x + 3, y + 4);
+            screen.text("Spell:\n" + player.getSpell()->getName() + "\n\nCost: " + toString(player.getSpell()->getCost()) + " mana\nDamage: " + toString(player.getSpell()->getDamage()) + "\n\nDescription:\n" + player.getSpell()->getDescription(), x + 3, y + 4);
             break;
         case 4:
             if (getCurrentRoom().getItems().getCount() == 0) {
@@ -198,8 +206,8 @@ void Game::showDetails(int x, int y) {
 }
 
 void Game::showCommandLine(int x, int y) {
-    drawUIWindow(x, y, 60, 20);
-    screen.text("Input Console", x + 14, y + 1);
+    drawUIWindow(x, y, 64, 20);
+    screen.text("Input Console", x + 26, y + 1);
 
     switch (inputState) {
         case 0:
@@ -585,7 +593,7 @@ void Game::run() {
 
     showMap(config.map.x, config.map.y);
 
-    showCombat(50, 2);
+    showCombat(config.combat.x, config.combat.y);
 
     if (inputState > 1) {
         showDetails(config.details.x, config.details.y);

@@ -16,8 +16,9 @@ Player::Player() {
     inventory;
     currentInvIndex = 0;
 
-    spellCount = 0;
-    spellBook = nullptr;
+    //spellCount = 0;
+    //spellBook = nullptr;
+    spellBook;
     currentSpellIndex = 0;
 }
 
@@ -36,11 +37,12 @@ Player::Player(Game& owner, int x, int y) {
     inventory;
     currentInvIndex = 0;
 
-    spellCount = 3;
-    spellBook = new SpellBase*[spellCount];
-    spellBook[0] = new SpellBase("dummy spell", "Doesn't do anything");
-    spellBook[1] = new SpellBase("hiya", "I don't actually do anything");
-    spellBook[2] = new TeleportSpell("teleport", "Teleports the player to specified\ncoordinates");
+    //spellCount = 3;
+    //spellBook = new SpellBase*[spellCount];
+    //spellBook[0] = new SpellBase("dummy spell", "Doesn't do anything");
+    //spellBook[1] = new SpellBase("hiya", "I don't actually do anything");
+    //spellBook[2] = new TeleportSpell("teleport", "Teleports the player to specified\ncoordinates.\nUsage: cast {x} {y}");
+    spellBook;
     currentSpellIndex = 0;
 }
 
@@ -59,14 +61,14 @@ Player& Player::operator=(const Player& player) {
     inventory = player.inventory;
     currentInvIndex = player.currentInvIndex;
 
-    for (int i = 0; i < spellCount; i++) {
-        delete spellBook[i];
-    }
-    delete[] spellBook;
+    //for (int i = 0; i < spellCount; i++) {
+    //    delete spellBook[i];
+    //}
+    //delete[] spellBook;
 
-    spellCount = player.spellCount;
+    //spellCount = player.spellCount;
     spellBook = player.spellBook;
-    currentSpellIndex = 0;
+    currentSpellIndex = player.currentSpellIndex;
 
     return *this;
 }
@@ -148,7 +150,7 @@ String Player::getDescription() {
     }
 
     printout += "\n Spellbook:\n";
-    for (int i = 0; i < spellCount; i++) {
+    for (int i = 0; i < spellBook.getCount(); i++) {
         if (i == currentSpellIndex && ownerPtr->getInputState() == 3) {
             printout += 175;
             printout += 175;
@@ -209,7 +211,7 @@ Item*& Player::takeItem(Room& room) {
     return item;
 }
 
-SpellBase**& Player::getSpellBook() {
+SpellList& Player::getSpellBook() {
     return spellBook;
 }
 
@@ -241,7 +243,7 @@ String Player::castSpell(int argCount, int* args) {
 }
 
 int Player::findSpellIndex(const String& spellName) {
-    int upperBound = spellCount - 1;
+    int upperBound = spellBook.getCount() - 1;
     int lowerBound = 0;
     int index;
 

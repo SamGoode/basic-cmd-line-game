@@ -1,6 +1,6 @@
 #pragma once
 #include "Room.h"
-#include "Spells.h"
+#include "SpellList.h"
 
 class Player {
     private:
@@ -18,8 +18,9 @@ class Player {
         ItemList inventory;
         int currentInvIndex;
 
-        SpellBase** spellBook;
-        int spellCount;
+        SpellList spellBook;
+        //SpellBase** spellBook;
+        //int spellCount;
         int currentSpellIndex;
     
     public:
@@ -52,7 +53,7 @@ class Player {
         String useItem();
         Item*& takeItem(Room& room);
 
-        SpellBase**& getSpellBook();
+        SpellList& getSpellBook();
         void setSpellIndex(int newIndex);
         void shiftSpellIndex(int shift);
 

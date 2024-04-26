@@ -134,7 +134,9 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="Screen.cpp" />
-    <ClCompile Include="Spells.cpp" />
+    <ClCompile Include="SpellBase.cpp" />
+    <ClCompile Include="SpellList.cpp" />
+    <ClCompile Include="UniqueSpells.cpp" />
     <ClCompile Include="String.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -144,7 +146,9 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Screen.h" />
-    <ClInclude Include="Spells.h" />
+    <ClInclude Include="SpellBase.h" />
+    <ClInclude Include="SpellList.h" />
+    <ClInclude Include="UniqueSpells.h" />
     <ClInclude Include="String.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

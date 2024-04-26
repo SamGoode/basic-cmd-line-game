@@ -14,6 +14,7 @@ class Game {
             UISettings playerInfo;
             UISettings roomInfo;
             UISettings map;
+            UISettings combat;
             UISettings details;
             UISettings commandLine;
         };
@@ -29,7 +30,8 @@ class Game {
         Config config;
         Player player;
         Room rooms[5][5];
-        ItemList itemDatabase;
+        ItemList itemMasterList;
+        SpellList spellMasterList;
         int inputState;
         String userInput;
         String response;

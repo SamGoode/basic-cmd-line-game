@@ -6,12 +6,12 @@ ItemList::ItemList() {
     items = nullptr;
 }
 
-ItemList::ItemList(int count, Item** items, ItemList& itemDatabase) {
+ItemList::ItemList(int count, Item** items, ItemList& masterList) {
     this->count = count;
     this->items = new Item*[count];
     for (int i = 0; i < count; i++) {
         this->items[i] = items[i];
-        itemDatabase.addItem(items[i]);
+        masterList.addItem(items[i]);
     }
 
     delete[] items;
@@ -42,7 +42,7 @@ ItemList& ItemList::operator=(const ItemList& itemList) {
 
 Item*& ItemList::operator[](int index) {
     if (index < 0 || index >= count) {
-        throw std::out_of_range("ItemList array out of bounds");
+        throw std::out_of_range("index out of bounds of ItemList");
     }
 
     return items[index];
@@ -87,10 +87,6 @@ int ItemList::findSlotIndex(const String& itemName) {
         // (u - l)/2 + l can probably be simplified to (u + l)/2
         index = ((upperBound - lowerBound) / 2) + lowerBound;
 
-        //if (itemName == items[index]->getName()) {
-        //    return index;
-        //}
-
         if (upperBound <= lowerBound) {
             return index;
         }
@@ -119,9 +115,9 @@ ItemList& ItemList::addItem(Item* item) {
     return *this;
 }
 
-ItemList& ItemList::addItem(Item* item, ItemList& itemDatabase) {
+ItemList& ItemList::addItem(Item* item, ItemList& masterList) {
     addItem(item);
-    itemDatabase.addItem(item);
+    masterList.addItem(item);
 
     return *this;
 }
