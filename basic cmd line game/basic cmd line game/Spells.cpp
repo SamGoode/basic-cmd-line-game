@@ -4,11 +4,15 @@
 SpellBase::SpellBase() {
 	name = "???";
 	description = "???";
+	cost = 0;
+	damage = 0;
 }
 
 SpellBase::SpellBase(const SpellBase& spell) {
 	name = spell.name;
 	description = spell.description;
+	cost = spell.cost;
+	damage = spell.damage;
 }
 
 SpellBase::SpellBase(String name, String description) {
@@ -16,9 +20,18 @@ SpellBase::SpellBase(String name, String description) {
 	this->description = description;
 }
 
+SpellBase::SpellBase(String name, String description, int cost, int damage) {
+	this->name = name;
+	this->description = description;
+	this->cost = cost;
+	this->damage = damage;
+}
+
 SpellBase& SpellBase::operator=(const SpellBase& spell) {
 	name = spell.name;
 	description = spell.description;
+	cost = spell.cost;
+	damage = spell.damage;
 
 	return *this;
 }
@@ -39,7 +52,12 @@ const String& SpellBase::getDescription() const {
 	return description;
 }
 
-String SpellBase::cast(Player& player, int arg, ...) {
+String SpellBase::cast(Player& player, int argCount, int* args) {
+	if (argCount > 0) {
+		delete[] args;
+		return "too many arguments";
+	}
+	
 	return "I didn't do anything";
 }
 
@@ -53,9 +71,35 @@ TeleportSpell::TeleportSpell(String name, String description) {
 	this->getDescription() = description;
 }
 
-String TeleportSpell::cast(Player& player, int arg, ...) {
-	player.x = *((int*)&arg);
-	player.y = *((int*)&arg + 2);
+String TeleportSpell::cast(Player& player, int argCount, int* args) {
+	if (argCount < 2) {
+		delete[] args;
+		return "not enough arguments";
+	}
+	else if (argCount > 2) {
+		delete[] args;
+		return "too many arguments";
+	}
 
-	return "teleported player to " + toString(player.x - 2) + ", " + toString(player.y - 2);
+	int destX = args[0] + 2;
+	int destY = args[1] + 2;
+	delete[] args;
+
+	if (destX < 0 || destX > 4 || destY < 0 || destY > 4) {
+		return toString(destX - 2) + ", " + toString(destY - 2) + " is outside of the map";
+	}
+
+	switch (player.setPos(destX, destY)) {
+		case 0:
+			return "teleported player to " + toString(destX - 2) + ", " + toString(destY - 2);
+			break;
+		case 1:
+			return toString(destX - 2) + ", " + toString(destY - 2) + " is outside of the map";
+			break;
+		case 2:
+			return "there is no room at " + toString(destX - 2) + ", " + toString(destY - 2);
+			break;
+	}
+
+	return "this will never happen";
 }

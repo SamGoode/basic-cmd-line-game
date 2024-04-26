@@ -5,8 +5,8 @@ class Item {
     private:
         String name;
         String description;
-        bool stacks;
-        int amount;
+        //bool stackable;
+        //int amount;
 
     public:
         Item();

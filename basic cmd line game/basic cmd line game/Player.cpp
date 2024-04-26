@@ -4,7 +4,14 @@
 Player::Player() {
     ownerPtr = nullptr;
 
+    x = 0;
+    y = 0;
+
+    maxHealth = 100;
     health = 100;
+
+    maxMana = 50;
+    mana = 50;
 
     inventory;
     currentInvIndex = 0;
@@ -12,15 +19,19 @@ Player::Player() {
     spellCount = 0;
     spellBook = nullptr;
     currentSpellIndex = 0;
-
-    x = 0;
-    y = 0;
 }
 
 Player::Player(Game& owner, int x, int y) {
     ownerPtr = &owner;
 
+    this->x = x;
+    this->y = y;
+
+    maxHealth = 100;
     health = 100;
+
+    maxMana = 50;
+    mana = 50;
 
     inventory;
     currentInvIndex = 0;
@@ -31,15 +42,19 @@ Player::Player(Game& owner, int x, int y) {
     spellBook[1] = new SpellBase("hiya", "I don't actually do anything");
     spellBook[2] = new TeleportSpell("teleport", "Teleports the player to specified\ncoordinates");
     currentSpellIndex = 0;
-
-    this->x = x;
-    this->y = y;
 }
 
 Player& Player::operator=(const Player& player) {
     ownerPtr = player.ownerPtr;
 
+    x = player.x;
+    y = player.y;
+
+    maxHealth = player.maxHealth;
     health = player.health;
+
+    maxMana = player.maxMana;
+    mana = player.mana;
 
     inventory = player.inventory;
     currentInvIndex = player.currentInvIndex;
@@ -53,10 +68,35 @@ Player& Player::operator=(const Player& player) {
     spellBook = player.spellBook;
     currentSpellIndex = 0;
 
-    x = player.x;
-    y = player.y;
-
     return *this;
+}
+
+int Player::getX() {
+    return x;
+}
+
+int Player::getY() {
+    return y;
+}
+
+//returns 0 on success, 1 outside of map, 2 room doesn't exist
+int Player::setPos(int newX, int newY) {
+    if (newX < 0 || newX > 4 || newY < 0 || newY > 4) {
+        return 1;
+    }
+
+    if (!ownerPtr->getRoom(newX, newY).doesExist()) {
+        return 2;
+    }
+    
+    x = newX;
+    y = newY;
+    return 0;
+}
+
+//returns 0 on success, 1 outside of map, 2 room doesn't exist
+int Player::shiftPos(int shiftX, int shiftY) {
+    return setPos(x + shiftX, y + shiftY);
 }
 
 int Player::getHealth() {
@@ -70,7 +110,7 @@ int Player::addHealth(int amount) {
 
 String Player::getDescription() {
     //offset printed coordinates so centre room (starting room) is at 0, 0
-    String printout = " Health: " + toString(health) + "\n\n Coordinates: x:" + toString(x-2) + ", y:" + toString(y-2) + "\n\n Inventory:\n";
+    String printout = " Coordinates: x:" + toString(x-2) + ", y : " + toString(y-2) + "\n\n Health : " + toString(health) + "/" + toString(maxHealth) + "\n Mana : " + toString(mana) + "/" + toString(maxMana) + "\n\n Inventory : \n";
 
     for (int i = 0; i < inventory.getCount(); i++) {
         if (i == currentInvIndex && ownerPtr->getInputState() == 2) {
@@ -176,7 +216,11 @@ SpellBase*& Player::getSpell() {
 }
 
 String Player::castSpell() {
-    return getSpell()->cast(*this, 0, 2);
+    return getSpell()->cast(*this, 0, nullptr);
+}
+
+String Player::castSpell(int argCount, int* args) {
+    return getSpell()->cast(*this, argCount, args);
 }
 
 int Player::findSpellIndex(const String& spellName) {

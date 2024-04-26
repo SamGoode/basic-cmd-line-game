@@ -5,7 +5,15 @@
 class Player {
     private:
         class Game* ownerPtr;
+
+        int x;
+        int y;
+
+        int maxHealth;
         int health;
+
+        int maxMana;
+        int mana;
         
         ItemList inventory;
         int currentInvIndex;
@@ -13,10 +21,6 @@ class Player {
         SpellBase** spellBook;
         int spellCount;
         int currentSpellIndex;
-
-    public:
-        int x;
-        int y;
     
     public:
         Player();
@@ -25,8 +29,16 @@ class Player {
 
         Player& operator=(const Player& spell);
 
+        int getX();
+        int getY();
+        int setPos(int newX, int newY);
+        int shiftPos(int shiftX, int shiftY);
+
         int getHealth();
         int addHealth(int amount);
+
+        int getMana();
+        int addMana(int amount);
 
         String getDescription();
 
@@ -44,5 +56,6 @@ class Player {
 
         SpellBase*& getSpell();
         String castSpell();
+        String castSpell(int argCount, int* args);
         int findSpellIndex(const String& spellName);
 };

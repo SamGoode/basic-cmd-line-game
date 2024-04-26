@@ -9,7 +9,7 @@ Game::Game(int screenWidth, int screenHeight) {
         {screen.width - 80, screen.height - 18},
         {screen.width / 2 + 69, screen.height / 2 - 8},
         {2, 24},
-        {70, screenHeight - 23}
+        {60, screenHeight - 23}
     };
 
     isAnimating = false;
@@ -49,6 +49,14 @@ Game::~Game() {
         delete player.getSpellBook()[i];
     }
     delete[] player.getSpellBook();
+}
+
+Room& Game::getCurrentRoom() {
+    return rooms[player.getY()][player.getX()];
+}
+
+Room& Game::getRoom(int x, int y) {
+    return rooms[y][x];
 }
 
 int Game::getInputState() {
@@ -127,7 +135,7 @@ void Game::showRoomInfo(int x, int y) {
     drawUIWindow(x, y, 76, 15);
     screen.text("Room Info", x + 34, y + 1);
 
-    screen.text(rooms[player.y][player.x].getDescription(), x+3, y+4);
+    screen.text(getCurrentRoom().getDescription(), x + 3, y + 4);
 }
 
 void Game::showMap(int x, int y) {
@@ -150,7 +158,21 @@ void Game::showMap(int x, int y) {
     }
     
     drawDuck((x - 2) + 14 * (0), (y - 2) + 7 * (-2));
-    drawPlayer((x - 2) + 14 * (player.x - 2) + animX, (y - 2) + 7 * (player.y - 2) + animY);
+    drawPlayer((x - 2) + 14 * (player.getX() - 2) + animX, (y - 2) + 7 * (player.getY() - 2) + animY);
+}
+
+void Game::showCombat(int x, int y) {
+    drawBorder(x, y, 82, 32, true);
+
+    screen.rect('-', x + 11, y + 21, 12, 2);
+    drawPlayer(x + 15, y + 20);
+
+    screen.rect('-', x + 59, y + 6, 12, 2);
+    drawDuck(x + 63, y + 5);
+
+    screen.rect(196, x + 1, y + 25, 82, 1);
+    screen.input(199, x, y + 25);
+    screen.input(182, x + 83, y + 25);
 }
 
 void Game::showDetails(int x, int y) {
@@ -165,18 +187,18 @@ void Game::showDetails(int x, int y) {
             screen.text("Spell:\n" + player.getSpell()->getName() + "\n\nDescription:\n" + player.getSpell()->getDescription(), x + 3, y + 4);
             break;
         case 4:
-            if (rooms[player.y][player.x].getItems().getCount() == 0) {
+            if (getCurrentRoom().getItems().getCount() == 0) {
                 screen.text("This room has no items", x + 3, y + 4);
                 return;
             }
 
-            screen.text("Item:\n" + rooms[player.y][player.x].getItem()->getName() + "\n\nDescription:\n" + rooms[player.y][player.x].getItem()->getDescription(), x + 3, y + 4);
+            screen.text("Item:\n" + getCurrentRoom().getItem()->getName() + "\n\nDescription:\n" + getCurrentRoom().getItem()->getDescription(), x + 3, y + 4);
             break;
     }
 }
 
 void Game::showCommandLine(int x, int y) {
-    drawUIWindow(x, y, 40, 20);
+    drawUIWindow(x, y, 60, 20);
     screen.text("Input Console", x + 14, y + 1);
 
     switch (inputState) {
@@ -264,44 +286,60 @@ void Game::processInput() {
             break;
         case 1:
             if (userInput.ToLower() == "north") {
-                if (!rooms[player.y - 1][player.x].doesExist() || player.y == 0) {
-                    response = "room doesn't exist.";
-                    return;
+                switch (player.shiftPos(0, -1)) {
+                    case 0:
+                        response = "You entered the room to the north";
+                        startAnimation(0);
+                        break;
+                    case 1:
+                        response = "You can't go outside of the map";
+                        break;
+                    case 2:
+                        response = "Room doesn't exist";
+                        break;
                 }
-
-                response = "You entered the room to the north";
-                player.y--;
-                startAnimation(0);
             }
             else if (userInput.ToLower() == "east") {
-                if (!rooms[player.y][player.x + 1].doesExist() || player.x == 4) {
-                    response = "room doesn't exist.";
-                    return;
+                switch (player.shiftPos(1, 0)) {
+                    case 0:
+                        response = "You entered the room to the east";
+                        startAnimation(1);
+                        break;
+                    case 1:
+                        response = "You can't go outside of the map";
+                        break;
+                    case 2:
+                        response = "Room doesn't exist";
+                        break;
                 }
-
-                response = "You entered the room to the east";
-                player.x++;
-                startAnimation(1);
             }
             else if (userInput.ToLower() == "south") {
-                if (!rooms[player.y + 1][player.x].doesExist() || player.y == 4) {
-                    response = "room doesn't exist.";
-                    return;
+                switch (player.shiftPos(0, 1)) {
+                    case 0:
+                        response = "You entered the room to the south";
+                        startAnimation(2);
+                        break;
+                    case 1:
+                        response = "You can't go outside of the map";
+                        break;
+                    case 2:
+                        response = "Room doesn't exist";
+                        break;
                 }
-
-                response = "You entered the room to the south";
-                player.y++;
-                startAnimation(2);
             }
             else if (userInput.ToLower() == "west") {
-                if (!rooms[player.y][player.x - 1].doesExist() || player.x == 0) {
-                    response = "room doesn't exist.";
-                    return;
+                switch (player.shiftPos(-1, 0)) {
+                    case 0:
+                        response = "You entered the room to the west";
+                        startAnimation(3);
+                        break;
+                    case 1:
+                        response = "You can't go outside of the map";
+                        break;
+                    case 2:
+                        response = "Room doesn't exist";
+                        break;
                 }
-
-                response = "You entered the room to the west";
-                player.x--;
-                startAnimation(3);
             }
             else if (userInput.ToLower() == "back") {
                 inputState = 0;
@@ -346,8 +384,46 @@ void Game::processInput() {
             }
             break;
         case 3:
-            if (userInput.ToLower() == "cast") {
-                response = player.castSpell() + "\nDebug: " + player.getSpell()->getName() + "|" + typeid(*player.getSpell()).name();
+            if (userInput.ToLower().Find("cast") == 0) {
+                userInput.Replace("cast", "");
+                
+                if (userInput.Find(" ") != 0) {
+                    response = player.castSpell() + "\nDebug: " + player.getSpell()->getName() + "|" + typeid(*player.getSpell()).name();
+                }
+
+                //This is a super scuffed way of doing this
+                int argCount = 0;
+                for (int i = 0; i < userInput.Length(); i++) {
+                    if (userInput[i] == ' ') {
+                        argCount++;
+                    }
+                }
+
+                userInput.Append(" ");
+
+                int* args = new int[argCount];
+                for (int i = 0; i < argCount; i++) {
+                    userInput.Prepend("\x2");
+
+                    String argStr;
+                    int nextArgIndex = userInput.Find(2, " ");
+                    for (int j = 0; j < nextArgIndex; j++) {
+                        argStr.Append(userInput[j]);
+                    }
+
+                    userInput.Replace(argStr, "");
+                    argStr.Replace("\x2 ", "");
+
+                    if (toInt(argStr) == 0x80000000) {
+                        delete[] args;
+                        response = "invalid arguments";
+                        return;
+                    }
+
+                    args[i] = toInt(argStr);
+                }
+
+                response = player.castSpell(argCount, args) + "\nDebug: " + player.getSpell()->getName() + "|" + typeid(*player.getSpell()).name();
             }
             else if (userInput.ToLower() == "up") {
                 player.shiftSpellIndex(-1);
@@ -382,20 +458,19 @@ void Game::processInput() {
             break;
         case 4:
             if (userInput.ToLower() == "take") {
-                if (rooms[player.y][player.x].getItems().getCount() == 0) {
+                if (getCurrentRoom().getItems().getCount() == 0) {
                     response = "this room has no items to take";
                     return;
                 }
 
-                response = "You took the " + rooms[player.y][player.x].getItem()->getName() + "\nDebug: " + typeid(*rooms[player.y][player.x].getItem()).name();
-                //rooms[player.y][player.x].removeItem();
-                player.takeItem(rooms[player.y][player.x]);
+                response = "You took the " + getCurrentRoom().getItem()->getName() + "\nDebug: " + typeid(*getCurrentRoom().getItem()).name();
+                player.takeItem(getCurrentRoom());
             }
             else if (userInput.ToLower() == "up") {
-                rooms[player.y][player.x].shiftItemsIndex(-1);
+                getCurrentRoom().shiftItemsIndex(-1);
             }
             else if (userInput.ToLower() == "down") {
-                rooms[player.y][player.x].shiftItemsIndex(1);
+                getCurrentRoom().shiftItemsIndex(1);
             }
             else if (userInput.ToLower() == "back") {
                 inputState = 0;
@@ -415,16 +490,16 @@ void Game::startAnimation(int ID) {
 
     switch (ID) {
         case 0:
-            player.y++;
+            player.shiftPos(0, 1);
             break;
         case 1:
-            player.x--;
+            player.shiftPos(-1, 0);
             break;
         case 2:
-            player.y--;
+            player.shiftPos(0, -1);
             break;
         case 3:
-            player.x++;
+            player.shiftPos(1, 0);
             break;
     }
 }
@@ -487,16 +562,16 @@ void Game::endAnimation(int ID) {
 
     switch (ID) {
         case 0:
-            player.y--;
+            player.shiftPos(0, -1);
             break;
         case 1:
-            player.x++;
+            player.shiftPos(1, 0);
             break;
         case 2:
-            player.y++;
+            player.shiftPos(0, 1);
             break;
         case 3:
-            player.x--;
+            player.shiftPos(-1, 0);
             break;
     }
 }
@@ -509,6 +584,8 @@ void Game::run() {
     showRoomInfo(config.roomInfo.x, config.roomInfo.y);
 
     showMap(config.map.x, config.map.y);
+
+    showCombat(50, 2);
 
     if (inputState > 1) {
         showDetails(config.details.x, config.details.y);

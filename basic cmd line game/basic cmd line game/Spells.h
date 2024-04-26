@@ -5,6 +5,8 @@ class SpellBase {
 	private:
 		String name;
 		String description;
+		int cost;
+		int damage;
 
 	public:
 		SpellBase();
@@ -12,6 +14,8 @@ class SpellBase {
 		SpellBase(const SpellBase& spell);
 
 		SpellBase(String name, String description);
+
+		SpellBase(String name, String description, int cost, int damage);
 
 		virtual ~SpellBase() = default;
 
@@ -25,7 +29,7 @@ class SpellBase {
 
 		const String& getDescription() const;
 
-		virtual String cast(class Player& player, int arg, ...);
+		virtual String cast(class Player& player, int argCount, int* args);
 };
 
 class TeleportSpell : public SpellBase {
@@ -34,5 +38,5 @@ class TeleportSpell : public SpellBase {
 
 		TeleportSpell(String name, String description);
 
-		String cast(class Player& player, int arg, ...) override;
+		String cast(class Player& player, int argCount, int* args) override;
 };
