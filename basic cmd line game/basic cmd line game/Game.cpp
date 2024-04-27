@@ -5,11 +5,11 @@ Game::Game(int screenWidth, int screenHeight) {
     screen = Screen(screenWidth, screenHeight);
 
     config = {
-        {2, 1},
-        {screen.width - 80, screen.height - 18},
-        {screen.width / 2 + 69, screen.height / 2 - 8},
+        {3, 1},
+        {screen.width - 81, screen.height - 18},
+        {screen.width / 2 + 68, screen.height / 2 - 8},
         {50, 2},
-        {2, 24},
+        {3, 24},
         {59, screenHeight - 23}
     };
 
@@ -19,13 +19,9 @@ Game::Game(int screenWidth, int screenHeight) {
     animX = 0;
     animY = 0;
 
-    //spellBook[0] = new SpellBase("dummy spell", "Doesn't do anything");
-    //spellBook[1] = new SpellBase("hiya", "I don't actually do anything");
-    //spellBook[2] = new TeleportSpell("teleport", "Teleports the player to specified\ncoordinates.\nUsage: cast {x} {y}");
-
     player = Player(*this, 2, 2);
     player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("apple pie", "Wow yummy", 30), new Item("diamond", "Wow shiny"), new Item("knife", "Wow sharp") }, itemMasterList);
-    player.getSpellBook() = SpellList(3, new SpellBase*[3] { new SpellBase("dummy spell", "Doesn't do anything"), new SpellBase("hiya", "I don't actually do anything"), new TeleportSpell() }, spellMasterList);
+    player.getSpellBook() = SpellList(4, new SpellBase*[4]{ new SpellBase("conjure fist", "Conjures a fist to punch an enemy", 1, 5), new SpellBase("dummy spell", "Doesn't do anything"), new SpellBase("hiya", "I don't actually do anything"), new TeleportSpell() }, spellMasterList);
     
     rooms[0][2] = Room(*this, "Boss room");
     rooms[1][0] = Room(*this, "This room is undergoing construction.");
@@ -90,6 +86,8 @@ void Game::drawDuck(int x, int y) {
 }
 
 void Game::drawBorder(int x, int y, int width, int height, bool isThick) {
+    screen.rect(' ', x + 1, y + 1, width, height);
+
     if (isThick) {
         screen.input(201, x, y);
         screen.input(200, x, y + height + 1);
@@ -205,7 +203,7 @@ void Game::showDetails(int x, int y) {
     }
 }
 
-void Game::showCommandLine(int x, int y) {
+void Game::showCommandConsole(int x, int y) {
     drawUIWindow(x, y, 64, 20);
     screen.text("Input Console", x + 26, y + 1);
 
@@ -448,7 +446,7 @@ void Game::processInput() {
             else if (userInput.ToLower().Find("search ") == 0) {
                 userInput.Replace("search ", "");
 
-                int searchResult = player.findSpellIndex(userInput);
+                int searchResult = player.getSpellBook().findSpellIndex(userInput);
                 if (searchResult == -1) {
                     response = "'" + userInput + "' not found";
                 }
@@ -587,6 +585,14 @@ void Game::endAnimation(int ID) {
 void Game::run() {
     screen.reset();
 
+    for (int i = 0; i < screen.width; i++) {
+        for (int j = 0; j < screen.width; j++) {
+            if ((i+j) % 4 < 2) {
+                screen.input(176, j, i);
+            }
+        }
+    }
+
     showPlayerInfo(config.playerInfo.x, config.playerInfo.y);
     
     showRoomInfo(config.roomInfo.x, config.roomInfo.y);
@@ -599,7 +605,7 @@ void Game::run() {
         showDetails(config.details.x, config.details.y);
     }
     
-    showCommandLine(config.commandLine.x, config.commandLine.y);
+    showCommandConsole(config.commandConsole.x, config.commandConsole.y);
     
     screen.print();
 
@@ -609,7 +615,7 @@ void Game::run() {
         return;
     }
 
-    inputLine(config.commandLine.x + 5, config.commandLine.y + 19);
+    inputLine(config.commandConsole.x + 5, config.commandConsole.y + 19);
 
     processInput();
 }

@@ -16,18 +16,21 @@ class Game {
             UISettings map;
             UISettings combat;
             UISettings details;
-            UISettings commandLine;
+            UISettings commandConsole;
         };
 
     private:
         Screen screen;
+
+        Config config;
+
         bool isAnimating;
         int animID;
         int animCount;
         int animX;
         int animY;
         String tempStr;
-        Config config;
+
         Player player;
         Room rooms[5][5];
         ItemList itemMasterList;
@@ -64,9 +67,8 @@ class Game {
 
         void showDetails(int x, int y);
 
-        void showCommandLine(int x, int y);
+        void showCommandConsole(int x, int y);
         void inputLine(int x, int y);
-
         void processInput();
 
         void startAnimation(int ID);

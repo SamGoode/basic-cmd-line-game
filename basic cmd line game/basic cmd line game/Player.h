@@ -60,5 +60,4 @@ class Player {
         SpellBase*& getSpell();
         String castSpell();
         String castSpell(int argCount, int* args);
-        int findSpellIndex(const String& spellName);
 };

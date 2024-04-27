@@ -241,28 +241,3 @@ String Player::castSpell() {
 String Player::castSpell(int argCount, int* args) {
     return getSpell()->cast(*this, argCount, args);
 }
-
-int Player::findSpellIndex(const String& spellName) {
-    int upperBound = spellBook.getCount() - 1;
-    int lowerBound = 0;
-    int index;
-
-    while (true) {
-        index = ((upperBound - lowerBound) / 2) + lowerBound;
-
-        if (spellName == spellBook[index]->getName()) {
-            return index;
-        }
-
-        if (upperBound <= lowerBound) {
-            return -1;
-        }
-
-        if (spellName < spellBook[index]->getName()) {
-            upperBound = index - 1;
-        }
-        else {
-            lowerBound = index + 1;
-        }
-    }
-}
