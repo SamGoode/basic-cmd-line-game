@@ -585,6 +585,7 @@ void Game::endAnimation(int ID) {
 void Game::run() {
     screen.reset();
 
+    //background
     for (int i = 0; i < screen.width; i++) {
         for (int j = 0; j < screen.width; j++) {
             if ((i+j) % 4 < 2) {
