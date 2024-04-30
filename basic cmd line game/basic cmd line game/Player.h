@@ -19,8 +19,6 @@ class Player {
         int currentInvIndex;
 
         SpellList spellBook;
-        //SpellBase** spellBook;
-        //int spellCount;
         int currentSpellIndex;
     
     public:

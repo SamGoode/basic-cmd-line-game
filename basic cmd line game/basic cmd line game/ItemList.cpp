@@ -57,11 +57,16 @@ int ItemList::findItemIndex(const String& itemName) {
     int lowerBound = 0;
     int index;
 
+    String lowerName;
+
     while (true) {
         // (u - l)/2 + l can probably be simplified to (u + l)/2
         index = ((upperBound - lowerBound) / 2) + lowerBound;
 
-        if (itemName == items[index]->getName()) {
+        lowerName = items[index]->getName();
+        lowerName.ToLower();
+
+        if (itemName == lowerName) {
             return index;
         }
 
@@ -69,7 +74,7 @@ int ItemList::findItemIndex(const String& itemName) {
             return -1;
         }
 
-        if (itemName < items[index]->getName()) {
+        if (itemName < lowerName) {
             upperBound = index - 1;
         }
         else {

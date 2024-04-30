@@ -2,6 +2,7 @@
 #include "Screen.h"
 #include "Player.h"
 #include "Room.h"
+#include "Enemy.h"
 
 class Game {
     private:
@@ -39,6 +40,8 @@ class Game {
         String userInput;
         String response;
 
+        Enemy dummy;
+
     public:
         Game(int screenWidth, int screenHeight);
 
@@ -56,6 +59,8 @@ class Game {
 
         void drawBorder(int x, int y, int width, int height, bool isThick);
         void drawUIWindow(int x, int y, int width, int height);
+
+        void background();
 
         void showPlayerInfo(int x, int y);
 

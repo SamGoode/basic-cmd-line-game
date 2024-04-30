@@ -16,8 +16,6 @@ Player::Player() {
     inventory;
     currentInvIndex = 0;
 
-    //spellCount = 0;
-    //spellBook = nullptr;
     spellBook;
     currentSpellIndex = 0;
 }
@@ -37,11 +35,6 @@ Player::Player(Game& owner, int x, int y) {
     inventory;
     currentInvIndex = 0;
 
-    //spellCount = 3;
-    //spellBook = new SpellBase*[spellCount];
-    //spellBook[0] = new SpellBase("dummy spell", "Doesn't do anything");
-    //spellBook[1] = new SpellBase("hiya", "I don't actually do anything");
-    //spellBook[2] = new TeleportSpell("teleport", "Teleports the player to specified\ncoordinates.\nUsage: cast {x} {y}");
     spellBook;
     currentSpellIndex = 0;
 }
@@ -61,12 +54,6 @@ Player& Player::operator=(const Player& player) {
     inventory = player.inventory;
     currentInvIndex = player.currentInvIndex;
 
-    //for (int i = 0; i < spellCount; i++) {
-    //    delete spellBook[i];
-    //}
-    //delete[] spellBook;
-
-    //spellCount = player.spellCount;
     spellBook = player.spellBook;
     currentSpellIndex = player.currentSpellIndex;
 
@@ -129,7 +116,7 @@ int Player::shiftMana(int amount) {
 
 String Player::getDescription() {
     //offset printed coordinates so centre room (starting room) is at 0, 0
-    String printout = " Coordinates: x:" + toString(x-2) + ", y : " + toString(y-2) + "\n\n Health : " + toString(health) + "/" + toString(maxHealth) + "\n Mana : " + toString(mana) + "/" + toString(maxMana) + "\n\n Inventory : \n";
+    String printout = " Coordinates: x:" + toString(x-2) + ", y:" + toString(y-2) + "\n\n Health: " + toString(health) + "/" + toString(maxHealth) + "\n Mana: " + toString(mana) + "/" + toString(maxMana) + "\n\n Inventory: \n";
 
     for (int i = 0; i < inventory.getCount(); i++) {
         if (i == currentInvIndex && ownerPtr->getInputState() == 2) {
@@ -219,8 +206,8 @@ void Player::setSpellIndex(int newIndex) {
     if (newIndex < 0) {
         newIndex = 0;
     }
-    else if (newIndex > 3 - 1) {
-        newIndex = 3 - 1;
+    else if (newIndex > spellBook.getCount() - 1) {
+        newIndex = spellBook.getCount() - 1;
     }
 
     currentSpellIndex = newIndex;

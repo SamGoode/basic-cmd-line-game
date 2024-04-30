@@ -9,7 +9,7 @@ Game::Game(int screenWidth, int screenHeight) {
         {screen.width - 81, screen.height - 18},
         {screen.width / 2 + 68, screen.height / 2 - 8},
         {50, 2},
-        {3, 24},
+        {3, 30},
         {59, screenHeight - 23}
     };
 
@@ -20,8 +20,8 @@ Game::Game(int screenWidth, int screenHeight) {
     animY = 0;
 
     player = Player(*this, 2, 2);
-    player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("apple pie", "Wow yummy", 30), new Item("diamond", "Wow shiny"), new Item("knife", "Wow sharp") }, itemMasterList);
-    player.getSpellBook() = SpellList(4, new SpellBase*[4]{ new SpellBase("conjure fist", "Conjures a fist to punch an enemy", 1, 5), new SpellBase("dummy spell", "Doesn't do anything"), new SpellBase("hiya", "I don't actually do anything"), new TeleportSpell() }, spellMasterList);
+    player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("Apple pie", "Wow yummy", 30), new Item("Diamond", "Wow shiny"), new Item("Knife", "Wow sharp") }, itemMasterList);
+    player.getSpellBook() = SpellList(4, new SpellBase*[4]{ new SpellBase("Conjure fist", "Conjures a fist to punch an enemy", 1, 5), new SpellBase("DuMMy spell", "Doesn't do anything"), new SpellBase("Hiya", "I don't actually do anything"), new TeleportSpell() }, spellMasterList);
     
     rooms[0][2] = Room(*this, "Boss room");
     rooms[1][0] = Room(*this, "This room is undergoing construction.");
@@ -40,6 +40,8 @@ Game::Game(int screenWidth, int screenHeight) {
     rooms[4][4] = Room(*this, "This room is undergoing construction.");
 
     inputState = 0;
+
+    dummy = Enemy("dummy duck", 200, 50, 5);
 }
 
 Game::~Game() {
@@ -127,8 +129,18 @@ void Game::drawUIWindow(int x, int y, int width, int height) {
     screen.input(205, x + width - 1, y + height + 1);
 }
 
+void Game::background() {
+    for (int i = 0; i < screen.width; i++) {
+        for (int j = 0; j < screen.width; j++) {
+            if ((i + j) % 4 < 2) {
+                screen.input(176, j, i);
+            }
+        }
+    }
+}
+
 void Game::showPlayerInfo(int x, int y) {
-    drawUIWindow(x, y, 40, 20);
+    drawUIWindow(x, y, 40, 25);
     screen.text("Player Profile", x + 14, y + 1);
     
     drawBorder(x + 31, y + 3, 6, 2, false);
@@ -179,6 +191,11 @@ void Game::showCombat(int x, int y) {
     screen.rect(196, x + 1, y + 25, 82, 1);
     screen.input(199, x, y + 25);
     screen.input(182, x + 83, y + 25);
+
+    screen.text(dummy.getDescription(), x + 5, y + 5);
+
+    drawBorder(x + 5, y + 26, 5, 1, false);
+    screen.text("ITEMS", x + 6, y + 27);
 }
 
 void Game::showDetails(int x, int y) {
@@ -220,7 +237,7 @@ void Game::showCommandConsole(int x, int y) {
 
             screen.text("[back]", x + 2, y + 3);
             
-            screen.text("       [north]\n\n          ^\n[west]  < + >  [east]\n          v\n\n       [south]", x + 10, y + 6);
+            screen.text("        [north]\n\n           ^\n[west]   < + >   [east]\n           v\n\n        [south]", x + 21, y + 8);
             break;
         case 2:
             screen.rect(196, x + 1, y + 4, 8, 1);
@@ -255,6 +272,16 @@ void Game::showCommandConsole(int x, int y) {
 
             screen.text("[take] current selected item\n\nselect different item by\n\nscrolling [up] [down]", x + 6, y + 6);
             break;
+        case 5:
+            screen.rect(196, x + 1, y + 4, 8, 1);
+            screen.rect(179, x + 9, y + 3, 1, 1);
+
+            screen.input(195, x, y + 4);
+            screen.input(217, x + 9, y + 4);
+
+            screen.text("[back]", x + 2, y + 3);
+
+            screen.text("[attack]", x + 6, y + 6);
     }
 
     screen.text(response, x + 5, y + 17);
@@ -278,7 +305,8 @@ void Game::processInput() {
                 inputState = 2;
             }
             else if (userInput.ToLower() == "fight") {
-                response = "this doesn't work yet";
+                //response = "this doesn't work yet";
+                inputState = 5;
             }
             else if (userInput.ToLower() == "spellbook") {
                 inputState = 3;
@@ -485,6 +513,16 @@ void Game::processInput() {
                 response = "invalid input";
             }
             break;
+        case 5:
+            if (userInput.ToLower() == "attack") {
+                dummy.shiftHealth(-5);
+            }
+            else if (userInput.ToLower() == "back") {
+                inputState = 0;
+            }
+            else {
+                response = "invalid input";
+            }
     }
 }
 
@@ -585,14 +623,7 @@ void Game::endAnimation(int ID) {
 void Game::run() {
     screen.reset();
 
-    //background
-    for (int i = 0; i < screen.width; i++) {
-        for (int j = 0; j < screen.width; j++) {
-            if ((i+j) % 4 < 2) {
-                screen.input(176, j, i);
-            }
-        }
-    }
+    background();
 
     showPlayerInfo(config.playerInfo.x, config.playerInfo.y);
     

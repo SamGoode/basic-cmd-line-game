@@ -15,7 +15,7 @@ class Item {
 
         Item(String name, String description);
 
-        Item(String name, String description, bool stacks, int amount);
+        //Item(String name, String description, bool stacks, int amount);
 
         virtual ~Item() = default;
 

@@ -2,7 +2,7 @@
 #include "Player.h"
 
 TeleportSpell::TeleportSpell() {
-	this->getName() = "teleport";
+	this->getName() = "Teleport";
 	this->getDescription() = "Teleports the player to specified\ncoordinates.\nUsage: cast {x} {y}";
 	this->setCost(5);
 }
