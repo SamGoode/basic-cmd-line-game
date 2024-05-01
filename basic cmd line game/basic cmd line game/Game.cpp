@@ -194,8 +194,14 @@ void Game::showCombat(int x, int y) {
 
     screen.text(dummy.getDescription(), x + 5, y + 5);
 
-    drawBorder(x + 5, y + 26, 5, 1, false);
-    screen.text("ITEMS", x + 6, y + 27);
+    drawBorder(x + 20, y + 28, 8, 1, false);
+    screen.text("SPELLS", x + 22, y + 29);
+
+    drawBorder(x + 37, y + 28, 7, 1, false);
+    screen.text("ITEMS", x + 39, y + 29);
+
+    drawBorder(x + 55, y + 28, 5, 1, false);
+    screen.text("RUN", x + 57, y + 29);
 }
 
 void Game::showDetails(int x, int y) {
@@ -217,6 +223,12 @@ void Game::showDetails(int x, int y) {
 
             screen.text("Item:\n" + getCurrentRoom().getItem()->getName() + "\n\nDescription:\n" + getCurrentRoom().getItem()->getDescription(), x + 3, y + 4);
             break;
+        case 6:
+            screen.text("Spell:\n" + player.getSpell()->getName() + "\n\nCost: " + toString(player.getSpell()->getCost()) + " mana\nDamage: " + toString(player.getSpell()->getDamage()) + "\n\nDescription:\n" + player.getSpell()->getDescription(), x + 3, y + 4);
+            break;
+        case 7:
+            screen.text("Item:\n" + player.getItem()->getName() + "\n\nDescription:\n" + player.getItem()->getDescription(), x + 3, y + 4);
+            break;
     }
 }
 
@@ -226,7 +238,7 @@ void Game::showCommandConsole(int x, int y) {
 
     switch (inputState) {
         case 0:
-            screen.text("[move]   [inventory]   [fight]\n\n[room]   [spellbook]", x+6, y+10);
+            screen.text("[move]   [inventory]   [fight]\n\n     [room]   [spellbook]", x + 17, y + 10);
             break;
         case 1:
             screen.rect(196, x + 1, y + 4, 8, 1);
@@ -273,6 +285,9 @@ void Game::showCommandConsole(int x, int y) {
             screen.text("[take] current selected item\n\nselect different item by\n\nscrolling [up] [down]", x + 6, y + 6);
             break;
         case 5:
+            screen.text("[spells]   [items]   [run]", x + 18, y + 10);
+            break;
+        case 6:
             screen.rect(196, x + 1, y + 4, 8, 1);
             screen.rect(179, x + 9, y + 3, 1, 1);
 
@@ -281,7 +296,20 @@ void Game::showCommandConsole(int x, int y) {
 
             screen.text("[back]", x + 2, y + 3);
 
-            screen.text("[attack]", x + 6, y + 6);
+            screen.text("[cast] current selected spell\n\nselect different spell by\n\nscrolling [up] [down]\n[select]ing based on index\n[search]ing by name", x + 6, y + 6);
+            break;
+        case 7:
+            screen.rect(196, x + 1, y + 4, 8, 1);
+            screen.rect(179, x + 9, y + 3, 1, 1);
+
+            screen.input(195, x, y + 4);
+            screen.input(217, x + 9, y + 4);
+
+            screen.text("[back]", x + 2, y + 3);
+
+            screen.text("[use] current selected item\n\nselect different item by\n\nscrolling [up] [down]\n[select]ing based on index\n[search]ing by name", x + 6, y + 6);
+            break;
+
     }
 
     screen.text(response, x + 5, y + 17);
@@ -514,15 +542,130 @@ void Game::processInput() {
             }
             break;
         case 5:
-            if (userInput.ToLower() == "attack") {
-                dummy.shiftHealth(-5);
+            if (userInput.ToLower() == "spells") {
+                //dummy.shiftHealth(-5);
+                inputState = 6;
             }
-            else if (userInput.ToLower() == "back") {
+            else if (userInput.ToLower() == "items") {
+                inputState = 7;
+            }
+            else if (userInput.ToLower() == "run") {
+                response = "You managed to run away";
                 inputState = 0;
             }
             else {
                 response = "invalid input";
             }
+            break;
+        case 6:
+            if (userInput.ToLower().Find("cast") == 0) {
+                userInput.Replace("cast", "");
+
+                if (userInput.Find(" ") != 0) {
+                    response = player.castSpell() + "\nDebug: " + player.getSpell()->getName() + "|" + typeid(*player.getSpell()).name();
+                }
+
+                //This is a super scuffed way of doing this
+                int argCount = 0;
+                for (int i = 0; i < userInput.Length(); i++) {
+                    if (userInput[i] == ' ') {
+                        argCount++;
+                    }
+                }
+
+                userInput.Append(" ");
+
+                int* args = new int[argCount];
+                for (int i = 0; i < argCount; i++) {
+                    userInput.Prepend("\x2");
+
+                    String argStr;
+                    int nextArgIndex = userInput.Find(2, " ");
+                    for (int j = 0; j < nextArgIndex; j++) {
+                        argStr.Append(userInput[j]);
+                    }
+
+                    userInput.Replace(argStr, "");
+                    argStr.Replace("\x2 ", "");
+
+                    if (toInt(argStr) == 0x80000000) {
+                        delete[] args;
+                        response = "invalid arguments";
+                        return;
+                    }
+
+                    args[i] = toInt(argStr);
+                }
+
+                response = player.castSpell(argCount, args) + "\nDebug: " + player.getSpell()->getName() + "|" + typeid(*player.getSpell()).name();
+            }
+            else if (userInput.ToLower() == "up") {
+                player.shiftSpellIndex(-1);
+            }
+            else if (userInput.ToLower() == "down") {
+                player.shiftSpellIndex(1);
+            }
+            else if (userInput.ToLower().Find("select ") == 0) {
+                //this is some unreliable parsing
+                userInput.Replace("select ", "");
+                response = "tried to go to " + toString(toInt(userInput));
+                player.setSpellIndex(toInt(userInput));
+            }
+            else if (userInput.ToLower().Find("search ") == 0) {
+                userInput.Replace("search ", "");
+
+                int searchResult = player.getSpellBook().findSpellIndex(userInput);
+                if (searchResult == -1) {
+                    response = "'" + userInput + "' not found";
+                }
+                else {
+                    response = "'" + userInput + "' found at index " + toString(searchResult);
+                    player.setSpellIndex(searchResult);
+                }
+            }
+            else if (userInput.ToLower() == "back") {
+                inputState = 5;
+            }
+            else {
+                response = "invalid input";
+            }
+            break;
+        case 7:
+            if (userInput.ToLower() == "use") {
+                response = player.useItem() + "\nDebug: " + player.getItem()->getName() + "|" + typeid(*player.getItem()).name();
+            }
+            else if (userInput.ToLower() == "up") {
+                player.shiftInvIndex(-1);
+            }
+            else if (userInput.ToLower() == "down") {
+                player.shiftInvIndex(1);
+            }
+            else if (userInput.ToLower().Find("select ") == 0) {
+                //this is some unreliable parsing
+                userInput.Replace("select ", "");
+                response = "tried to go to " + toString(toInt(userInput));
+                player.setInvIndex(toInt(userInput));
+            }
+            else if (userInput.ToLower().Find("search ") == 0) {
+                userInput.Replace("search ", "");
+
+                int searchResult = player.getInventory().findItemIndex(userInput);
+                if (searchResult == -1) {
+                    response = "'" + userInput + "' not found";
+                }
+                else {
+                    response = "'" + userInput + "' found at index " + toString(searchResult);
+                    player.setInvIndex(searchResult);
+                }
+            }
+            else if (userInput.ToLower() == "back") {
+                inputState = 5;
+            }
+            else {
+                response = "invalid input";
+            }
+            break;
+
     }
 }
 
@@ -633,7 +776,7 @@ void Game::run() {
 
     showCombat(config.combat.x, config.combat.y);
 
-    if (inputState > 1) {
+    if (inputState > 1 && inputState < 5) {
         showDetails(config.details.x, config.details.y);
     }
     
