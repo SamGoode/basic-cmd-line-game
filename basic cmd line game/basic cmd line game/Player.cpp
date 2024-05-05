@@ -177,6 +177,10 @@ void Player::shiftInvIndex(int shift) {
     setInvIndex(currentInvIndex + shift);
 }
 
+int Player::getInvIndex() {
+    return currentInvIndex;
+}
+
 Item*& Player::getItem() {
     return inventory[currentInvIndex];
 }

@@ -21,10 +21,10 @@ Game::Game(int screenWidth, int screenHeight) {
 
     player = Player(*this, 2, 2);
     player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("Apple pie", "Wow yummy", 30), new Item("Diamond", "Wow shiny"), new Item("Knife", "Wow sharp") }, itemMasterList);
-    player.getSpellBook() = SpellList(4, new SpellBase*[4]{ new SpellBase("Conjure fist", "Conjures a fist to punch an enemy", 1, 5), new SpellBase("DuMMy spell", "Doesn't do anything"), new SpellBase("Hiya", "I don't actually do anything"), new TeleportSpell() }, spellMasterList);
+    player.getSpellBook() = SpellList(3, new SpellBase*[3]{ new SpellBase("Conjure fist", "Conjures a fist to punch an enemy", 1, 5), new SpellBase("DuMMy spell", "Doesn't do anything"), new SpellBase("Hiya", "I don't actually do anything")}, spellMasterList);
     
     rooms[0][2] = Room(*this, "Boss room");
-    rooms[1][0] = Room(*this, "This room is undergoing construction.");
+    rooms[1][0] = Room(*this, "This room is undergoing construction.", ItemList(1, new Item*[1]{ new ScrollItem("Teleport Scroll", "This scroll contains knowledge of the\nteleport spell.", new TeleportSpell(), spellMasterList) }, itemMasterList));
     rooms[1][3] = Room(*this, "It's cold in here.", ItemList(2, new Item*[2]{ new Item("gold coin", "I'm a golden circle"), new Item("ice cube", "I'm a block of ice") }, itemMasterList));
     rooms[2][0] = Room(*this, "This room is undergoing construction.");
     rooms[2][1] = Room(*this, "This room is undergoing construction.");

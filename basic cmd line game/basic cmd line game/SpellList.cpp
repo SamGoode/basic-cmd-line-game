@@ -57,16 +57,18 @@ int SpellList::findSpellIndex(const String& spellName) {
     int lowerBound = 0;
     int index;
 
-    String lowerName;
+    String lowerName1 = spellName;
+    lowerName1.ToLower();
+    String lowerName2;
 
     while (true) {
-        // (u - l)/2 + l can probably be simplified to (u + l)/2
-        index = ((upperBound - lowerBound) / 2) + lowerBound;
+        // (u - l)/2 + l can be simplified to (u + l)/2
+        index = (upperBound + lowerBound) / 2;
 
-        lowerName = spells[index]->getName();
-        lowerName.ToLower();
+        lowerName2 = spells[index]->getName();
+        lowerName2.ToLower();
 
-        if (spellName == lowerName) {
+        if (lowerName1 == lowerName2) {
             return index;
         }
 
@@ -74,7 +76,7 @@ int SpellList::findSpellIndex(const String& spellName) {
             return -1;
         }
 
-        if (spellName < lowerName) {
+        if (lowerName1 < lowerName2) {
             upperBound = index - 1;
         }
         else {
@@ -88,20 +90,22 @@ int SpellList::findSlotIndex(const String& spellName) {
     int lowerBound = 0;
     int index;
 
-    String lowerName;
+    String lowerName1 = spellName;
+    lowerName1.ToLower();
+    String lowerName2;
 
     while (true) {
-        // (u - l)/2 + l can probably be simplified to (u + l)/2
-        index = ((upperBound - lowerBound) / 2) + lowerBound;
+        // (u - l)/2 + l can be simplified to (u + l)/2
+        index = (upperBound + lowerBound) / 2;
 
-        lowerName = spells[index]->getName();
-        lowerName.ToLower();
+        lowerName2 = spells[index]->getName();
+        lowerName2.ToLower();
 
         if (upperBound <= lowerBound) {
             return index;
         }
 
-        if (spellName < lowerName) {
+        if (lowerName1 < lowerName2) {
             upperBound = index - 1;
         }
         else {

@@ -46,6 +46,7 @@ class Player {
         ItemList& getInventory();
         void setInvIndex(int newIndex);
         void shiftInvIndex(int shift);
+        int getInvIndex();
 
         Item*& getItem();
         String useItem();

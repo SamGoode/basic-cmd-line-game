@@ -20,44 +20,42 @@ int main() {
         //Game game = Game(220, 60);
     //}
 
-
-    /*
-    Current layout of rooms
-
-        {sword room}      {cold room}   {wombat room}
-        {mannequin room}  {start room}  {empty}
-        {empty}           {empty}       {empty}
-
-    */
-
-    //game ticks per second
-    int tickrate = 100;
-
     SetConsoleOutputCP(437);
-
-    SHORT width = 220;
-    SHORT height = 60;
 
     HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
 
     DWORD consoleMode;
     GetConsoleMode(hout, &consoleMode);
     SetConsoleMode(hout, consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+    
+    SHORT width = 220;
+    SHORT height = 60;
+
+    SetConsoleScreenBufferSize(hout, { width, height });
 
     CONSOLE_FONT_INFOEX cfi;
     cfi.cbSize = sizeof(CONSOLE_FONT_INFOEX);
 
     GetCurrentConsoleFontEx(hout, false, &cfi);
 
-    cfi.dwFontSize.Y = 12;
-    cfi.dwFontSize.X = 6;//cfi.dwFontSize.Y / 2;
+    cfi.dwFontSize.Y = 14;
+    cfi.dwFontSize.X = 7;//cfi.dwFontSize.Y / 2;
 
     SetCurrentConsoleFontEx(hout, false, &cfi);
 
     SMALL_RECT dim = { 0, 0, width - 1, height - 1 };
 
-    SetConsoleScreenBufferSize(hout, { width, height });
-    SetConsoleWindowInfo(hout, true, &dim);
+    if (!SetConsoleWindowInfo(hout, true, &dim)) {
+        cfi.dwFontSize.Y = 12;
+        cfi.dwFontSize.X = 6;
+
+        SetCurrentConsoleFontEx(hout, false, &cfi);
+
+        SetConsoleWindowInfo(hout, true, &dim);
+    }
+
+    //game ticks per second
+    int tickrate = 100;
 
     Game game = Game(width, height);
 

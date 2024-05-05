@@ -69,8 +69,6 @@ String Room::getDescription() {
         }
 
         printOut += items[i]->getName();
-        printOut += " | ";
-        printOut += items[i]->getDescription();
 
         if (i == currentItemsIndex && ownerPtr->getInputState() == 4) {
             printOut += 174;
