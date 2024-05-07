@@ -26,7 +26,9 @@ class Player {
 
         Player(Game& owner, int x, int y);
 
-        Player& operator=(const Player& spell);
+        Player& operator=(const Player& player);
+
+        Game* getGamePtr();
 
         int getX();
         int getY();

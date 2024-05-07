@@ -1,5 +1,5 @@
 #include "UniqueSpells.h"
-#include "Player.h"
+#include "Game.h"
 
 TeleportSpell::TeleportSpell() {
 	this->getName() = "Teleport";
@@ -22,24 +22,26 @@ String TeleportSpell::cast(Player& player, int argCount, int* args) {
 		return "too many arguments";
 	}
 
+	int origX = player.getX();
+	int origY = player.getY();
+
 	int destX = args[0] + 2;
 	int destY = args[1] + 2;
 	delete[] args;
 
-	if (destX < 0 || destX > 4 || destY < 0 || destY > 4) {
-		return toString(destX - 2) + ", " + toString(destY - 2) + " is outside of the map";
-	}
-
 	switch (player.setPos(destX, destY)) {
 		case 0:
 			player.shiftMana(-getCost());
-			return "teleported player to " + toString(destX - 2) + ", " + toString(destY - 2);
+			
+			player.getGamePtr()->startAnimation(1, origX, origY);
+
+			return "Player teleported to " + toString(destX - 2) + ", " + toString(destY - 2);
 			break;
 		case 1:
 			return toString(destX - 2) + ", " + toString(destY - 2) + " is outside of the map";
 			break;
 		case 2:
-			return "there is no room at " + toString(destX - 2) + ", " + toString(destY - 2);
+			return "There is no room at " + toString(destX - 2) + ", " + toString(destY - 2);
 			break;
 	}
 

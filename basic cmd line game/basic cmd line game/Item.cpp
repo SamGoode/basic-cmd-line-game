@@ -59,6 +59,9 @@ void Item::setConsumable(bool isConsumable) {
 String Item::use(Player& player) {
     if (consumable) {
         player.getInventory().removeItem(player.getInvIndex());
+        if (player.getInvIndex() == player.getInventory().getCount()) {
+            player.shiftInvIndex(-1);
+        }
     }
 
     return "I didn't do anything";
@@ -83,10 +86,13 @@ FoodItem::FoodItem(String name, String description, int healAmount) {
 String FoodItem::use(Player& player) {
     if (this->isConsumable()) {
         player.getInventory().removeItem(player.getInvIndex());
+        if (player.getInvIndex() == player.getInventory().getCount()) {
+            player.shiftInvIndex(-1);
+        }
     }
     
     player.shiftHealth(healAmount);
-    return "healed player for " + toString(healAmount) + " hp";
+    return "You healed for " + toString(healAmount) + " hp";
 }
 
 ScrollItem::ScrollItem() {
@@ -109,9 +115,12 @@ ScrollItem::ScrollItem(String name, String description, SpellBase* spell, SpellL
 String ScrollItem::use(Player& player) {
     if (this->isConsumable()) {
         player.getInventory().removeItem(player.getInvIndex());
+        if (player.getInvIndex() == player.getInventory().getCount()) {
+            player.shiftInvIndex(-1);
+        }
     }
 
     String spellName = spell->getName();
     player.getSpellBook().insertSpell(spell, player.getSpellBook().findSlotIndex(spell->getName()));
-    return "player gained " + spellName + " spell";
+    return "You learned the " + spellName + " spell";
 }

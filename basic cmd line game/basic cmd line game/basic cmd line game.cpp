@@ -54,14 +54,7 @@ int main() {
         SetConsoleWindowInfo(hout, true, &dim);
     }
 
-    //game ticks per second
-    int tickrate = 100;
+    Game game = Game(width, height, 50);
 
-    Game game = Game(width, height);
-
-    while (true) {
-        game.run();
-
-        Sleep(1000 / tickrate);
-    }
+    game.run();
 }

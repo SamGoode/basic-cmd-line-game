@@ -52,23 +52,23 @@ int SpellList::getCount() {
 	return count;
 }
 
-int SpellList::findSpellIndex(const String& spellName) {
+int SpellList::findSpellIndex(String spellName) {
     int upperBound = getCount() - 1;
     int lowerBound = 0;
     int index;
 
-    String lowerName1 = spellName;
-    lowerName1.ToLower();
-    String lowerName2;
+    spellName.ToLower();
+    //holds lower case copies
+    String lcName;
 
     while (true) {
         // (u - l)/2 + l can be simplified to (u + l)/2
         index = (upperBound + lowerBound) / 2;
 
-        lowerName2 = spells[index]->getName();
-        lowerName2.ToLower();
+        lcName = spells[index]->getName();
+        lcName.ToLower();
 
-        if (lowerName1 == lowerName2) {
+        if (spellName == lcName) {
             return index;
         }
 
@@ -76,7 +76,7 @@ int SpellList::findSpellIndex(const String& spellName) {
             return -1;
         }
 
-        if (lowerName1 < lowerName2) {
+        if (spellName < lcName) {
             upperBound = index - 1;
         }
         else {
@@ -85,27 +85,31 @@ int SpellList::findSpellIndex(const String& spellName) {
     }
 }
 
-int SpellList::findSlotIndex(const String& spellName) {
+int SpellList::findSlotIndex(String spellName) {
     int upperBound = getCount() - 1;
     int lowerBound = 0;
     int index;
 
-    String lowerName1 = spellName;
-    lowerName1.ToLower();
-    String lowerName2;
+    spellName.ToLower();
+    //holds lower case copies
+    String lcName;
 
     while (true) {
         // (u - l)/2 + l can be simplified to (u + l)/2
         index = (upperBound + lowerBound) / 2;
 
-        lowerName2 = spells[index]->getName();
-        lowerName2.ToLower();
+        lcName = spells[index]->getName();
+        lcName.ToLower();
 
         if (upperBound <= lowerBound) {
-            return index;
+            if (spellName < lcName) {
+                return index;
+            }
+
+            return index + 1;
         }
 
-        if (lowerName1 < lowerName2) {
+        if (spellName < lcName) {
             upperBound = index - 1;
         }
         else {

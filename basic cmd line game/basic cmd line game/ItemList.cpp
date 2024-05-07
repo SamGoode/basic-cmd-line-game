@@ -52,21 +52,23 @@ int ItemList::getCount() {
     return count;
 }
 
-int ItemList::findItemIndex(const String& itemName) {
+int ItemList::findItemIndex(String itemName) {
     int upperBound = getCount() - 1;
     int lowerBound = 0;
     int index;
 
-    String lowerName;
+    itemName.ToLower();
+    //holds lower case copies
+    String lcName;
 
     while (true) {
-        // (u - l)/2 + l can probably be simplified to (u + l)/2
-        index = ((upperBound - lowerBound) / 2) + lowerBound;
+        // (u - l)/2 + l can be simplified to (u + l)/2
+        index = (upperBound + lowerBound) / 2;
 
-        lowerName = items[index]->getName();
-        lowerName.ToLower();
+        lcName = items[index]->getName();
+        lcName.ToLower();
 
-        if (itemName == lowerName) {
+        if (itemName == lcName) {
             return index;
         }
 
@@ -74,7 +76,7 @@ int ItemList::findItemIndex(const String& itemName) {
             return -1;
         }
 
-        if (itemName < lowerName) {
+        if (itemName < lcName) {
             upperBound = index - 1;
         }
         else {
@@ -83,20 +85,31 @@ int ItemList::findItemIndex(const String& itemName) {
     }
 }
 
-int ItemList::findSlotIndex(const String& itemName) {
+int ItemList::findSlotIndex(String itemName) {
     int upperBound = getCount() - 1;
     int lowerBound = 0;
     int index;
 
+    itemName.ToLower();
+    //holds lower case copies
+    String lcName;
+
     while (true) {
-        // (u - l)/2 + l can probably be simplified to (u + l)/2
-        index = ((upperBound - lowerBound) / 2) + lowerBound;
+        // (u - l)/2 + l can be simplified to (u + l)/2
+        index = (upperBound + lowerBound) / 2;
+
+        lcName = items[index]->getName();
+        lcName.ToLower();
 
         if (upperBound <= lowerBound) {
-            return index;
+            if (itemName < lcName) {
+                return index;
+            }
+
+            return index + 1;
         }
 
-        if (itemName < items[index]->getName()) {
+        if (itemName < lcName) {
             upperBound = index - 1;
         }
         else {

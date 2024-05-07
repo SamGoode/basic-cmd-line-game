@@ -23,27 +23,32 @@ class Game {
     private:
         Screen screen;
 
+        bool gameRunning;
+        int tickRate;
+
         Config config;
 
         bool isAnimating;
         int animID;
         int animCount;
-        int animX;
-        int animY;
-        String tempStr;
+        int startX;
+        int startY;
 
-        Player player;
-        Room rooms[5][5];
         ItemList itemMasterList;
         SpellList spellMasterList;
+
+        Player player;
+
+        Enemy dummy;
+        
+        Room rooms[5][5];
+
         int inputState;
         String userInput;
         String response;
 
-        Enemy dummy;
-
     public:
-        Game(int screenWidth, int screenHeight);
+        Game(int screenWidth, int screenHeight, int tickRate);
 
         ~Game();
 
@@ -56,6 +61,7 @@ class Game {
         
         void drawPlayer(int x, int y);
         void drawDuck(int x, int y);
+        void drawTeleport(int x, int y, int width, int height);
 
         void drawBorder(int x, int y, int width, int height, bool isThick);
         void drawUIWindow(int x, int y, int width, int height);
@@ -76,7 +82,7 @@ class Game {
         void inputLine(int x, int y);
         void processInput();
 
-        void startAnimation(int ID);
+        void startAnimation(int ID, int startX, int startY);
         void runAnimation(int ID);
         void endAnimation(int ID);
 

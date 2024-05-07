@@ -1,8 +1,12 @@
 #include "Game.h"
 #include <iostream>
+#include <windows.h>
 
-Game::Game(int screenWidth, int screenHeight) {
+Game::Game(int screenWidth, int screenHeight, int tickRate) {
     screen = Screen(screenWidth, screenHeight);
+
+    gameRunning = true;
+    this->tickRate = tickRate;
 
     config = {
         {3, 1},
@@ -16,38 +20,38 @@ Game::Game(int screenWidth, int screenHeight) {
     isAnimating = false;
     animID = 0;
     animCount = 0;
-    animX = 0;
-    animY = 0;
+    startX = 0;
+    startY = 0;
 
     player = Player(*this, 2, 2);
-    player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("Apple pie", "Wow yummy", 30), new Item("Diamond", "Wow shiny"), new Item("Knife", "Wow sharp") }, itemMasterList);
-    player.getSpellBook() = SpellList(3, new SpellBase*[3]{ new SpellBase("Conjure fist", "Conjures a fist to punch an enemy", 1, 5), new SpellBase("DuMMy spell", "Doesn't do anything"), new SpellBase("Hiya", "I don't actually do anything")}, spellMasterList);
+    player.getInventory() = ItemList(3, new Item*[3]{ new FoodItem("Apple pie", "Wow yummy", 30), new Item("Diamond", "Wow shiny"), new FoodItem("Knife", "Wow sharp AND yummy", -50) }, itemMasterList);
+    player.getSpellBook() = SpellList(3, new SpellBase*[3]{ new SpellBase("Conjure fist", "Conjures a fist to punch an enemy", 1, 5), new SpellBase("DUmMy sPElL", "Doesn't do anything"), new SpellBase("Hiya", "I don't actually do anything") }, spellMasterList);
     
+    dummy = Enemy("dummy duck", 200, 50, 5);
+
     rooms[0][2] = Room(*this, "Boss room");
-    rooms[1][0] = Room(*this, "This room is undergoing construction.", ItemList(1, new Item*[1]{ new ScrollItem("Teleport Scroll", "This scroll contains knowledge of the\nteleport spell.", new TeleportSpell(), spellMasterList) }, itemMasterList));
-    rooms[1][3] = Room(*this, "It's cold in here.", ItemList(2, new Item*[2]{ new Item("gold coin", "I'm a golden circle"), new Item("ice cube", "I'm a block of ice") }, itemMasterList));
+    rooms[1][0] = Room(*this, "There is a stone altar in the middle of the room. You see a tattered\nscroll on top of it.", ItemList(1, new Item*[1]{ new ScrollItem("Teleport scroll", "This scroll contains knowledge of\nthe teleport spell.", new TeleportSpell(), spellMasterList) }, itemMasterList));
+    rooms[1][3] = Room(*this, "It's cold in here.", ItemList(2, new Item*[2]{ new Item("Gold coin", "I'm a golden circle"), new Item("Ice cube", "I'm a block of ice") }, itemMasterList));
     rooms[2][0] = Room(*this, "This room is undergoing construction.");
     rooms[2][1] = Room(*this, "This room is undergoing construction.");
     rooms[2][2] = Room(*this, "This is the room you started in.");
     rooms[2][3] = Room(*this, "It's dark in here");
     rooms[2][4] = Room(*this, "This room is undergoing construction.");
     rooms[3][0] = Room(*this, "This room is undergoing construction.");
-    rooms[3][2] = Room(*this, "There's a sword stuck in a large boulder.", ItemList(1, new Item*[1]{ new Item("fancy sword", "I look fancy") }, itemMasterList));
+    rooms[3][2] = Room(*this, "There's a sword stuck in a large boulder.", ItemList(1, new Item*[1]{ new Item("Fancy sword", "I look fancy") }, itemMasterList));
     rooms[3][4] = Room(*this, "This room is undergoing construction.");
-    rooms[4][1] = Room(*this, "It's a large room with training mannequins.", ItemList(1, new Item*[1]{ new Item("training dummy", "It's covered in slash marks") }, itemMasterList));
+    rooms[4][1] = Room(*this, "The room is littered with old training mannequins.", ItemList(1, new Item*[1]{ new Item("Training dummy", "It's covered in slash marks") }, itemMasterList));
     rooms[4][2] = Room(*this, "There's a wombat in here.");
     rooms[4][3] = Room(*this, "This room is undergoing construction.");
     rooms[4][4] = Room(*this, "This room is undergoing construction.");
 
     inputState = 0;
-
-    dummy = Enemy("dummy duck", 200, 50, 5);
 }
 
 Game::~Game() {
     //this is a quite a wacky way of handling it
     //using shared_ptr would be better but if I went down that route, 
-    //then I'd want to make my own shared_ptr class
+    //then I'd prefer to make my own shared_ptr class
     for (int i = 0; i < itemMasterList.getCount(); i++) {
         delete itemMasterList[i];
     }
@@ -85,6 +89,18 @@ void Game::drawDuck(int x, int y) {
     screen.text("  _ \n(__)", x, y);
     screen.input(247, x, y);
     screen.input(233, x + 1, y);
+}
+
+void Game::drawTeleport(int x, int y, int width, int height) {
+    screen.input(201, x, y);
+    screen.input(200, x, y + height + 1);
+    screen.input(187, x + width + 1, y);
+    screen.input(188, x + width + 1, y + height + 1);
+
+    screen.rect(196, x + 1, y, width, 1);
+    screen.rect(196, x + 1, y + height + 1, width, 1);
+    screen.rect(179, x, y + 1, 1, height);
+    screen.rect(179, x + width + 1, y + 1, 1, height);
 }
 
 void Game::drawBorder(int x, int y, int width, int height, bool isThick) {
@@ -176,7 +192,7 @@ void Game::showMap(int x, int y) {
     }
     
     drawDuck((x - 2) + 14 * (0), (y - 2) + 7 * (-2));
-    drawPlayer((x - 2) + 14 * (player.getX() - 2) + animX, (y - 2) + 7 * (player.getY() - 2) + animY);
+    drawPlayer((x - 2) + 14 * (player.getX() - 2), (y - 2) + 7 * (player.getY() - 2));
 }
 
 void Game::showCombat(int x, int y) {
@@ -202,6 +218,8 @@ void Game::showCombat(int x, int y) {
 
     drawBorder(x + 55, y + 28, 5, 1, false);
     screen.text("RUN", x + 57, y + 29);
+
+    screen.text("THIS WINDOW IS JUST FOR SHOW\nCOMBAT HAS NOT BEEN IMPLEMENTED", x + 26, y + 14);
 }
 
 void Game::showDetails(int x, int y) {
@@ -223,12 +241,14 @@ void Game::showDetails(int x, int y) {
 
             screen.text("Item:\n" + getCurrentRoom().getItem()->getName() + "\n\nDescription:\n" + getCurrentRoom().getItem()->getDescription(), x + 3, y + 4);
             break;
+        /* combat system code
         case 6:
             screen.text("Spell:\n" + player.getSpell()->getName() + "\n\nCost: " + toString(player.getSpell()->getCost()) + " mana\nDamage: " + toString(player.getSpell()->getDamage()) + "\n\nDescription:\n" + player.getSpell()->getDescription(), x + 3, y + 4);
             break;
         case 7:
             screen.text("Item:\n" + player.getItem()->getName() + "\n\nDescription:\n" + player.getItem()->getDescription(), x + 3, y + 4);
             break;
+        */
     }
 }
 
@@ -284,6 +304,8 @@ void Game::showCommandConsole(int x, int y) {
 
             screen.text("[take] current selected item\n\nselect different item by\n\nscrolling [up] [down]", x + 6, y + 6);
             break;
+        
+        /* combat system code
         case 5:
             screen.text("[spells]   [items]   [run]", x + 18, y + 10);
             break;
@@ -309,7 +331,7 @@ void Game::showCommandConsole(int x, int y) {
 
             screen.text("[use] current selected item\n\nselect different item by\n\nscrolling [up] [down]\n[select]ing based on index\n[search]ing by name", x + 6, y + 6);
             break;
-
+        */
     }
 
     screen.text(response, x + 5, y + 17);
@@ -318,40 +340,47 @@ void Game::showCommandConsole(int x, int y) {
 }
 
 void Game::inputLine(int x, int y) {
+    std::cout << "\x1b[?25h";
     std::cout << "\x1b[" + toString(y+1) + ";" + toString(x+1) + "H";
+    
     userInput.ReadFromConsole();
 }
 
 void Game::processInput() {
     response = "";
+    userInput.ToLower();
+
     switch (inputState) {
         case 0:
-            if (userInput.ToLower() == "move") {
+            if (userInput == "move") {
                 inputState = 1;
             }
-            else if (userInput.ToLower() == "inventory") {
+            else if (userInput == "inventory") {
                 inputState = 2;
             }
-            else if (userInput.ToLower() == "fight") {
-                //response = "this doesn't work yet";
-                inputState = 5;
-            }
-            else if (userInput.ToLower() == "spellbook") {
+            else if (userInput == "spellbook") {
                 inputState = 3;
             }
-            else if (userInput.ToLower() == "room") {
+            else if (userInput == "room") {
                 inputState = 4;
+            }
+            else if (userInput == "fight") {
+                response = "combat has been disabled";
+                //inputState = 5;
             }
             else {
                 response = "invalid input";
             }
             break;
         case 1:
-            if (userInput.ToLower() == "north") {
+            startX = player.getX();
+            startY = player.getY();
+
+            if (userInput == "north") {
                 switch (player.shiftPos(0, -1)) {
                     case 0:
                         response = "You entered the room to the north";
-                        startAnimation(0);
+                        startAnimation(0, startX, startY);
                         break;
                     case 1:
                         response = "You can't go outside of the map";
@@ -361,11 +390,11 @@ void Game::processInput() {
                         break;
                 }
             }
-            else if (userInput.ToLower() == "east") {
+            else if (userInput == "east") {
                 switch (player.shiftPos(1, 0)) {
                     case 0:
                         response = "You entered the room to the east";
-                        startAnimation(1);
+                        startAnimation(0, startX, startY);
                         break;
                     case 1:
                         response = "You can't go outside of the map";
@@ -375,11 +404,11 @@ void Game::processInput() {
                         break;
                 }
             }
-            else if (userInput.ToLower() == "south") {
+            else if (userInput == "south") {
                 switch (player.shiftPos(0, 1)) {
                     case 0:
                         response = "You entered the room to the south";
-                        startAnimation(2);
+                        startAnimation(0, startX, startY);
                         break;
                     case 1:
                         response = "You can't go outside of the map";
@@ -389,11 +418,11 @@ void Game::processInput() {
                         break;
                 }
             }
-            else if (userInput.ToLower() == "west") {
+            else if (userInput == "west") {
                 switch (player.shiftPos(-1, 0)) {
                     case 0:
                         response = "You entered the room to the west";
-                        startAnimation(3);
+                        startAnimation(0, startX, startY);
                         break;
                     case 1:
                         response = "You can't go outside of the map";
@@ -403,7 +432,7 @@ void Game::processInput() {
                         break;
                 }
             }
-            else if (userInput.ToLower() == "back") {
+            else if (userInput == "back") {
                 inputState = 0;
             }
             else {
@@ -411,22 +440,22 @@ void Game::processInput() {
             }
             break;
         case 2:
-            if (userInput.ToLower() == "use") {
+            if (userInput == "use") {
                 response = player.useItem() + "\nDebug: " + player.getItem()->getName() + "|" + typeid(*player.getItem()).name();
             }
-            else if (userInput.ToLower() == "up") {
+            else if (userInput == "up") {
                 player.shiftInvIndex(-1);
             }
-            else if (userInput.ToLower() == "down") {
+            else if (userInput == "down") {
                 player.shiftInvIndex(1);
             }
-            else if (userInput.ToLower().Find("select ") == 0) {
+            else if (userInput.Find("select ") == 0) {
                 //this is some unreliable parsing
                 userInput.Replace("select ", "");
                 response = "tried to go to " + toString(toInt(userInput));
                 player.setInvIndex(toInt(userInput));
             }
-            else if (userInput.ToLower().Find("search ") == 0) {
+            else if (userInput.Find("search ") == 0) {
                 userInput.Replace("search ", "");
 
                 int searchResult = player.getInventory().findItemIndex(userInput);
@@ -438,7 +467,7 @@ void Game::processInput() {
                     player.setInvIndex(searchResult);
                 }
             }
-            else if (userInput.ToLower() == "back") {
+            else if (userInput == "back") {
                 inputState = 0;
             }
             else {
@@ -446,7 +475,7 @@ void Game::processInput() {
             }
             break;
         case 3:
-            if (userInput.ToLower().Find("cast") == 0) {
+            if (userInput.Find("cast") == 0) {
                 userInput.Replace("cast", "");
                 
                 if (userInput.Find(" ") != 0) {
@@ -487,19 +516,19 @@ void Game::processInput() {
 
                 response = player.castSpell(argCount, args) + "\nDebug: " + player.getSpell()->getName() + "|" + typeid(*player.getSpell()).name();
             }
-            else if (userInput.ToLower() == "up") {
+            else if (userInput == "up") {
                 player.shiftSpellIndex(-1);
             }
-            else if (userInput.ToLower() == "down") {
+            else if (userInput == "down") {
                 player.shiftSpellIndex(1);
             }
-            else if (userInput.ToLower().Find("select ") == 0) {
+            else if (userInput.Find("select ") == 0) {
                 //this is some unreliable parsing
                 userInput.Replace("select ", "");
                 response = "tried to go to " + toString(toInt(userInput));
                 player.setSpellIndex(toInt(userInput));
             }
-            else if (userInput.ToLower().Find("search ") == 0) {
+            else if (userInput.Find("search ") == 0) {
                 userInput.Replace("search ", "");
 
                 int searchResult = player.getSpellBook().findSpellIndex(userInput);
@@ -511,7 +540,7 @@ void Game::processInput() {
                     player.setSpellIndex(searchResult);
                 }
             }
-            else if (userInput.ToLower() == "back") {
+            else if (userInput == "back") {
                 inputState = 0;
             }
             else {
@@ -519,7 +548,7 @@ void Game::processInput() {
             }
             break;
         case 4:
-            if (userInput.ToLower() == "take") {
+            if (userInput == "take") {
                 if (getCurrentRoom().getItems().getCount() == 0) {
                     response = "this room has no items to take";
                     return;
@@ -528,28 +557,30 @@ void Game::processInput() {
                 response = "You took the " + getCurrentRoom().getItem()->getName() + "\nDebug: " + typeid(*getCurrentRoom().getItem()).name();
                 player.takeItem(getCurrentRoom());
             }
-            else if (userInput.ToLower() == "up") {
+            else if (userInput == "up") {
                 getCurrentRoom().shiftItemsIndex(-1);
             }
-            else if (userInput.ToLower() == "down") {
+            else if (userInput == "down") {
                 getCurrentRoom().shiftItemsIndex(1);
             }
-            else if (userInput.ToLower() == "back") {
+            else if (userInput == "back") {
                 inputState = 0;
             }
             else {
                 response = "invalid input";
             }
             break;
+        
+        /* combat system code
         case 5:
-            if (userInput.ToLower() == "spells") {
+            if (userInput == "spells") {
                 //dummy.shiftHealth(-5);
                 inputState = 6;
             }
-            else if (userInput.ToLower() == "items") {
+            else if (userInput == "items") {
                 inputState = 7;
             }
-            else if (userInput.ToLower() == "run") {
+            else if (userInput == "run") {
                 response = "You managed to run away";
                 inputState = 0;
             }
@@ -558,7 +589,7 @@ void Game::processInput() {
             }
             break;
         case 6:
-            if (userInput.ToLower().Find("cast") == 0) {
+            if (userInput.Find("cast") == 0) {
                 userInput.Replace("cast", "");
 
                 if (userInput.Find(" ") != 0) {
@@ -599,19 +630,19 @@ void Game::processInput() {
 
                 response = player.castSpell(argCount, args) + "\nDebug: " + player.getSpell()->getName() + "|" + typeid(*player.getSpell()).name();
             }
-            else if (userInput.ToLower() == "up") {
+            else if (userInput == "up") {
                 player.shiftSpellIndex(-1);
             }
-            else if (userInput.ToLower() == "down") {
+            else if (userInput == "down") {
                 player.shiftSpellIndex(1);
             }
-            else if (userInput.ToLower().Find("select ") == 0) {
+            else if (userInput.Find("select ") == 0) {
                 //this is some unreliable parsing
                 userInput.Replace("select ", "");
                 response = "tried to go to " + toString(toInt(userInput));
                 player.setSpellIndex(toInt(userInput));
             }
-            else if (userInput.ToLower().Find("search ") == 0) {
+            else if (userInput.Find("search ") == 0) {
                 userInput.Replace("search ", "");
 
                 int searchResult = player.getSpellBook().findSpellIndex(userInput);
@@ -623,7 +654,7 @@ void Game::processInput() {
                     player.setSpellIndex(searchResult);
                 }
             }
-            else if (userInput.ToLower() == "back") {
+            else if (userInput == "back") {
                 inputState = 5;
             }
             else {
@@ -631,22 +662,22 @@ void Game::processInput() {
             }
             break;
         case 7:
-            if (userInput.ToLower() == "use") {
+            if (userInput == "use") {
                 response = player.useItem() + "\nDebug: " + player.getItem()->getName() + "|" + typeid(*player.getItem()).name();
             }
-            else if (userInput.ToLower() == "up") {
+            else if (userInput == "up") {
                 player.shiftInvIndex(-1);
             }
-            else if (userInput.ToLower() == "down") {
+            else if (userInput == "down") {
                 player.shiftInvIndex(1);
             }
-            else if (userInput.ToLower().Find("select ") == 0) {
+            else if (userInput.Find("select ") == 0) {
                 //this is some unreliable parsing
                 userInput.Replace("select ", "");
                 response = "tried to go to " + toString(toInt(userInput));
                 player.setInvIndex(toInt(userInput));
             }
-            else if (userInput.ToLower().Find("search ") == 0) {
+            else if (userInput.Find("search ") == 0) {
                 userInput.Replace("search ", "");
 
                 int searchResult = player.getInventory().findItemIndex(userInput);
@@ -658,82 +689,63 @@ void Game::processInput() {
                     player.setInvIndex(searchResult);
                 }
             }
-            else if (userInput.ToLower() == "back") {
+            else if (userInput == "back") {
                 inputState = 5;
             }
             else {
                 response = "invalid input";
             }
             break;
-
+        */
     }
 }
 
-void Game::startAnimation(int ID) {
+void Game::startAnimation(int ID, int startX, int startY) {
     isAnimating = true;
     animID = ID;
-    tempStr = response;
-    response = "";
-
-    switch (ID) {
-        case 0:
-            player.shiftPos(0, 1);
-            break;
-        case 1:
-            player.shiftPos(-1, 0);
-            break;
-        case 2:
-            player.shiftPos(0, -1);
-            break;
-        case 3:
-            player.shiftPos(1, 0);
-            break;
-    }
+    this->startX = startX;
+    this->startY = startY;
 }
 
 void Game::runAnimation(int ID) {
+    animCount++;
+
     switch (ID) {
         case 0:
-            if (animCount % 5 == 0) {
-                animY -= 1;
-            }
+            screen.rect(' ', (config.map.x - 2) + 14 * (player.getX() - 2), (config.map.y - 2) + 7 * (player.getY() - 2), 4, 2);
+            drawPlayer((config.map.x - 2) + 14 * (startX - 2) + (2 * (player.getX() - startX) * (animCount/5)), (config.map.y - 2) + 7 * (startY - 2) + ((player.getY() - startY) * (animCount / 5)));
 
-            animCount++;
-
-            if (animCount > 34) {
+            if (animCount > 35) {
                 endAnimation(ID);
             }
             break;
         case 1:
-            if (animCount % 5 == 0) {
-                animX += 2;
+            if (animCount < 40) {
+                screen.rect(' ', (config.map.x - 2) + 14 * (player.getX() - 2), (config.map.y - 2) + 7 * (player.getY() - 2), 4, 2);
             }
 
-            animCount++;
-
-            if (animCount > 34) {
-                endAnimation(ID);
+            if (animCount < 10) {
+                drawPlayer((config.map.x - 2) + 14 * (startX - 2), (config.map.y - 2) + 7 * (startY - 2));
+                drawTeleport((config.map.x - 2) + 14 * (startX - 2) - 3, (config.map.y - 2) + 7 * (startY - 2) - 2, 8, 4);
             }
-            break;
-        case 2:
-            if (animCount % 5 == 0) {
-                animY += 1;
+            else if (animCount < 20) {
+                drawPlayer((config.map.x - 2) + 14 * (startX - 2), (config.map.y - 2) + 7 * (startY - 2));
+                drawTeleport((config.map.x - 2) + 14 * (startX - 2) - 2, (config.map.y - 2) + 7 * (startY - 2) - 1, 6, 2);
+            }
+            else if (animCount < 30) {
+                drawTeleport((config.map.x - 2) + 14 * (startX - 2), (config.map.y - 2) + 7 * (startY - 2), 2, 0);
+            }
+            else if (animCount < 40) {
+                drawTeleport((config.map.x - 2) + 14 * (player.getX() - 2), (config.map.y - 2) + 7 * (player.getY() - 2), 2, 0);
+            }
+            else if (animCount < 50) {
+                drawTeleport((config.map.x - 2) + 14 * (player.getX() - 2) - 2, (config.map.y - 2) + 7 * (player.getY() - 2) - 1, 6, 2);
+            }
+            else if (animCount < 60) {
+                drawTeleport((config.map.x - 2) + 14 * (player.getX() - 2) - 3, (config.map.y - 2) + 7 * (player.getY() - 2) - 2, 8, 4);
             }
 
-            animCount++;
-
-            if (animCount > 34) {
-                endAnimation(ID);
-            }
-            break;
-        case 3:
-            if (animCount % 5 == 0) {
-                animX -= 2;
-            }
-
-            animCount++;
-
-            if (animCount > 34) {
+            if (animCount > 60) {
                 endAnimation(ID);
             }
             break;
@@ -743,54 +755,49 @@ void Game::runAnimation(int ID) {
 void Game::endAnimation(int ID) {
     isAnimating = false;
     animCount = 0;
-    animX = 0;
-    animY = 0;
-    response = tempStr;
-
-    switch (ID) {
-        case 0:
-            player.shiftPos(0, -1);
-            break;
-        case 1:
-            player.shiftPos(1, 0);
-            break;
-        case 2:
-            player.shiftPos(0, 1);
-            break;
-        case 3:
-            player.shiftPos(-1, 0);
-            break;
-    }
 }
 
 void Game::run() {
-    screen.reset();
+    while (gameRunning) {
+        screen.reset();
 
-    background();
+        background();
 
-    showPlayerInfo(config.playerInfo.x, config.playerInfo.y);
-    
-    showRoomInfo(config.roomInfo.x, config.roomInfo.y);
+        showPlayerInfo(config.playerInfo.x, config.playerInfo.y);
 
-    showMap(config.map.x, config.map.y);
+        showRoomInfo(config.roomInfo.x, config.roomInfo.y);
 
-    showCombat(config.combat.x, config.combat.y);
+        showMap(config.map.x, config.map.y);
 
-    if (inputState > 1 && inputState < 5) {
-        showDetails(config.details.x, config.details.y);
+        showCombat(config.combat.x, config.combat.y);
+
+        if (inputState > 1 && inputState < 5) {
+            showDetails(config.details.x, config.details.y);
+        }
+
+        showCommandConsole(config.commandConsole.x, config.commandConsole.y);
+
+        if (isAnimating) {
+            runAnimation(animID);
+        }
+
+        //temporary win condition
+        if (player.getX() == 2 && player.getY() == 0 && !isAnimating) {
+            drawBorder((screen.width / 2) - 20, (screen.height / 2) - 2, 40, 5, true);
+            screen.text("YOU'VE WON", (screen.width / 2) - 4, screen.height / 2);
+            screen.text("press enter to exit.", (screen.width / 2) - 10, (screen.height / 2) + 2);
+
+            gameRunning = false;
+        }
+
+        screen.print();
+
+        if (!isAnimating) {
+            inputLine(config.commandConsole.x + 5, config.commandConsole.y + 19);
+
+            processInput();
+        }
+
+        Sleep(1000 / tickRate);
     }
-    
-    showCommandConsole(config.commandConsole.x, config.commandConsole.y);
-    
-    screen.print();
-
-    if (isAnimating) {
-        runAnimation(animID);
-        
-        return;
-    }
-
-    inputLine(config.commandConsole.x + 5, config.commandConsole.y + 19);
-
-    processInput();
 }

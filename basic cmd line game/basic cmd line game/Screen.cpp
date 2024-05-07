@@ -85,6 +85,7 @@ void Screen::text(String text, int x, int y) {
 }
 
 void Screen::print() {
+    std::cout << "\x1b[?25l";
     std::cout << "\x1b[?25l\x1b[1;1H";
 
     //printout += "\x1b[38;2;255;255;0m";

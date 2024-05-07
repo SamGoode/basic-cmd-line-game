@@ -22,8 +22,8 @@ class SpellList {
 
 		int getCount();
 
-		int findSpellIndex(const String& spellName);
-		int findSlotIndex(const String& spellName);
+		int findSpellIndex(String spellName);
+		int findSlotIndex(String spellName);
 
 		SpellList& addSpell(SpellBase* spell);
 		SpellList& addSpell(SpellBase* spell, SpellList& masterList);

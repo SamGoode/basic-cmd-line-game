@@ -60,6 +60,10 @@ Player& Player::operator=(const Player& player) {
     return *this;
 }
 
+Game* Player::getGamePtr() {
+    return ownerPtr;
+}
+
 int Player::getX() {
     return x;
 }
