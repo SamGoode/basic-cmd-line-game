@@ -33,14 +33,14 @@ Game::Game(int screenWidth, int screenHeight, int tickRate) {
     rooms[1][0] = Room(*this, "There is a stone altar in the middle of the room. You see a tattered\nscroll on top of it.", ItemList(1, new Item*[1]{ new ScrollItem("Teleport scroll", "This scroll contains knowledge of\nthe teleport spell.", new TeleportSpell(), spellMasterList) }, itemMasterList));
     rooms[1][3] = Room(*this, "It's cold in here.", ItemList(2, new Item*[2]{ new Item("Gold coin", "I'm a golden circle"), new Item("Ice cube", "I'm a block of ice") }, itemMasterList));
     rooms[2][0] = Room(*this, "This room is undergoing construction.");
-    rooms[2][1] = Room(*this, "This room is undergoing construction.");
+    rooms[2][1] = Room(*this, "The room is littered with old training mannequins.", ItemList(1, new Item*[1]{ new Item("Training dummy", "It's covered in slash marks") }, itemMasterList));
     rooms[2][2] = Room(*this, "This is the room you started in.");
     rooms[2][3] = Room(*this, "It's dark in here");
     rooms[2][4] = Room(*this, "This room is undergoing construction.");
     rooms[3][0] = Room(*this, "This room is undergoing construction.");
     rooms[3][2] = Room(*this, "There's a sword stuck in a large boulder.", ItemList(1, new Item*[1]{ new Item("Fancy sword", "I look fancy") }, itemMasterList));
     rooms[3][4] = Room(*this, "This room is undergoing construction.");
-    rooms[4][1] = Room(*this, "The room is littered with old training mannequins.", ItemList(1, new Item*[1]{ new Item("Training dummy", "It's covered in slash marks") }, itemMasterList));
+    rooms[4][1] = Room(*this, "This room is undergoing construction.");
     rooms[4][2] = Room(*this, "There's a wombat in here.");
     rooms[4][3] = Room(*this, "This room is undergoing construction.");
     rooms[4][4] = Room(*this, "This room is undergoing construction.");
