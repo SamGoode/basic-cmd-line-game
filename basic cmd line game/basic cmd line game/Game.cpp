@@ -39,11 +39,11 @@ Game::Game(int screenWidth, int screenHeight, int tickRate) {
     rooms[2][4] = Room(*this, "This room is undergoing construction.");
     rooms[3][0] = Room(*this, "This room is undergoing construction.");
     rooms[3][2] = Room(*this, "There's a sword stuck in a large boulder.", ItemList(1, new Item*[1]{ new Item("Fancy sword", "I look fancy") }, itemMasterList));
-    //rooms[3][4] = Room(*this, "This room is undergoing construction.");
-    //rooms[4][1] = Room(*this, "This room is undergoing construction.");
-    //rooms[4][2] = Room(*this, "There's a wombat in here.");
-    //rooms[4][3] = Room(*this, "This room is undergoing construction.");
-    //rooms[4][4] = Room(*this, "This room is undergoing construction.");
+    rooms[3][4] = Room(*this, "This room is undergoing construction.");
+    rooms[4][1] = Room(*this, "This room is undergoing construction.");
+    rooms[4][2] = Room(*this, "There's a wombat in here.");
+    rooms[4][3] = Room(*this, "This room is undergoing construction.");
+    rooms[4][4] = Room(*this, "You sense powerful magic within the room. As you take a closer look\n you see a red object in the corner of the room.", ItemList(1, new Item*[1]{ new Item("Red herring", "This seems very important") }, itemMasterList));
 
     inputState = 0;
 }
