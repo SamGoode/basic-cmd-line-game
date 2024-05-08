@@ -38,7 +38,7 @@ int main() {
 
     GetCurrentConsoleFontEx(hout, false, &cfi);
 
-    cfi.dwFontSize.Y = 14;
+    cfi.dwFontSize.Y = 15;
     cfi.dwFontSize.X = 7;//cfi.dwFontSize.Y / 2;
 
     SetCurrentConsoleFontEx(hout, false, &cfi);
@@ -46,7 +46,7 @@ int main() {
     SMALL_RECT dim = { 0, 0, width - 1, height - 1 };
 
     if (!SetConsoleWindowInfo(hout, true, &dim)) {
-        cfi.dwFontSize.Y = 12;
+        cfi.dwFontSize.Y = 13;
         cfi.dwFontSize.X = 6;
 
         SetCurrentConsoleFontEx(hout, false, &cfi);

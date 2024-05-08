@@ -92,7 +92,7 @@ String FoodItem::use(Player& player) {
     }
     
     player.shiftHealth(healAmount);
-    return "You healed for " + toString(healAmount) + " hp";
+    return "You ate the " + this->getName() + " and healed " + toString(healAmount) + " hp";
 }
 
 ScrollItem::ScrollItem() {
