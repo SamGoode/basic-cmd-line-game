@@ -53,7 +53,7 @@ bool Room::doesExist() {
 //    return *this;
 //}
 
-String Room::getDescription() {
+String Room::Description() {
     String printOut = description;
 
     if (items.getCount() == 0) {

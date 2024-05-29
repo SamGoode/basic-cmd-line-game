@@ -31,6 +31,8 @@ class Item {
 
         const String& getDescription() const;
 
+        virtual String Description();
+
         bool isConsumable();
 
         void setConsumable(bool isConsumable);
@@ -38,27 +40,3 @@ class Item {
         virtual String use(class Player& player);
 };
 
-class FoodItem : public Item {
-    private:
-        int healAmount;
-
-    public:
-        FoodItem();
-
-        FoodItem(String name, String description, int healAmount);
-
-        String use(class Player& player) override;
-};
-
-//scroll item uses SpellList but only stores one spell
-class ScrollItem : public Item {
-    private:
-        SpellBase* spell;
-    
-    public:
-        ScrollItem();
-        
-        ScrollItem(String name, String description, SpellBase* spellPtr, SpellList& masterList);
-
-        String use(class Player& player) override;
-};

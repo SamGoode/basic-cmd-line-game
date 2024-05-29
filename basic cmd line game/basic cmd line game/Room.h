@@ -25,7 +25,7 @@ class Room {
 
         //Room& addItem(Item* item);
 
-        String getDescription();
+        String Description();
 
         ItemList& getItems();
 

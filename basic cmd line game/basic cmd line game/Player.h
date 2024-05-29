@@ -43,7 +43,7 @@ class Player {
         int setMana(int amount);
         int shiftMana(int amount);
 
-        String getDescription();
+        String Description();
 
         ItemList& getInventory();
         void setInvIndex(int newIndex);

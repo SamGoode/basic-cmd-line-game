@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "Room.h"
 #include "Enemy.h"
+#include "FoodItem.h"
+#include "ScrollItem.h"
 
 class Game {
     private:

@@ -162,14 +162,14 @@ void Game::showPlayerInfo(int x, int y) {
     drawBorder(x + 31, y + 3, 6, 2, false);
     drawPlayer(x + 33, y + 4);
 
-    screen.text(player.getDescription(), x+2, y+4);
+    screen.text(player.Description(), x+2, y+4);
 }
 
 void Game::showRoomInfo(int x, int y) {
     drawUIWindow(x, y, 76, 15);
     screen.text("Room Info", x + 34, y + 1);
 
-    screen.text(getCurrentRoom().getDescription(), x + 3, y + 4);
+    screen.text(getCurrentRoom().Description(), x + 3, y + 4);
 }
 
 void Game::showMap(int x, int y) {
@@ -228,7 +228,7 @@ void Game::showDetails(int x, int y) {
 
     switch (inputState) {
         case 2:
-            screen.text("Item:\n" + player.getItem()->getName() + "\n\nDescription:\n" + player.getItem()->getDescription(), x + 3, y + 4);
+            screen.text("Item:\n" + player.getItem()->getName() + "\n\nDescription:\n" + player.getItem()->Description(), x + 3, y + 4);
             break;
         case 3:
             screen.text("Spell:\n" + player.getSpell()->getName() + "\n\nCost: " + toString(player.getSpell()->getCost()) + " mana\nDamage: " + toString(player.getSpell()->getDamage()) + "\n\nDescription:\n" + player.getSpell()->getDescription(), x + 3, y + 4);
@@ -239,14 +239,14 @@ void Game::showDetails(int x, int y) {
                 return;
             }
 
-            screen.text("Item:\n" + getCurrentRoom().getItem()->getName() + "\n\nDescription:\n" + getCurrentRoom().getItem()->getDescription(), x + 3, y + 4);
+            screen.text("Item:\n" + getCurrentRoom().getItem()->getName() + "\n\nDescription:\n" + getCurrentRoom().getItem()->Description(), x + 3, y + 4);
             break;
         /* combat system code
         case 6:
             screen.text("Spell:\n" + player.getSpell()->getName() + "\n\nCost: " + toString(player.getSpell()->getCost()) + " mana\nDamage: " + toString(player.getSpell()->getDamage()) + "\n\nDescription:\n" + player.getSpell()->getDescription(), x + 3, y + 4);
             break;
         case 7:
-            screen.text("Item:\n" + player.getItem()->getName() + "\n\nDescription:\n" + player.getItem()->getDescription(), x + 3, y + 4);
+            screen.text("Item:\n" + player.getItem()->getName() + "\n\nDescription:\n" + player.getItem()->Description(), x + 3, y + 4);
             break;
         */
     }

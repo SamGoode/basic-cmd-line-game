@@ -48,6 +48,10 @@ const String& Item::getDescription() const {
     return description;
 }
 
+String Item::Description() {
+    return description + "\nThis item looks like your run of the\nmill item";
+}
+
 bool Item::isConsumable() {
     return consumable;
 }
@@ -65,62 +69,4 @@ String Item::use(Player& player) {
     }
 
     return "I didn't do anything";
-}
-
-FoodItem::FoodItem() {
-    this->setName("???");
-    this->setDescription("???");
-    this->setConsumable(true);
-
-    healAmount = 0;
-}
-
-FoodItem::FoodItem(String name, String description, int healAmount) {
-    this->setName(name);
-    this->setDescription(description);
-    this->setConsumable(true);
-
-    this->healAmount = healAmount;
-}
-
-String FoodItem::use(Player& player) {
-    if (this->isConsumable()) {
-        player.getInventory().removeItem(player.getInvIndex());
-        if (player.getInvIndex() == player.getInventory().getCount()) {
-            player.shiftInvIndex(-1);
-        }
-    }
-    
-    player.shiftHealth(healAmount);
-    return "You ate the " + this->getName() + " and healed " + toString(healAmount) + " hp";
-}
-
-ScrollItem::ScrollItem() {
-    this->setName("???");
-    this->setDescription("???");
-    this->setConsumable(true);
-
-    spell = nullptr;
-}
-
-ScrollItem::ScrollItem(String name, String description, SpellBase* spell, SpellList& masterList) {
-    this->setName(name);
-    this->setDescription(description);
-    this->setConsumable(true);
-
-    masterList.addSpell(spell);
-    this->spell = spell;
-}
-
-String ScrollItem::use(Player& player) {
-    if (this->isConsumable()) {
-        player.getInventory().removeItem(player.getInvIndex());
-        if (player.getInvIndex() == player.getInventory().getCount()) {
-            player.shiftInvIndex(-1);
-        }
-    }
-
-    String spellName = spell->getName();
-    player.getSpellBook().insertSpell(spell, player.getSpellBook().findSlotIndex(spell->getName()));
-    return "You learned the " + spellName + " spell";
 }

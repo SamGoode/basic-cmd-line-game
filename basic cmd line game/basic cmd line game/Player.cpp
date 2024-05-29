@@ -118,7 +118,7 @@ int Player::shiftMana(int amount) {
     return setMana(mana + amount);
 }
 
-String Player::getDescription() {
+String Player::Description() {
     //offset printed coordinates so centre room (starting room) is at 0, 0
     String printout = " Coordinates: x:" + toString(x-2) + ", y:" + toString(y-2) + "\n\n Health: " + toString(health) + "/" + toString(maxHealth) + "\n Mana: " + toString(mana) + "/" + toString(maxMana) + "\n\n Inventory: \n";
 
